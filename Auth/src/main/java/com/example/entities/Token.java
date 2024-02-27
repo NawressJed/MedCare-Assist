@@ -21,10 +21,12 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String token;
-    @Value("${application.security.jwt.refresh-token.expiration}")
-    private long refreshExpiration;
+    private String refreshToken;
+    private Date expiresAt;
 
-    public Token(String token) {
+    public Token(String token, String refreshToken, Date expiresAt) {
         this.token = token;
+        this.refreshToken = refreshToken;
+        this.expiresAt = expiresAt;
     }
 }
