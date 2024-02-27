@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,9 +44,7 @@ public class JwtService {
     public String generateToken(UserDetailsImpl userDetails) {
         UserEntity user = autoUserMapper.toEntity(userDetails);
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", user.getId());
         claims.put("firstname", user.getFirstname());
-        claims.put("lastname", user.getLastname());
         claims.put("role", user.getRole().name());
         return generateToken(claims, autoUserMapper.toDto(user));
     }
@@ -77,20 +76,10 @@ public class JwtService {
             UserDetails userDetails
     ) {
         String refreshToken = UUID.randomUUID().toString();
-
-        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
+        Instant expirationInstant = Instant.now().plusSeconds(7 * 24 * 60 * 60);
+        Date expirationDate = Date.from(expirationInstant);
+        return refreshToken + expirationDate.toString();
     }
-
-//    public RefreshToken createRefreshToken(Long userId) {
-//        RefreshToken refreshToken = new RefreshToken();
-//
-//        refreshToken.setUser(userRepository.findById(userId).get());
-//        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
-//        refreshToken.setToken(UUID.randomUUID().toString());
-//
-//        refreshToken = refreshTokenRepository.save(refreshToken);
-//        return refreshToken;
-//    }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);

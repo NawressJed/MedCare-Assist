@@ -1,7 +1,6 @@
 package com.example.config;
 
-import com.example.dto.UserDetailsImpl;
-import com.example.services.impl.UserDetailsServiceImpl;
+import com.example.services.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
