@@ -1,8 +1,12 @@
 package com.example.config;
 
+import com.example.entities.Token;
 import com.example.entities.UserEntity;
+import com.example.enums.TokenType;
 import com.example.mapper.AutoUserMapper;
 import com.example.dto.UserDetailsImpl;
+import com.example.repositories.TokenRepository;
+import com.example.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,6 +14,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +36,10 @@ public class JwtService {
     private long refreshExpiration;
     @Autowired
     AutoUserMapper autoUserMapper;
+    @Autowired
+    TokenRepository tokenRepository;
+    @Autowired
+    UserRepository userRepository;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -41,11 +50,20 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
+    public Token findByToken(String token) {
+        return tokenRepository.findByToken(token);
+    }
+
+    public void removeToken(Token token){
+        tokenRepository.delete(token);
+    }
+
     public String generateToken(UserDetailsImpl userDetails) {
         UserEntity user = autoUserMapper.toEntity(userDetails);
         Map<String, Object> claims = new HashMap<>();
         claims.put("firstname", user.getFirstname());
         claims.put("role", user.getRole().name());
+
         return generateToken(claims, autoUserMapper.toDto(user));
     }
 
@@ -72,13 +90,32 @@ public class JwtService {
                 .compact();
     }
 
-    public String generateRefreshToken(
-            UserDetails userDetails
-    ) {
-        String refreshToken = UUID.randomUUID().toString();
-        Instant expirationInstant = Instant.now().plusSeconds(7 * 24 * 60 * 60);
-        Date expirationDate = Date.from(expirationInstant);
-        return refreshToken + expirationDate.toString();
+//    public String generateRefreshToken(UserDetailsImpl userDetails) {
+//        UserEntity user = autoUserMapper.toEntity(userDetails);
+//
+//        return generateToken(new HashMap<>(), autoUserMapper.toDto(user));
+//    }
+
+
+    public Token generateRefreshToken(UserDetailsImpl userDetails) {
+        Token refreshToken = new Token();
+
+        refreshToken.setTokenType(TokenType.REFRESH_TOKEN);
+        refreshToken.setExpiresAt(new Date(System.currentTimeMillis() + refreshExpiration));
+        refreshToken.setToken(UUID.randomUUID().toString());
+        refreshToken.setUser(autoUserMapper.toEntity(userDetails));
+
+        return refreshToken;
+    }
+
+    public Token generateConfirmToken(UserDetailsImpl userDetails) {
+        Token confirmToken = new Token();
+
+        confirmToken.setTokenType(TokenType.CONFIRM_ACCOUNT);
+        confirmToken.setToken(UUID.randomUUID().toString());
+        confirmToken.setUser(autoUserMapper.toEntity(userDetails));
+
+        return confirmToken;
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {

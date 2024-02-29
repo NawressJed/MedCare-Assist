@@ -1,9 +1,8 @@
 package com.example.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.dto.PatientDTO;
+import com.example.enums.TokenType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,13 +19,28 @@ public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(unique = true)
     private String token;
-    private String refreshToken;
+    @Enumerated(EnumType.STRING)
+    private TokenType tokenType;
     private Date expiresAt;
+    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_id")
+    private UserEntity user;
 
-    public Token(String token, String refreshToken, Date expiresAt) {
+
+    public Token(String token, TokenType tokenType) {
         this.token = token;
-        this.refreshToken = refreshToken;
+        this.tokenType = tokenType;
+    }
+
+    public Token(String token, TokenType tokenType, Date expiresAt) {
+        this.token = token;
+        this.tokenType = tokenType;
         this.expiresAt = expiresAt;
+    }
+
+    public Token(UserEntity user) {
+        this.user = user;
     }
 }

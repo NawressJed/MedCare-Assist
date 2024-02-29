@@ -29,6 +29,7 @@ public class UserDetailsImpl implements UserDetails {
     private EGender gender;
     @Enumerated(EnumType.STRING)
     private ERole role;
+    private boolean isEnabled = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -52,11 +53,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
         return true;
     }
 }
