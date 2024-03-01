@@ -25,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + username);
         }
-        boolean enabled = !user.isEnabled();
+        boolean enabled = !autoUserMapper.toDto(user).isEnabled();
         UserDetails userDetails = User.withUsername(user.getEmail())
                 .password(user.getPassword())
                 .disabled(enabled)

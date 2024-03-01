@@ -32,8 +32,6 @@ public class JwtService {
     private String secretKey;
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
-    @Value("${application.security.jwt.refresh-token.expiration}")
-    private long refreshExpiration;
     @Autowired
     AutoUserMapper autoUserMapper;
     @Autowired
@@ -48,14 +46,6 @@ public class JwtService {
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
-    }
-
-    public Token findByToken(String token) {
-        return tokenRepository.findByToken(token);
-    }
-
-    public void removeToken(Token token){
-        tokenRepository.delete(token);
     }
 
     public String generateToken(UserDetailsImpl userDetails) {
@@ -88,34 +78,6 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-//    public String generateRefreshToken(UserDetailsImpl userDetails) {
-//        UserEntity user = autoUserMapper.toEntity(userDetails);
-//
-//        return generateToken(new HashMap<>(), autoUserMapper.toDto(user));
-//    }
-
-
-    public Token generateRefreshToken(UserDetailsImpl userDetails) {
-        Token refreshToken = new Token();
-
-        refreshToken.setTokenType(TokenType.REFRESH_TOKEN);
-        refreshToken.setExpiresAt(new Date(System.currentTimeMillis() + refreshExpiration));
-        refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken.setUser(autoUserMapper.toEntity(userDetails));
-
-        return refreshToken;
-    }
-
-    public Token generateConfirmToken(UserDetailsImpl userDetails) {
-        Token confirmToken = new Token();
-
-        confirmToken.setTokenType(TokenType.CONFIRM_ACCOUNT);
-        confirmToken.setToken(UUID.randomUUID().toString());
-        confirmToken.setUser(autoUserMapper.toEntity(userDetails));
-
-        return confirmToken;
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {

@@ -24,23 +24,12 @@ public class Token {
     @Enumerated(EnumType.STRING)
     private TokenType tokenType;
     private Date expiresAt;
-    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(nullable = false, name = "user_id")
     private UserEntity user;
 
-
-    public Token(String token, TokenType tokenType) {
+    public Token(String token, UserEntity user) {
         this.token = token;
-        this.tokenType = tokenType;
-    }
-
-    public Token(String token, TokenType tokenType, Date expiresAt) {
-        this.token = token;
-        this.tokenType = tokenType;
-        this.expiresAt = expiresAt;
-    }
-
-    public Token(UserEntity user) {
         this.user = user;
     }
 }

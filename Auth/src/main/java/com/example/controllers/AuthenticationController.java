@@ -1,11 +1,15 @@
-package com.example.auth;
+package com.example.controllers;
 
+import com.example.dto.request.AuthenticationRequest;
+import com.example.dto.response.AuthenticationResponse;
 import com.example.dto.DoctorDTO;
 import com.example.dto.PatientDTO;
 import com.example.entities.Token;
 import com.example.entities.UserEntity;
 import com.example.repositories.TokenRepository;
 import com.example.repositories.UserRepository;
+import com.example.services.AuthenticationService;
+import com.example.services.EmailSenderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +24,8 @@ public class AuthenticationController {
     UserRepository repository;
     @Autowired
     TokenRepository tokenRepository;
+    @Autowired
+    EmailSenderService mailSender;
 
     @PostMapping("/patient_register")
     public ResponseEntity<AuthenticationResponse> register (
