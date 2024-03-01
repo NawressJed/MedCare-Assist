@@ -1,8 +1,12 @@
 package com.example.config;
 
+import com.example.entities.Token;
 import com.example.entities.UserEntity;
+import com.example.enums.TokenType;
 import com.example.mapper.AutoUserMapper;
 import com.example.dto.UserDetailsImpl;
+import com.example.repositories.TokenRepository;
+import com.example.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,6 +14,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +32,12 @@ public class JwtService {
     private String secretKey;
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
-    @Value("${application.security.jwt.refresh-token.expiration}")
-    private long refreshExpiration;
     @Autowired
     AutoUserMapper autoUserMapper;
+    @Autowired
+    TokenRepository tokenRepository;
+    @Autowired
+    UserRepository userRepository;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -46,6 +53,7 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("firstname", user.getFirstname());
         claims.put("role", user.getRole().name());
+
         return generateToken(claims, autoUserMapper.toDto(user));
     }
 
@@ -70,15 +78,6 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    public String generateRefreshToken(
-            UserDetails userDetails
-    ) {
-        String refreshToken = UUID.randomUUID().toString();
-        Instant expirationInstant = Instant.now().plusSeconds(7 * 24 * 60 * 60);
-        Date expirationDate = Date.from(expirationInstant);
-        return refreshToken + expirationDate.toString();
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
