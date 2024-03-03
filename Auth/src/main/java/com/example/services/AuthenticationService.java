@@ -16,6 +16,8 @@ import com.example.mapper.AutoPatientMapper;
 import com.example.mapper.AutoUserMapper;
 import com.example.repositories.TokenRepository;
 import com.example.repositories.UserRepository;
+import com.example.services.tokensServices.ConfirmationTokenService;
+import com.example.services.tokensServices.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,18 +53,19 @@ public class AuthenticationService {
     private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
     public AuthenticationResponse register(PatientDTO request) {
-        Patient patient = autoPatientMapper.toEntity(request);
-        if (repository.existsByEmail(patient.getEmail())){
-            logger.error("ERROR: Email already in use!");
-            return null;
-        }else {
-            patient.setRole(ERole.PATIENT);
-            patient.setPassword(passwordEncoder.encode(patient.getPassword()));
-            repository.save(patient);
-            var jwtToken = jwtService.generateToken(autoUserMapper.toDto(patient));
-            Token confirmToken = confirmationTokenService.generateConfirmToken(autoUserMapper.toDto(patient));
+        try {
+            Patient patient = autoPatientMapper.toEntity(request);
+            if (repository.existsByEmail(patient.getEmail())){
+                logger.error("ERROR: Email already in use!");
+                return null;
+            }else {
+                patient.setRole(ERole.PATIENT);
+                patient.setPassword(passwordEncoder.encode(patient.getPassword()));
+                repository.save(patient);
+                var jwtToken = jwtService.generateToken(autoUserMapper.toDto(patient));
+                Token confirmToken = confirmationTokenService.generateConfirmToken(autoUserMapper.toDto(patient));
 
-            try {
+
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setTo(patient.getEmail());
                 mailMessage.setSubject("Complete Registration!");
@@ -71,29 +74,32 @@ public class AuthenticationService {
                         + "http://localhost:8080/api/auth/confirm-account?token=" + confirmToken.getToken());
 
                 emailSenderService.sendEmail(mailMessage);
-            } catch (MailException ex) {
-                ex.printStackTrace();
-            }
 
-            return AuthenticationResponse.builder()
+                return AuthenticationResponse.builder()
                     .accessToken(jwtToken)
                     .build();
+            }
+        } catch (MailException ex) {
+                logger.error("ERROR: Sending email!"+ ex);
+                return null;
         }
     }
 
-    public AuthenticationResponse register(DoctorDTO request) {
-        Doctor doctor = autoDoctorMapper.toEntity(request);
-        if (repository.existsByEmail(doctor.getEmail())){
-            logger.error("ERROR: Email already in use!");
-            return null;
-        }else {
-            doctor.setRole(ERole.DOCTOR);
-            doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
-            repository.save(doctor);
-            var jwtToken = jwtService.generateToken(autoUserMapper.toDto(doctor));
-            Token confirmToken = confirmationTokenService.generateConfirmToken(autoUserMapper.toDto(doctor));
 
-            try {
+    public AuthenticationResponse register(DoctorDTO request) {
+        try {
+            Doctor doctor = autoDoctorMapper.toEntity(request);
+            if (repository.existsByEmail(doctor.getEmail())){
+                logger.error("ERROR: Email already in use!");
+                return null;
+            }else {
+                doctor.setRole(ERole.DOCTOR);
+                doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
+                repository.save(doctor);
+                var jwtToken = jwtService.generateToken(autoUserMapper.toDto(doctor));
+                Token confirmToken = confirmationTokenService.generateConfirmToken(autoUserMapper.toDto(doctor));
+
+
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setTo(doctor.getEmail());
                 mailMessage.setSubject("Complete Registration!");
@@ -102,13 +108,13 @@ public class AuthenticationService {
                         + "http://localhost:8080/api/auth/confirm-account?token=" + confirmToken.getToken());
 
                 emailSenderService.sendEmail(mailMessage);
-            } catch (MailException ex) {
-                ex.printStackTrace();
-            }
-
-            return AuthenticationResponse.builder()
+                return AuthenticationResponse.builder()
                     .accessToken(jwtToken)
                     .build();
+            }
+        } catch (MailException ex) {
+                logger.error("ERROR: Sending email!"+ ex);
+                return null;
         }
     }
 
@@ -116,7 +122,7 @@ public class AuthenticationService {
         UserEntity user = repository.findByEmail(request.getEmail());
         Token confirmToken = tokenRepository.findByUserAndTokenType(user, TokenType.CONFIRM_ACCOUNT);
         if (confirmToken != null){
-            logger.error("ERROR: Account not confirmed!");
+            logger.error("ERROR: Account is not confirmed yet!");
             return null;
         }else {
             authenticationManager.authenticate(
