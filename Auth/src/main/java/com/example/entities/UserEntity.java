@@ -28,5 +28,4 @@ public class UserEntity {
     private EGender gender;
     @Enumerated(EnumType.STRING)
     private ERole role;
-    private boolean isEnabled = false;
 }

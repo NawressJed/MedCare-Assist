@@ -5,7 +5,6 @@ import com.example.enums.ERole;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,7 +28,6 @@ public class UserDetailsImpl implements UserDetails {
     private EGender gender;
     @Enumerated(EnumType.STRING)
     private ERole role;
-    private boolean isEnabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -38,22 +36,26 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return null;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return false;
     }
 
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

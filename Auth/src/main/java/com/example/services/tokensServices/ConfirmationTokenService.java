@@ -1,4 +1,4 @@
-package com.example.services;
+package com.example.services.tokensServices;
 
 import com.example.dto.UserDetailsImpl;
 import com.example.entities.Token;
