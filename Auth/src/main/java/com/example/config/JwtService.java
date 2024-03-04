@@ -1,8 +1,6 @@
 package com.example.config;
 
-import com.example.entities.Token;
 import com.example.entities.UserEntity;
-import com.example.enums.TokenType;
 import com.example.mapper.AutoUserMapper;
 import com.example.dto.UserDetailsImpl;
 import com.example.repositories.TokenRepository;
@@ -14,16 +12,13 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 
 @Service

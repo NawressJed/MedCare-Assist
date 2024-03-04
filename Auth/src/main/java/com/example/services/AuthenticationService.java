@@ -5,10 +5,7 @@ import com.example.dto.response.AuthenticationResponse;
 import com.example.config.JwtService;
 import com.example.dto.DoctorDTO;
 import com.example.dto.PatientDTO;
-import com.example.entities.Doctor;
-import com.example.entities.Patient;
-import com.example.entities.Token;
-import com.example.entities.UserEntity;
+import com.example.entities.*;
 import com.example.enums.ERole;
 import com.example.enums.TokenType;
 import com.example.mapper.AutoDoctorMapper;
@@ -18,6 +15,7 @@ import com.example.repositories.TokenRepository;
 import com.example.repositories.UserRepository;
 import com.example.services.tokensServices.ConfirmationTokenService;
 import com.example.services.tokensServices.RefreshTokenService;
+import com.example.services.tokensServices.ResetPasswordTokenService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +32,14 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
     @Autowired
     UserRepository repository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final TokenRepository tokenRepository;
+    @Autowired
+    ResetPasswordTokenService passwordTokenService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private TokenRepository tokenRepository;
     @Autowired
     AutoPatientMapper autoPatientMapper;
     @Autowired
@@ -85,7 +88,6 @@ public class AuthenticationService {
         }
     }
 
-
     public AuthenticationResponse register(DoctorDTO request) {
         try {
             Doctor doctor = autoDoctorMapper.toEntity(request);
@@ -121,10 +123,9 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         UserEntity user = repository.findByEmail(request.getEmail());
         Token confirmToken = tokenRepository.findByUserAndTokenType(user, TokenType.CONFIRM_ACCOUNT);
-        if (confirmToken != null){
-            logger.error("ERROR: Account is not confirmed yet!");
-            return null;
-        }else {
+        if (confirmToken != null) {
+            throw new RuntimeException("Account is not confirmed yet!");
+        } else {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(),
@@ -139,5 +140,42 @@ public class AuthenticationService {
                     .refreshToken(refreshToken.toString())
                     .build();
         }
+    }
+
+    public void requestResetPassword(ResetPassword resetPassword) {
+        UserEntity user = null;
+        try {
+            user = repository.findByEmail(resetPassword.getEmail());
+            if (!repository.existsByEmail(user.getEmail())){
+                logger.error("ERROR: Email does not exist!");
+            }else {
+                Token token = passwordTokenService.generateResetPasswordToken(autoUserMapper.toDto(user));
+
+
+                SimpleMailMessage mailMessage = new SimpleMailMessage();
+                mailMessage.setTo(user.getEmail());
+                mailMessage.setSubject("Reset Your Password!");
+                mailMessage.setFrom("t99est97@gmail.com");
+                mailMessage.setText("To reset your password, please click here: "
+                        + "http://localhost:8080/api/password/request?token=" + token.getToken());
+
+                emailSenderService.sendEmail(mailMessage);
+            }
+        } catch (MailException ex) {
+            logger.error("ERROR: Sending request!"+ ex);
+        }
+    }
+
+    public void changePassword(UserEntity user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        repository.save(user);
+    }
+
+    public boolean oldPasswordIsValid(UserEntity user, String oldPassword){
+        return passwordEncoder.matches(oldPassword, user.getPassword());
+    }
+
+    public boolean newPasswordIsValid(UserEntity user, String newPassword){
+        return passwordEncoder.matches(newPassword, user.getPassword());
     }
 }
