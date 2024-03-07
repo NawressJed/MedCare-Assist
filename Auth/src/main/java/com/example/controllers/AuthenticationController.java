@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Log4j2
 public class AuthenticationController {
@@ -76,8 +75,13 @@ public class AuthenticationController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPassword resetPassword) {
-        authenticationService.requestResetPassword(resetPassword);
-        return ResponseEntity.ok("jawk behi");
+        try {
+            authenticationService.requestResetPassword(resetPassword);
+            return ResponseEntity.ok("jawk behi");
+        } catch (Exception e) {
+            log.error(e);
+            return null;
+        }
     }
 
     @GetMapping("/reset-password-request")

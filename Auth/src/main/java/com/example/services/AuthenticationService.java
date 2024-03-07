@@ -74,7 +74,7 @@ public class AuthenticationService {
                 mailMessage.setSubject("Complete Registration!");
                 mailMessage.setFrom("t99est97@gmail.com");
                 mailMessage.setText("To confirm your account, please click here: "
-                        + "http://localhost:8080/api/auth/confirm-account?token=" + confirmToken.getToken());
+                        + "http://localhost:8082/auth/confirm-account?token=" + confirmToken.getToken());
 
                 emailSenderService.sendEmail(mailMessage);
 
@@ -107,7 +107,7 @@ public class AuthenticationService {
                 mailMessage.setSubject("Complete Registration!");
                 mailMessage.setFrom("t99est97@gmail.com");
                 mailMessage.setText("To confirm your account, please click here: "
-                        + "http://localhost:8080/api/auth/confirm-account?token=" + confirmToken.getToken());
+                        + "http://localhost:8082/auth/confirm-account?token=" + confirmToken.getToken());
 
                 emailSenderService.sendEmail(mailMessage);
                 return AuthenticationResponse.builder()
@@ -157,7 +157,7 @@ public class AuthenticationService {
                 mailMessage.setSubject("Reset Your Password!");
                 mailMessage.setFrom("t99est97@gmail.com");
                 mailMessage.setText("To reset your password, please click here: "
-                        + "http://localhost:8080/api/password/request?token=" + token.getToken());
+                        + "http://localhost:8082/auth/reset-password-request?token=" + token.getToken());
 
                 emailSenderService.sendEmail(mailMessage);
             }
