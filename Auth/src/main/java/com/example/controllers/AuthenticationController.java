@@ -1,11 +1,11 @@
 package com.example.controllers;
 
-import com.example.dto.ForgetPassword;
+import com.example.dto.request.ForgetPassword;
 import com.example.dto.request.AuthenticationRequest;
 import com.example.dto.response.AuthenticationResponse;
 import com.example.dto.DoctorDTO;
 import com.example.dto.PatientDTO;
-import com.example.dto.ResetPassword;
+import com.example.dto.request.ResetPassword;
 import com.example.entities.Token;
 import com.example.entities.UserEntity;
 import com.example.enums.TokenType;
@@ -123,10 +123,6 @@ public class AuthenticationController {
             }
 
             authenticationService.changePassword(resetToken.getUser(), resetPassword.getNewPassword());
-            /*Token refreshToken = tokenRepository.findByUserAndTokenType(resetToken.getUser(), TokenType.REFRESH_TOKEN);
-        if (tokenRepository.existsByUserAndTokenType(refreshToken.getUser(), TokenType.REFRESH_TOKEN)) {
-            tokenRepository.delete(refreshToken);
-        }*/
             tokenRepository.delete(resetToken);
 
             Map<String, String> responseBody = new HashMap<>();
