@@ -1,0 +1,111 @@
+<div class="flex flex-col flex-auto md:w-160 md:min-w-160 -m-6">
+
+    <!-- Main -->
+    <div class="flex-auto">
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b">
+
+            <!-- Title -->
+            <div class="flex items-center justify-between">
+                <div class="text-xl font-semibold tracking-tight leading-none text-blue text-blue-600">
+                    Add </div>
+                <button mat-icon-button (click)="onCloseClick()">
+                    <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+            <form class="m-4" (ngSubmit)="onSubmit()">
+                <div class="grid sm:grid-cols-4 gap-3 w-full">
+                    <div class="flex sm:col-span-2">
+                        <mat-form-field class="w-full">
+                            <input matInput [placeholder]="'Firstname'" required [(ngModel)]="doctor.firstname"
+                                name="firstname" />
+                            <mat-icon class="icon-size-5" matPrefix
+                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-2">
+                        <mat-form-field class="w-full">
+                            <input matInput [placeholder]="'lastname'" required [(ngModel)]="doctor.lastname"
+                                id="lastname" name="lastname" />
+                            <mat-icon class="icon-size-5" matPrefix
+                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-4">
+                        <mat-form-field class="w-full">
+                            <input matInput [placeholder]="'E-mail'" required [(ngModel)]="doctor.email" id="email"
+                                name="email" />
+                            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:mail'"></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-4">
+                        <mat-form-field class="flex-auto">
+                            <input matInput [placeholder]="'Password'" required [(ngModel)]="doctor.password"
+                                id="password" name="password" />
+                            <mat-icon class="icon-size-5" matPrefix
+                                [svgIcon]="'heroicons_solid:lock-closed'"></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-2">
+                        <mat-form-field class="flex-auto">
+                            <input matInput [placeholder]="'Phone'" required [(ngModel)]="doctor.phone" id="phone"
+                                name="phone" />
+                            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-2">
+                        <mat-form-field class="flex-auto">
+                            <input matInput [placeholder]="'officeAddress'" required [(ngModel)]="doctor.officeAddress"
+                                id="officeAddress" name="officeAddress" />
+                            <mat-icon class="icon-size-5" matPrefix
+                                [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-2">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
+                            <mat-select required [(ngModel)]="doctor.gender" [placeholder]="'Select gender'"
+                                id="gender" name="gender">
+                                <mat-option value="MALE">MALE</mat-option>
+                                <mat-option value="FEMALE">FEMALE</mat-option>
+                                <mat-option value="OTHER">OTHER</mat-option>
+                            </mat-select>
+                            <mat-icon class="icon-size-5" matPrefix svgIcon="mat_solid:transgender"></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-2">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
+                            <mat-select required [(ngModel)]="doctor.specialty" [placeholder]="'Select specialty'"
+                                id="specialty" name="specialty">
+                                <mat-option value="ANESTHESIOLOGIST">ANESTHESIOLOGIST</mat-option>
+                                <mat-option value="CARDIOLOGIST">CARDIOLOGIST</mat-option>
+                                <mat-option value="DERMATOLOGIST">DERMATOLOGIST</mat-option>
+                                <mat-option value="ENDOCRINOLOGIST">ENDOCRINOLOGIST</mat-option>
+                                <mat-option value="FAMILY_PHYSICIAN">FAMILY_PHYSICIAN</mat-option>
+                                <mat-option value="GASTROENTEROLOGIST">GASTROENTEROLOGIST</mat-option>
+                                <mat-option value="NERPHOLOGIST">NERPHOLOGIST</mat-option>
+                                <mat-option value="NEUROLOGIST">NEUROLOGIST</mat-option>
+                                <mat-option value="NEUROLOGIST">OPHTHALMOLOGIST</mat-option>
+                                <mat-option value="NEUROLOGIST">PEDIATRICIAN</mat-option>
+                                <mat-option value="NEUROLOGIST">RADIOLOGIST</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-4">
+                        <mat-form-field class="w-full">
+                            <span matPrefix>$</span>
+                            <input matInput [placeholder]="'consultationPrice'" required [(ngModel)]="doctor.consultationPrice"
+                                name="consultationPrice" />
+                        </mat-form-field>
+                    </div>
+
+                </div>
+                <div class="flex items-center -mx-8 px-8 py-5 justify-end">
+                    <button type="submit" class="px-6 ml-3" [color]="'primary'" mat-flat-button>
+                        Add
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

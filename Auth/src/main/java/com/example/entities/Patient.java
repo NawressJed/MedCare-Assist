@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "patient")
 @Data
@@ -16,5 +18,4 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "userId")
 public class Patient extends UserEntity {
     private String address;
-    private int age;
-}
+    private Date birthDate;}
