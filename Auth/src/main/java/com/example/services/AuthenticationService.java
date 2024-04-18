@@ -1,7 +1,6 @@
 package com.example.services;
 
-import com.example.dto.ForgetPassword;
-import com.example.dto.ResetPassword;
+import com.example.dto.request.ForgetPassword;
 import com.example.dto.request.AuthenticationRequest;
 import com.example.dto.response.AuthenticationResponse;
 import com.example.config.JwtService;
