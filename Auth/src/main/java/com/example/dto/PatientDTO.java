@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatientDTO extends UserDetailsImpl  {
     private String address;
-    private int age;
+    private Date birthDate;
 }

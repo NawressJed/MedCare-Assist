@@ -1,5 +1,7 @@
 package com.example.services;
 
+import com.example.dto.ForgetPassword;
+import com.example.dto.ResetPassword;
 import com.example.dto.request.AuthenticationRequest;
 import com.example.dto.response.AuthenticationResponse;
 import com.example.config.JwtService;
@@ -74,7 +76,7 @@ public class AuthenticationService {
                 mailMessage.setSubject("Complete Registration!");
                 mailMessage.setFrom("t99est97@gmail.com");
                 mailMessage.setText("To confirm your account, please click here: "
-                        + "http://localhost:8082/auth/confirm-account?token=" + confirmToken.getToken());
+                        + "http://localhost:8081/auth/confirm-account?token=" + confirmToken.getToken());
 
                 emailSenderService.sendEmail(mailMessage);
 
@@ -107,7 +109,7 @@ public class AuthenticationService {
                 mailMessage.setSubject("Complete Registration!");
                 mailMessage.setFrom("t99est97@gmail.com");
                 mailMessage.setText("To confirm your account, please click here: "
-                        + "http://localhost:8082/auth/confirm-account?token=" + confirmToken.getToken());
+                        + "http://localhost:8081/auth/confirm-account?token=" + confirmToken.getToken());
 
                 emailSenderService.sendEmail(mailMessage);
                 return AuthenticationResponse.builder()
@@ -142,22 +144,23 @@ public class AuthenticationService {
         }
     }
 
-    public void requestResetPassword(ResetPassword resetPassword) {
+    public void requestResetPassword(ForgetPassword forgetPassword) {
         UserEntity user = null;
         try {
-            user = repository.findByEmail(resetPassword.getEmail());
+            user = repository.findByEmail(forgetPassword.getEmail());
             if (!repository.existsByEmail(user.getEmail())){
                 logger.error("ERROR: Email does not exist!");
-            }else {
+            } else if (tokenRepository.existsByUserAndTokenType(user, TokenType.RESET_PASSWORD)) {
+                logger.error("ERROR: Link is already sent!");
+            } else {
                 Token token = passwordTokenService.generateResetPasswordToken(autoUserMapper.toDto(user));
-
 
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setTo(user.getEmail());
-                mailMessage.setSubject("Reset Your Password!");
+                mailMessage.setSubject("Reset Password!");
                 mailMessage.setFrom("t99est97@gmail.com");
                 mailMessage.setText("To reset your password, please click here: "
-                        + "http://localhost:8082/auth/reset-password-request?token=" + token.getToken());
+                        + "http://localhost:4200/reset-password?token=" + token.getToken());
 
                 emailSenderService.sendEmail(mailMessage);
             }
@@ -171,11 +174,4 @@ public class AuthenticationService {
         repository.save(user);
     }
 
-    public boolean oldPasswordIsValid(UserEntity user, String oldPassword){
-        return passwordEncoder.matches(oldPassword, user.getPassword());
-    }
-
-    public boolean newPasswordIsValid(UserEntity user, String newPassword){
-        return passwordEncoder.matches(newPassword, user.getPassword());
-    }
 }
