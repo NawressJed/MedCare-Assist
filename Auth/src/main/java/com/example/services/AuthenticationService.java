@@ -123,6 +123,7 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         UserEntity user = repository.findByEmail(request.getEmail());
+
         Token confirmToken = tokenRepository.findByUserAndTokenType(user, TokenType.CONFIRM_ACCOUNT);
         if (confirmToken != null) {
             throw new RuntimeException("Account is not confirmed yet!");
@@ -139,6 +140,7 @@ public class AuthenticationService {
             return AuthenticationResponse.builder()
                     .accessToken(jwtToken)
                     .refreshToken(refreshToken.toString())
+                    .role(user.getRole().name())
                     .build();
         }
     }
