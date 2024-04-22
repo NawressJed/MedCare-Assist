@@ -121,7 +121,6 @@ public class AuthenticationController {
                 errorResponse.put("error", "Invalid reset password token");
                 return ResponseEntity.badRequest().body(errorResponse);
             }
-
             authenticationService.changePassword(resetToken.getUser(), resetPassword.getNewPassword());
             tokenRepository.delete(resetToken);
 

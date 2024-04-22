@@ -12,6 +12,9 @@ import { mockApiServices } from 'app/mock-api';
 import { LayoutModule } from 'app/layout/layout.module';
 import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
+import { AppointmentListComponent } from './modules/doctor/appointments-mgt/appointment-list/appointment-list.component';
+import { AppointmentAddComponent } from './modules/doctor/appointments-mgt/appointment-add/appointment-add.component';
+import { AppointmentUpdateComponent } from './modules/doctor/appointments-mgt/appointment-update/appointment-update.component';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy       : PreloadAllModules,
@@ -20,7 +23,10 @@ const routerConfig: ExtraOptions = {
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        AppointmentListComponent,
+        AppointmentAddComponent,
+        AppointmentUpdateComponent
     ],
     imports     : [
         BrowserModule,

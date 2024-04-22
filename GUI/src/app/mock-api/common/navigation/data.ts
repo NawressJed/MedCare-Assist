@@ -20,14 +20,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Patients',
                 type: 'basic',
                 icon: 'heroicons_outline:users',
-                link: '/patient/list'
+                link: '/admin/patient/list'
             },
             {
                 id: 'doctors',
                 title: 'Doctors',
                 type: 'basic',
                 icon: 'heroicons_outline:users',
-                link: '/doctor/list'
+                link: '/admin/doctor/list'
             },
             {
                 id: 'appointments',
@@ -35,6 +35,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
                 icon: 'heroicons_outline:calendar',
                 link: ''
+            },
+            {
+                id: 'settings',
+                title: 'Settings',
+                type: 'basic',
+                icon: '',
+                link: '/admin/settings'
             }
         ]
     }
