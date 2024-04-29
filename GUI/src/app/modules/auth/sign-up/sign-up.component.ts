@@ -4,9 +4,9 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertType } from '@fuse/components/alert';
-import { AuthenticationService } from '../authentication.service';
-import { Patient } from '../patient';
-import { Doctor } from '../doctor';
+import { AuthenticationService } from '../../../shared/services/authService/authentication.service';
+import { Patient } from 'app/shared/models/users/patient/patient';
+import { Doctor } from 'app/shared/models/users/doctor/doctor';
 
 @Component({
     selector: 'auth-sign-up',

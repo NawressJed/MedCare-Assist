@@ -20,6 +20,7 @@
         <module>Gateway</module>
         <module>EntityManagement</module>
         <module>AccountManagement</module>
+        <module>AppointmentManagement</module>
     </modules>
     <properties>
         <java.version>17</java.version>

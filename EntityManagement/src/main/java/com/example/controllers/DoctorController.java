@@ -1,6 +1,7 @@
 package com.example.controllers;
 
 import com.example.dto.DoctorDTO;
+import com.example.dto.UserDTO;
 import com.example.services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,8 @@ public class DoctorController {
         return doctorService.findDoctorById(id);
     }
 
-    @GetMapping("/get-doctor/{email}")
-    public DoctorDTO findDoctorByEmail(@PathVariable(value = "email") String email){
+    @GetMapping("/get-user-by-email/{email}")
+    public UserDTO findUserByEmail(@PathVariable(value = "email") String email){
         return doctorService.findDoctorByEmail(email);
     }
 

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector   : 'app-root',
@@ -10,7 +11,8 @@ export class AppComponent
     /**
      * Constructor
      */
-    constructor()
+    constructor(public translate: TranslateService)
     {
+        translate.addLangs(['en', 'fr']);
     }
 }

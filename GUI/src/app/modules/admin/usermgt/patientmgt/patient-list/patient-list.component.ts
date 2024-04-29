@@ -7,10 +7,10 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { filter, fromEvent, Observable, Subject, switchMap, BehaviorSubject, takeUntil } from 'rxjs';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { Patient } from '../patient';
-import { PatientService } from '../patient.service';
+import { PatientService } from '../../../../../shared/services/admin/patientService/patient.service';
 import { PatientAddComponent } from '../patient-add/patient-add.component';
 import { PatientUpdateComponent } from '../patient-update/patient-update.component';
+import { Patient } from 'app/shared/models/users/patient/patient';
 
 @Component({
   selector: 'app-patient-list',

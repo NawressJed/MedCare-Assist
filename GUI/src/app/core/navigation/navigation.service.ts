@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject, tap } from 'rxjs';
-import { Navigation } from 'app/core/navigation/navigation.types';
+import { FuseNavigationItem } from '@fuse/components/navigation';
 
 @Injectable({
     providedIn: 'root'
 })
 export class NavigationService
 {
-    private _navigation: ReplaySubject<Navigation> = new ReplaySubject<Navigation>(1);
+    private _navigation: ReplaySubject<FuseNavigationItem[]> = new ReplaySubject<FuseNavigationItem[]>(1);
 
     /**
      * Constructor
@@ -24,7 +24,7 @@ export class NavigationService
     /**
      * Getter for navigation
      */
-    get navigation$(): Observable<Navigation>
+    get navigation$(): Observable<FuseNavigationItem[]>
     {
         return this._navigation.asObservable();
     }
@@ -36,9 +36,9 @@ export class NavigationService
     /**
      * Get all navigation data
      */
-    get(): Observable<Navigation>
+    get(): Observable<FuseNavigationItem[]>
     {
-        return this._httpClient.get<Navigation>('api/common/navigation').pipe(
+        return this._httpClient.get<FuseNavigationItem[]>('api/common/navigation').pipe(
             tap((navigation) => {
                 this._navigation.next(navigation);
             })

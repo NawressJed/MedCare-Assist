@@ -7,6 +7,7 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FUSE_VERSION } from '@fuse/version';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector     : 'layout',
@@ -31,7 +32,8 @@ export class LayoutComponent implements OnInit, OnDestroy
         private _renderer2: Renderer2,
         private _router: Router,
         private _fuseConfigService: FuseConfigService,
-        private _fuseMediaWatcherService: FuseMediaWatcherService
+        private _fuseMediaWatcherService: FuseMediaWatcherService,
+        private translate: TranslateService
     )
     {
     }

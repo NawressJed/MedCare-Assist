@@ -28,11 +28,6 @@ public class PatientController {
         return patientService.findPatientById(id);
     }
 
-    @GetMapping("/get-patient-by-email/{email}")
-    public PatientDTO findPatientByEmail(@PathVariable(value = "email") String email){
-        return patientService.findPatientByEmail(email);
-    }
-
     @PutMapping("/update-patient/{id}")
     public PatientDTO updatePatient(@PathVariable(value = "id") UUID id, @RequestBody PatientDTO patientDTO){
 

@@ -1,33 +1,48 @@
+/* eslint-disable */
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
-import { Navigation } from 'app/core/navigation/navigation.types';
+import { FuseNavigationItem, FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
 import { NavigationService } from 'app/core/navigation/navigation.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-    selector     : 'classic-layout',
-    templateUrl  : './classic.component.html',
+    selector: 'classic-layout',
+    templateUrl: './classic.component.html',
+    styleUrls    : ['./classic.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class ClassicLayoutComponent implements OnInit, OnDestroy
-{
+export class ClassicLayoutComponent implements OnInit, OnDestroy {
+    
     isScreenSmall: boolean;
-    navigation: Navigation;
+    navigation: FuseNavigationItem[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    selectedCountryCode = 'fr';
+    countryCodes = ['fr', 'gb'];
+    customLabels = {
+        'fr': 'Français',
+        'gb': 'English',
+    };
+
+    changeSelectedCountryCode(value: string): void {
+        this.selectedCountryCode = value;
+        if (value === 'gb') {
+            value = 'en'
+        }
+        this.translate.use(value);
+    }
 
     /**
      * Constructor
      */
     constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _router: Router,
         private _navigationService: NavigationService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fuseNavigationService: FuseNavigationService
-    )
-    {
+        private _fuseNavigationService: FuseNavigationService,
+        public translate: TranslateService
+    ) {
+        translate.addLangs(['en', 'fr']);
+        translate.setDefaultLang('fr');
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -37,8 +52,7 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy
     /**
      * Getter for current year
      */
-    get currentYear(): number
-    {
+    get currentYear(): number {
         return new Date().getFullYear();
     }
 
@@ -49,30 +63,32 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Subscribe to navigation data
         this._navigationService.navigation$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((navigation: Navigation) => {
+            .subscribe((navigation: FuseNavigationItem[]) => {
                 this.navigation = navigation;
             });
-
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) => {
+            .subscribe(({ matchingAliases }) => {
 
                 // Check if the screen is small
                 this.isScreenSmall = !matchingAliases.includes('md');
             });
+
     }
+
+    public selectLanguage(event: any) {
+        this.translate.use(event.target.value);
+    };
 
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
@@ -87,13 +103,11 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy
      *
      * @param name
      */
-    toggleNavigation(name: string): void
-    {
+    toggleNavigation(name: string): void {
         // Get the navigation
         const navigation = this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>(name);
 
-        if ( navigation )
-        {
+        if (navigation) {
             // Toggle the opened status
             navigation.toggle();
         }

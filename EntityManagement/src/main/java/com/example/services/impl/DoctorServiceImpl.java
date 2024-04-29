@@ -1,10 +1,13 @@
 package com.example.services.impl;
 
 import com.example.dto.DoctorDTO;
+import com.example.dto.UserDTO;
 import com.example.entities.Doctor;
 import com.example.enums.ERole;
 import com.example.mapper.AutoDoctorMapper;
+import com.example.mapper.AutoUserMapper;
 import com.example.repositories.DoctorRepository;
+import com.example.repositories.UserRepository;
 import com.example.services.DoctorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +23,11 @@ public class DoctorServiceImpl implements DoctorService {
     @Autowired
     DoctorRepository repository;
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     AutoDoctorMapper autoDoctorMapper;
+    @Autowired
+    AutoUserMapper autoUserMapper;
     private final Logger logger = LoggerFactory.getLogger(PatientServiceImpl.class);
 
     @Override
@@ -58,9 +65,9 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public DoctorDTO findDoctorByEmail(String email) {
+    public UserDTO findDoctorByEmail(String email) {
         try {
-            return autoDoctorMapper.toDto(repository.findByEmail(email));
+            return autoUserMapper.toDto(userRepository.findByEmail(email));
         } catch (Exception e) {
             logger.error("ERROR retrieving doctor by his Email" + e);
             return null;        }

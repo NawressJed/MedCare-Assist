@@ -2,8 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertType } from '@fuse/components/alert';
-import { AuthenticationService } from '../authentication.service';
-import { ForgetPassword } from '../forgetPassword';
+import { AuthenticationService } from '../../../shared/services/authService/authentication.service';
 
 @Component({
     selector: 'forgot-password-modern-reversed',
@@ -51,10 +50,8 @@ export class AuthForgotPasswordComponent implements OnInit {
      */
     sendResetLink(): void {
         if (this.forgotPasswordForm.valid) {
-            const forgetPassword: ForgetPassword = {
-                email: this.forgotPasswordForm.get('email').value,
-              };
-              this.authService.forgetPassword(forgetPassword).subscribe(
+            const email: string = this.forgotPasswordForm.get('email').value
+              this.authService.forgetPassword(email).subscribe(
                 () => {
                     this.showAlert = true;
                     this.alert = {
