@@ -1,44 +1,23 @@
 <!-- Button -->
-<button
-    mat-icon-button
-    [matMenuTriggerFor]="userActions">
+<button mat-icon-button [matMenuTriggerFor]="userActions">
     <span class="relative">
-        <img
-            class="w-7 h-7 rounded-full"
-            *ngIf="showAvatar && user.avatar"
-            [src]="user.avatar">
-        <mat-icon
-            *ngIf="!showAvatar || !user.avatar"
-            [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-        <span
-            class="absolute right-0 bottom-0 w-2 h-2 rounded-full"
-        ></span>
+        <div class="circleUser">{{ initialisms }}</div>
+        <span class="absolute right-0 bottom-0 w-2 h-2 rounded-full" [ngClass]="'mr-px mb-px bg-green-500'"></span>
     </span>
 </button>
 
-<mat-menu
-    [xPosition]="'before'"
-    #userActions="matMenu">
-    <button mat-menu-item>
-        <span class="flex flex-col leading-none">
-            <span>Signed in as</span>
-            <span class="mt-1.5 text-md font-medium">{{user.email}}</span>
-        </span>
-    </button>
-    <mat-divider class="my-2"></mat-divider>
-    <button mat-menu-item >
-        <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-        <span>Profile</span>
-    </button>
-    <button mat-menu-item>
-        <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
-        <span>Settings</span>
-    </button>
-    <mat-divider class="my-2"></mat-divider>
-    <button
-        mat-menu-item
-        (click)="signOut()">
+<mat-menu [xPosition]="'before'" #userActions="matMenu">
+    <ng-container *ngIf="(this.name !== undefined && this.lastname !== undefined)">
+        <button mat-menu-item="" class="mat-focus-indicator mat-menu-item ng-tns-c54-3" role="menuitem" tabindex="0"
+            aria-disabled="false"><span class="flex flex-col leading-none"><span>{{ 'USER.SIGNED_IN_AS' | translate
+            }}</span><span class="mt-1.5 text-md font-medium"><strong>{{ name }} {{ lastname }}</strong></span></span>
+            <div matripple="" class="mat-ripple mat-menu-ripple"></div>
+        </button>
+        <mat-divider role="separator" class="mat-divider my-2 mat-divider-horizontal ng-tns-c54-3"
+            aria-orientation="horizontal"></mat-divider>
+    </ng-container>
+    <button mat-menu-item (click)="signOut()">
         <mat-icon [svgIcon]="'heroicons_outline:logout'"></mat-icon>
-        <span>Sign out</span>
+        <span>{{ 'USER.SIGN_OUT' | translate }}</span>
     </button>
 </mat-menu>

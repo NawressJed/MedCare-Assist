@@ -1,6 +1,5 @@
 package com.example.controllers;
 
-import com.example.dto.request.ForgetPassword;
 import com.example.dto.request.AuthenticationRequest;
 import com.example.dto.response.AuthenticationResponse;
 import com.example.dto.DoctorDTO;
@@ -77,9 +76,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody ForgetPassword forgetPassword) {
+    public ResponseEntity<Map<String, String>> resetPassword(String email) {
         try {
-            authenticationService.requestResetPassword(forgetPassword);
+            authenticationService.requestResetPassword(email);
             return ResponseEntity.ok().body(Map.of("message", "Password reset request successful"));
         } catch (Exception e) {
             log.error("Error resetting password", e);

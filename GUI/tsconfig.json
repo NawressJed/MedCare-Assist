@@ -16,9 +16,15 @@
         "lib": [
             "es2020",
             "dom"
-        ]
+        ],
+        "resolveJsonModule": true,
+        "types": [
+            "node",
+            "jest"
+        ] // Add this line
     },
     "angularCompilerOptions": {
         "enableI18nLegacyMessageIdFormat": false
     }
 }
+

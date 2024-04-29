@@ -1,8 +1,8 @@
 import { Component, OnInit, ElementRef, Inject, ChangeDetectorRef } from '@angular/core';
-import { Patient } from '../patient';
-import { PatientService } from '../patient.service';
+import { PatientService } from '../../../../../shared/services/admin/patientService/patient.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Patient } from 'app/shared/models/users/patient/patient';
 
 @Component({
   selector: 'app-patient-update',

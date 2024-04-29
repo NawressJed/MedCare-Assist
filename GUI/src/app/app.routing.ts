@@ -10,14 +10,7 @@ import { InitialDataResolver } from 'app/app.resolvers';
 export const appRoutes: Route[] = [
 
     // Redirect empty path to '/dashboards/project'
-    { path: '', pathMatch: 'full', redirectTo: 'dashboards/project' },
-
-    // Redirect signed in user to the '/dashboards/project'
-    //
-    // After the user signs in, the sign in page will redirect the user to the 'signed-in-redirect'
-    // path. Below is another redirection for that path to redirect the user to the desired
-    // location. This is a small convenience to keep all main routes together here on this file.
-    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: 'dashboards/project' },
+    { path: '', pathMatch: 'full', redirectTo: 'sign-in' },
 
     // Auth routes for guests
     {
@@ -35,6 +28,16 @@ export const appRoutes: Route[] = [
             { path: 'sign-in', loadChildren: () => import('app/modules/auth/sign-in/sign-in.module').then(m => m.AuthSignInModule) },
             { path: 'sign-up', loadChildren: () => import('app/modules/auth/sign-up/sign-up.module').then(m => m.AuthSignUpModule) },
             { path: 'admin/settings', loadChildren: () => import('app/modules/account-management/settings.module').then(m => m.SettingsModule) },
+        ]
+    },
+
+    // Error routes
+    {
+        path: 'error',
+        children: [
+            { path: '500', loadChildren: () => import('app/modules/pages/500/error-500.module').then(m => m.Error500Module) },
+            { path: '403', loadChildren: () => import('app/modules/pages/403/error-403.module').then(m => m.Error403Module) },
+            { path: '404', loadChildren: () => import('app/modules/pages/404/error-404.module').then(m => m.Error404Module) }
         ]
     },
 
@@ -69,6 +72,9 @@ export const appRoutes: Route[] = [
     {
         path: 'admin',
         component: LayoutComponent,
+        data: {
+            layout: 'classic'
+        },
         resolve: {
             initialData: InitialDataResolver,
         },
@@ -87,8 +93,14 @@ export const appRoutes: Route[] = [
                     { path: 'update/:id', loadChildren: () => import('app/modules/admin/usermgt/doctormgt/doctor-update/doctor-update.module').then(m => m.DocotorUpdateModule) },
                 ]
             },
-            { 
-                path: 'settings', loadChildren: () => import('app/modules/account-management/settings.module').then(m => m.SettingsModule) 
+            {
+                path: 'appointment', children: [
+                    { path: 'list', loadChildren: () => import('app/modules/admin/appointments-mgt/appointment-list/appointment-list.module').then(m => m.AppointmentListModule) },
+                    { path: 'add', loadChildren: () => import('app/modules/admin/appointments-mgt/appointment-add/appointment-add.module').then(m => m.AppointmentAddModule) },
+                ]
+            },
+            {
+                path: 'settings', loadChildren: () => import('app/modules/account-management/settings.module').then(m => m.SettingsModule)
             }
 
         ]
@@ -98,12 +110,24 @@ export const appRoutes: Route[] = [
     {
         path: 'doctor',
         component: LayoutComponent,
+        data: {
+            layout: 'classic'
+        },
         resolve: {
             initialData: InitialDataResolver,
         },
         children: [
-            {   path: 'appointments', loadChildren: () => import('app/modules/account-management/settings.module').then(m => m.SettingsModule) },
-            {   path: 'medical-files', loadChildren: () => import('app/modules/account-management/settings.module').then(m => m.SettingsModule) },
+            {
+                path: 'appointment', children: [
+                    { path: 'list', loadChildren: () => import('app/modules/doctor/appointments-mgt/appointment-list/appointment-list.module').then(m => m.AppointmentListModule) },
+                    { path: 'add', loadChildren: () => import('app/modules/doctor/appointments-mgt/appointment-add/appointment-add.module').then(m => m.AppointmentAddModule) },
+                    { path: 'update', loadChildren: () => import('app/modules/doctor/appointments-mgt/appointment-update/appointment-update.module').then(m => m.AppointmentUpdateModule) },
+                    { path: 'medical-files', loadChildren: () => import('app/modules/account-management/settings.module').then(m => m.SettingsModule) },
+                ]
+            }
+
         ]
     }
+
+    //Patient routes
 ];

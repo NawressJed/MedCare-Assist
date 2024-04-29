@@ -1,84 +1,164 @@
 import { Injectable } from '@angular/core';
-import { cloneDeep } from 'lodash-es';
+import { Router } from '@angular/router';
 import { FuseNavigationItem } from '@fuse/components/navigation';
 import { FuseMockApiService } from '@fuse/lib/mock-api';
-import { compactNavigation, defaultNavigation, futuristicNavigation, horizontalNavigation } from 'app/mock-api/common/navigation/data';
+import { UserAuthService } from 'app/shared/services/authService/user-auth.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class NavigationMockApi
-{
-    private readonly _compactNavigation: FuseNavigationItem[] = compactNavigation;
-    private readonly _defaultNavigation: FuseNavigationItem[] = defaultNavigation;
-    private readonly _futuristicNavigation: FuseNavigationItem[] = futuristicNavigation;
-    private readonly _horizontalNavigation: FuseNavigationItem[] = horizontalNavigation;
+
+export class NavigationMockApi {
+
+    role: string;
+
+    private _defaultNavigation: FuseNavigationItem[] = [];
 
     /**
      * Constructor
      */
-    constructor(private _fuseMockApiService: FuseMockApiService)
-    {
+    constructor(
+        private _router: Router,
+        private _fuseMockApiService: FuseMockApiService,
+        private _authService: UserAuthService) {
         // Register Mock API handlers
         this.registerHandlers();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
 
     /**
      * Register Mock API handlers
      */
-    registerHandlers(): void
-    {
+    registerHandlers(): void {
         // -----------------------------------------------------------------------------------------------------
         // @ Navigation - GET
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
             .onGet('api/common/navigation')
-            .reply(() => {
-
-                // Fill compact navigation children using the default navigation
-                this._compactNavigation.forEach((compactNavItem) => {
-                    this._defaultNavigation.forEach((defaultNavItem) => {
-                        if ( defaultNavItem.id === compactNavItem.id )
-                        {
-                            compactNavItem.children = cloneDeep(defaultNavItem.children);
-                        }
-                    });
-                });
-
-                // Fill futuristic navigation children using the default navigation
-                this._futuristicNavigation.forEach((futuristicNavItem) => {
-                    this._defaultNavigation.forEach((defaultNavItem) => {
-                        if ( defaultNavItem.id === futuristicNavItem.id )
-                        {
-                            futuristicNavItem.children = cloneDeep(defaultNavItem.children);
-                        }
-                    });
-                });
-
-                // Fill horizontal navigation children using the default navigation
-                this._horizontalNavigation.forEach((horizontalNavItem) => {
-                    this._defaultNavigation.forEach((defaultNavItem) => {
-                        if ( defaultNavItem.id === horizontalNavItem.id )
-                        {
-                            horizontalNavItem.children = cloneDeep(defaultNavItem.children);
-                        }
-                    });
-                });
+            .reply(() =>
 
                 // Return the response
-                return [
+                [
                     200,
-                    {
-                        compact   : cloneDeep(this._compactNavigation),
-                        default   : cloneDeep(this._defaultNavigation),
-                        futuristic: cloneDeep(this._futuristicNavigation),
-                        horizontal: cloneDeep(this._horizontalNavigation)
-                    }
-                ];
-            });
+                    this.populateNavigation(),
+                ]
+            );
+    }
+
+    populateNavigation(): FuseNavigationItem[] {
+        this._defaultNavigation = [];
+        this.role = this._authService.getRole();
+        if (this.role === 'ADMIN') {
+            this._defaultNavigation.push(
+                // {
+                //     id: 'dashboard',
+                //     title: 'NAVIGATION.DASHBOARD',
+                //     type: 'basic',
+                //     icon: 'heroicons_outline:chart-pie',
+                //     link: '/dashboard',
+                //     badge: {
+                //         title: 'W.I.P',
+                //         classes: 'px-2 bg-primary text-white rounded-full'
+                //     }
+                // },
+                {
+                    id: 'profile',
+                    title: 'NAVIGATION.MY_PROFILE',
+                    type: 'basic',
+                    icon: 'heroicons_outline:user-circle',
+                    link: ''
+                },
+                {
+                    id: 'patients',
+                    title: 'Patients',
+                    type: 'basic',
+                    icon: 'heroicons_outline:users',
+                    link: '/admin/patient/list'
+                },
+                {
+                    id: 'doctors',
+                    title: 'Doctors',
+                    type: 'basic',
+                    icon: 'heroicons_outline:users',
+                    link: '/admin/doctor/list'
+                },
+                {
+                    id: 'appointments',
+                    title: 'Appointments',
+                    type: 'basic',
+                    icon: 'heroicons_outline:calendar',
+                    link: '/admin/appointment/list'
+                },
+                {
+                    id: 'settings',
+                    title: 'Settings',
+                    type: 'basic',
+                    icon: '',
+                    link: '/admin/settings'
+                }
+            );
+        }
+        if (this.role === 'DOCTOR') {
+            this._defaultNavigation.push(
+                // {
+                //     id: 'dashboard',
+                //     title: 'NAVIGATION.DASHBOARD',
+                //     type: 'basic',
+                //     icon: 'heroicons_outline:chart-pie',
+                //     link: '/dashboard',
+                //     badge: {
+                //         title: 'W.I.P',
+                //         classes: 'px-2 bg-primary text-white rounded-full'
+                //     }
+                // },
+                {
+                    id: 'profile',
+                    title: 'NAVIGATION.MY_PROFILE',
+                    type: 'basic',
+                    icon: 'heroicons_outline:user-circle',
+                    link: ''
+                },
+                {
+                    id: 'profile',
+                    title: 'NAVIGATION.MY_PROFILE',
+                    type: 'basic',
+                    icon: 'heroicons_outline:user-circle',
+                    link: ''
+                }
+            );
+        }
+        if (this.role === 'PATIENT') {
+            this._defaultNavigation.push(
+                // {
+                //     id: 'tlDashboard',
+                //     title: 'NAVIGATION.DASHBOARD',
+                //     type: 'basic',
+                //     icon: 'heroicons_outline:chart-pie',
+                //     link: 'team/dashboard',
+                //     badge: {
+                //         title: 'W.I.P',
+                //         classes: 'px-2 bg-primary text-white rounded-full'
+                //     }
+                // },
+                {
+                    id: 'org',
+                    title: 'NAVIGATION.ORGANIZATIONAL_CHART',
+                    type: 'basic',
+                    icon: '',
+                    link: ''
+                },
+                {
+                    id: 'profile',
+                    title: 'NAVIGATION.MY_PROFILE',
+                    type: 'basic',
+                    icon: 'heroicons_outline:user-circle',
+                    link: ''
+                }
+            );
+        }
+        if (this._defaultNavigation.length === 0) {
+            this._authService.error500Redirect();
+        }
+        return this._defaultNavigation;
     }
 }

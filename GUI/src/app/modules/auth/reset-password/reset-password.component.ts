@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertType } from '@fuse/components/alert';
 import { FuseValidators } from '@fuse/validators';
-import { AuthenticationService } from '../authentication.service';
+import { AuthenticationService } from '../../../shared/services/authService/authentication.service';
 
 @Component({
     selector: 'reset-password-modern-reversed',

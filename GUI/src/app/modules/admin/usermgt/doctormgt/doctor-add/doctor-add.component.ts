@@ -1,10 +1,10 @@
 import { Component, OnInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FuseCardComponent } from '@fuse/components/card';
-import { Doctor } from '../doctor';
-import { DoctorService } from '../doctor.service';
+import { DoctorService } from '../../../../../shared/services/admin/doctorService/doctor.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { Doctor } from 'app/shared/models/users/doctor/doctor';
 
 @Component({
   selector: 'app-doctor-add',

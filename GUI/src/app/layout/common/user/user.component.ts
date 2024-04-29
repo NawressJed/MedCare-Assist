@@ -2,12 +2,13 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy
 import { Router } from '@angular/router';
 import { BooleanInput } from '@angular/cdk/coercion';
 import { Subject, takeUntil } from 'rxjs';
-import { User } from 'app/core/user/user.types';
-import { UserService } from 'app/core/user/user.service';
+import { CookieService } from 'ngx-cookie-service';
+import { UserAuthService } from 'app/shared/services/authService/user-auth.service';
 
 @Component({
     selector       : 'user',
     templateUrl    : './user.component.html',
+    styleUrls    : ['./user.component.scss'],
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs       : 'user'
@@ -19,7 +20,9 @@ export class UserComponent implements OnInit, OnDestroy
     /* eslint-enable @typescript-eslint/naming-convention */
 
     @Input() showAvatar: boolean = true;
-    user: User;
+    name: string;
+    lastname: string;
+    initialisms: string;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -29,7 +32,8 @@ export class UserComponent implements OnInit, OnDestroy
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
-        private _userService: UserService
+        private _userAuthService: UserAuthService,
+        private _cookieService: CookieService
     )
     {
     }
@@ -43,15 +47,10 @@ export class UserComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
-        // Subscribe to user changes
-        this._userService.user$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((user: User) => {
-                this.user = user;
+        this.name = this._cookieService.get('name');
+        this.lastname = this._cookieService.get('lastname')
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+        this.initialisms = this.getFirstLetters(this.name.toUpperCase().trim());
     }
 
     /**
@@ -68,31 +67,25 @@ export class UserComponent implements OnInit, OnDestroy
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Update the user status
-     *
-     * @param status
-     */
-    updateUserStatus(status: string): void
-    {
-        // Return if user is not available
-        if ( !this.user )
-        {
-            return;
-        }
-
-        // Update the user
-        this._userService.update({
-            ...this.user,
-            status
-        }).subscribe();
-    }
 
     /**
      * Sign out
      */
     signOut(): void
     {
+        this._userAuthService.clear();
         this._router.navigate(['/sign-out']);
+        
+    }
+
+    getFirstLetters(str): string {
+        let firstLetters = str
+          .split(' ')
+          .map(word => word[0])
+          .join('.');
+        if(firstLetters.charAt(firstLetters.length - 1) === '.'){
+            firstLetters = firstLetters.slice(0, -1);
+        }
+        return firstLetters;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.services;
 
-import com.example.dto.request.ForgetPassword;
 import com.example.dto.request.AuthenticationRequest;
 import com.example.dto.response.AuthenticationResponse;
 import com.example.config.JwtService;
@@ -139,16 +138,16 @@ public class AuthenticationService {
 
             return AuthenticationResponse.builder()
                     .accessToken(jwtToken)
-                    .refreshToken(refreshToken.toString())
-                    .role(user.getRole().name())
+                    .refreshToken(refreshToken.getToken())
+                    .user(user)
                     .build();
         }
     }
 
-    public void requestResetPassword(ForgetPassword forgetPassword) {
+    public void requestResetPassword(String email) {
         UserEntity user = null;
         try {
-            user = repository.findByEmail(forgetPassword.getEmail());
+            user = repository.findByEmail(email);
             if (!repository.existsByEmail(user.getEmail())){
                 logger.error("ERROR: Email does not exist!");
             } else if (tokenRepository.existsByUserAndTokenType(user, TokenType.RESET_PASSWORD)) {

@@ -6,27 +6,31 @@ import { MarkdownModule } from 'ngx-markdown';
 import { FuseModule } from '@fuse';
 import { FuseConfigModule } from '@fuse/services/config';
 import { FuseMockApiModule } from '@fuse/lib/mock-api';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CoreModule } from 'app/core/core.module';
 import { appConfig } from 'app/core/config/app.config';
 import { mockApiServices } from 'app/mock-api';
 import { LayoutModule } from 'app/layout/layout.module';
 import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
-import { AppointmentListComponent } from './modules/doctor/appointments-mgt/appointment-list/appointment-list.component';
-import { AppointmentAddComponent } from './modules/doctor/appointments-mgt/appointment-add/appointment-add.component';
-import { AppointmentUpdateComponent } from './modules/doctor/appointments-mgt/appointment-update/appointment-update.component';
+import { AuthInterceptor } from './core/auth/auth.interceptor';
+import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
 
 const routerConfig: ExtraOptions = {
-    preloadingStrategy       : PreloadAllModules,
-    scrollPositionRestoration: 'enabled'
+    preloadingStrategy: PreloadAllModules,
+    scrollPositionRestoration: 'enabled',
+    useHash: false
 };
+
+export function createTranslateLoader(http: HttpClient): any {
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
     declarations: [
         AppComponent,
-        AppointmentListComponent,
-        AppointmentAddComponent,
-        AppointmentUpdateComponent
     ],
     imports     : [
         BrowserModule,
@@ -45,11 +49,27 @@ const routerConfig: ExtraOptions = {
         LayoutModule,
 
         // 3rd party modules that require global configuration via forRoot
-        MarkdownModule.forRoot({})
+        MarkdownModule.forRoot({}),
+
+        TranslateModule.forRoot({
+            defaultLanguage: 'fr',
+            loader: {
+                provide: TranslateLoader,
+                useFactory: (createTranslateLoader),
+                deps: [HttpClient]
+            },
+            isolate: false
+        }),
     ],
     bootstrap   : [
         AppComponent
-    ]
+    ],
+    providers: [
+        CookieService,
+        {
+          provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true
+        }
+      ]
 })
 export class AppModule
 {

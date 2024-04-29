@@ -10,7 +10,7 @@
     },
     "newProjectRoot": "projects",
     "projects": {
-        "fuse": {
+        "medcare-assist": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -99,10 +99,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "fuse:build:production"
+                            "browserTarget": "medcare-assist:build:production"
                         },
                         "development": {
-                            "browserTarget": "fuse:build:development"
+                            "browserTarget": "medcare-assist:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -110,7 +110,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "fuse:build"
+                        "browserTarget": "medcare-assist:build"
                     }
                 },
                 "test": {
@@ -144,5 +144,5 @@
             }
         }
     },
-    "defaultProject": "fuse"
+    "defaultProject": "medcare-assist"
 }
