@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "userId")
 public class Doctor extends UserEntity {
-    private String officeAddress;
+    private String workPhoneNumber;
     private float consultationPrice;
     @Enumerated(EnumType.STRING)
     private ESpecialty specialty;

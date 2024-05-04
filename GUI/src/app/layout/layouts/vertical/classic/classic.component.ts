@@ -1,3 +1,5 @@
+declare var require: any;
+
 /* eslint-disable */
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
@@ -14,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class ClassicLayoutComponent implements OnInit, OnDestroy {
     
+    version = require('../../../../../../package.json').version;
     isScreenSmall: boolean;
     navigation: FuseNavigationItem[];
     private _unsubscribeAll: Subject<any> = new Subject<any>();

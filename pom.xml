@@ -21,6 +21,7 @@
         <module>EntityManagement</module>
         <module>AccountManagement</module>
         <module>AppointmentManagement</module>
+        <module>Notifications</module>
     </modules>
     <properties>
         <java.version>17</java.version>

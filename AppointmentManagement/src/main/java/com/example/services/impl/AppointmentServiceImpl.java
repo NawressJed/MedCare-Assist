@@ -4,6 +4,7 @@ import com.example.dto.AppointmentDTO;
 import com.example.entities.Appointment;
 import com.example.entities.Doctor;
 import com.example.entities.Patient;
+import com.example.enums.EAppointmentStatus;
 import com.example.enums.ERole;
 import com.example.mapper.AutoAppointmentMapper;
 import com.example.repositories.AppointmentRepository;
@@ -47,6 +48,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             }else {
                 appointment1.setDoctor(doctorRepository.findDoctorById(appointment1.getDoctor().getId()));
                 appointment1.setPatient(patientRepository.findPatientById(appointment1.getPatient().getId()));
+                appointment1.setAppointmentStatus(EAppointmentStatus.PENDING);
                 return mapper.toDto(appointmentRepository.save(appointment1));
             }
         } catch (Exception e) {
@@ -64,6 +66,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 Appointment appointment = mapper.toEntity(appointmentDTO);
                 appointment.setDoctor(doc);
                 appointment.setPatient(patient);
+                appointment.setAppointmentStatus(EAppointmentStatus.APPROVED);
                 return mapper.toDto(appointmentRepository.save(appointment));
             }
             logger.error("No such doctor with this ID = "+id);

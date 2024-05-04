@@ -10,6 +10,5 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatientDTO extends UserDTO {
-    private String address;
-    private Date birthDate;
+    private Date dateOfBirth;
 }

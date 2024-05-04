@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "userId")
 public class Admin extends UserEntity {
-    private String personalInfo;
+    private boolean isAdmin;
 }
