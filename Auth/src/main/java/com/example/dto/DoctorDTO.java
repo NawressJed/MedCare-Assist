@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DoctorDTO extends UserDetailsImpl {
-    private String officeAddress;
+    private String workPhoneNumber;
     private float consultationPrice;
     @Enumerated(EnumType.STRING)
     private ESpecialty specialty;

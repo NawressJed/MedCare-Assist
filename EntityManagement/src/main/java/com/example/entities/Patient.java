@@ -16,6 +16,5 @@ import java.util.Date;
 @AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "userId")
 public class Patient extends UserEntity {
-    private String address;
-    private Date birthDate;
+    private Date dateOfBirth;
 }

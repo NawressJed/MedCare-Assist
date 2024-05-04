@@ -13,6 +13,7 @@ import { SharedModule } from 'app/shared/shared.module';
 import { ClassicLayoutComponent } from 'app/layout/layouts/vertical/classic/classic.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxFlagPickerModule } from 'ngx-flag-picker';
+import { NotificationsModule } from 'app/layout/common/notifications/notifications.module';
 
 @NgModule({
     declarations: [
@@ -31,7 +32,8 @@ import { NgxFlagPickerModule } from 'ngx-flag-picker';
         UserModule,
         SharedModule,
         TranslateModule,
-        NgxFlagPickerModule
+        NgxFlagPickerModule,
+        NotificationsModule
     ],
     exports     : [
         ClassicLayoutComponent

@@ -27,7 +27,9 @@ public class UserEntity {
     private String lastname;
     private String email;
     private String password;
-    private int phone;
+    private String address;
+    private String zipCode;
+    private String phoneNumber;
     @Enumerated(EnumType.STRING)
     private EGender gender;
     @Enumerated(EnumType.STRING)

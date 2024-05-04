@@ -19,6 +19,9 @@ public class UserDTO {
     private String lastname;
     private String email;
     private String password;
+    private String address;
+    private String zipCode;
+    private String phoneNumber;
     @Enumerated(EnumType.STRING)
     private EGender gender;
     @Enumerated(EnumType.STRING)

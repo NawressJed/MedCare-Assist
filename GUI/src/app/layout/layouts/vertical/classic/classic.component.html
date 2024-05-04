@@ -31,6 +31,7 @@
             <ngx-flag-picker [selectedCountryCode]="selectedCountryCode" [countryCodes]="countryCodes"
                 [customLabels]="customLabels" (changedCountryCode)="changeSelectedCountryCode($event)" class="flex-end">
             </ngx-flag-picker>
+            <notifications></notifications>
             <user></user>
         </div>
     </div>
@@ -46,7 +47,7 @@
     <div
         class="relative flex flex-0 items-center justify-between xs:mt-10 h-14 px-4 md:px-6 border-t bg-card dark:bg-transparent print:hidden">
         <span class="font-medium text-secondary">Mobelite &copy; {{currentYear}}</span>
-        <span class="font-medium text-secondary">v.</span>
+        <span class="font-medium text-secondary">v.{{version}}</span>
     </div>
 
 </div>
