@@ -44,6 +44,15 @@ public class AppointmentController {
         }
     }
 
+    @PostMapping("/request-appointment/{id}")
+    public AppointmentDTO requestAppointment(@PathVariable(value = "id") UUID id, @RequestBody AppointmentDTO appointmentDTO) {
+        try {
+            return appointmentService.requestAppointment(id, appointmentDTO);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @GetMapping("/get-all-appointments")
     public List<AppointmentDTO> getAllAppointments() {
         return appointmentService.getAllAppointments();

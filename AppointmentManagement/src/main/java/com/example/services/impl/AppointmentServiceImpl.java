@@ -78,6 +78,26 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public AppointmentDTO requestAppointment(UUID id, AppointmentDTO appointmentDTO) {
+        try {
+            Doctor doc = doctorRepository.findDoctorById(appointmentDTO.getDoctor().getId());
+            Patient patient = patientRepository.findPatientById(id);
+            if (patient != null) {
+                Appointment appointment = mapper.toEntity(appointmentDTO);
+                appointment.setDoctor(doc);
+                appointment.setPatient(patient);
+                appointment.setAppointmentStatus(EAppointmentStatus.PENDING);
+                return mapper.toDto(appointmentRepository.save(appointment));
+            }
+            logger.error("No such patient with this ID = "+id);
+            return null;
+        } catch (Exception e) {
+            logger.error("ERROR requesting appointment" + e);
+            return null;
+        }
+    }
+
+    @Override
     public List<AppointmentDTO> getAllAppointments() {
         List<AppointmentDTO> appointments = new ArrayList<>();
         try {

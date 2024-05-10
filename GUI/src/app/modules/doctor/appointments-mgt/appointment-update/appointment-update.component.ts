@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Appointment } from 'app/shared/models/appointment/appointment';
 import { Patient } from 'app/shared/models/users/patient/patient';
-import { AppointmentService } from 'app/shared/services/doctor/appointmentService/appointment.service';
+import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
 
 @Component({
   selector: 'app-appointment-update',

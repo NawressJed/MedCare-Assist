@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class Appointment {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "uuid", columnDefinition = "BINARY(16)")
     private UUID id;
-    private Date date;
+    private LocalDate date;
     private LocalTime time;
     @Enumerated(EnumType.STRING)
     private EAppointmentStatus appointmentStatus;

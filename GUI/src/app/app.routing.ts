@@ -127,7 +127,26 @@ export const appRoutes: Route[] = [
             }
 
         ]
-    }
+    },
 
     //Patient routes
+    {
+        path: 'patient',
+        component: LayoutComponent,
+        data: {
+            layout: 'classic'
+        },
+        resolve: {
+            initialData: InitialDataResolver,
+        },
+        children: [
+            {
+                path: 'appointment', children: [
+                    { path: 'test', loadChildren: () => import('app/modules/patient/appointment/testt/testt/testt.module').then(m => m.TesttModule)},
+                    { path: 'request', loadChildren: () => import('app/modules/patient/appointment/appointment-request/appointment-request.module').then(m => m.AppointmentRequestModule) },
+                    ]
+            }
+
+        ]
+    }
 ];

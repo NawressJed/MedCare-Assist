@@ -3,10 +3,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { FuseCardComponent } from '@fuse/components/card';
 import { Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
-import { AppointmentService } from '../../../../shared/services/admin/appointmentService/appointment.service';
 import { Patient } from 'app/shared/models/users/patient/patient';
 import { Appointment } from 'app/shared/models/appointment/appointment';
 import { Doctor } from 'app/shared/models/users/doctor/doctor';
+import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
 
 @Component({
   selector: 'app-appointment-add',

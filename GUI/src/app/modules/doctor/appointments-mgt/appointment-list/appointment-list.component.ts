@@ -9,7 +9,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { AppointmentAddComponent } from '../appointment-add/appointment-add.component';
 import { AppointmentUpdateComponent } from '../appointment-update/appointment-update.component';
-import { AppointmentService } from '../../../../shared/services/doctor/appointmentService/appointment.service';
+import { AppointmentService } from '../../../../shared/services/appointmentService/appointment.service';
 import { Appointment } from '../../../../shared/models/appointment/appointment';
 import { CookieService } from 'ngx-cookie-service';
 import { UserAuthService } from 'app/shared/services/authService/user-auth.service';
@@ -84,7 +84,7 @@ export class AppointmentListComponent implements OnInit {
   }
 
   reloadData() {
-    this.appointments = this.appointmentService.getAppointmentsList(this._cookie.getId());
+    this.appointments = this.appointmentService.getDoctorAppointmentsList(this._cookie.getId());
     this.appointments.pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe((appointments: Appointment[]) => {
