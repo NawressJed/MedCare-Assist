@@ -7,10 +7,10 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { filter, fromEvent, Observable, Subject, switchMap, BehaviorSubject, takeUntil } from 'rxjs';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { AppointmentService } from '../../../../shared/services/admin/appointmentService/appointment.service';
 import { AppointmentAddComponent } from '../appointment-add/appointment-add.component';
 import { AppointmentUpdateComponent } from '../appointment-update/appointment-update.component';
 import { Appointment } from 'app/shared/models/appointment/appointment';
+import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
 
 @Component({
   selector: 'app-appointment-list',

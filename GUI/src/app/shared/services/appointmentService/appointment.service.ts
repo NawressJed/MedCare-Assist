@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Appointment } from '../../../models/appointment/appointment';
+import { Appointment } from '../../models/appointment/appointment';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -16,7 +16,11 @@ export class AppointmentService {
     return this.http.get(`${this.baseUrl}/get-appointment/${appointment.id}`);
   }
 
-  getAppointmentsList(id: string): Observable<any> {
+  getAppointmentsList(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get-all-appointments`);
+  }
+
+  getDoctorAppointmentsList(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/doctor/get-appointment/${id}`);
   }
 
@@ -24,8 +28,20 @@ export class AppointmentService {
     return this.http.get(`${this.baseUrl}/get-all-patients`);
   }
 
-  createAppointment(id: string, appointment: Appointment): Observable<Object> {
+  getAllDoctors(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get-all-doctors`);
+  }
+
+  createAppointment(appointment: Appointment): Observable<Object> {
+    return this.http.post(`${this.baseUrl}/add-appointment`, appointment);
+  }
+
+  createDoctorAppointment(id: string, appointment: Appointment): Observable<Object> {
     return this.http.post(`${this.baseUrl}/doctor/add-appointment/${id}`, appointment);
+  }
+
+  requestAppointment(id: string, appointment: Appointment): Observable<Object> {
+    return this.http.post(`${this.baseUrl}/request-appointment/${id}`, appointment);
   }
 
   updateAppointment(id: string, value: any): Observable<Object> {

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Appointment } from '../../../../shared/models/appointment/appointment';
 import { Patient } from '../../../../shared/models/users/patient/patient';
-import { AppointmentService } from 'app/shared/services/doctor/appointmentService/appointment.service';
+import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
 import { CookieService } from 'ngx-cookie-service';
 import { UserAuthService } from 'app/shared/services/authService/user-auth.service';
 
@@ -47,7 +47,7 @@ export class AppointmentAddComponent implements OnInit {
 
   saveAppointment() {
     this.appointment.date = new Date(this.appointment.date);
-    this.appointmentService.createAppointment(this._cookie.getId(), this.appointment).subscribe({
+    this.appointmentService.createDoctorAppointment(this._cookie.getId(), this.appointment).subscribe({
       next: (data) => {
         console.log(data);
         this.onCloseClick();

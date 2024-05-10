@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.UUID;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class AppointmentDTO {
     private UUID id;
-    private Date date;
+    private LocalDate date;
     private LocalTime time;
     @Enumerated(EnumType.STRING)
     private EAppointmentStatus appointmentStatus;

@@ -18,6 +18,7 @@ import { appRoutes } from 'app/app.routing';
 import { AuthInterceptor } from './core/auth/auth.interceptor';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
+import { WebSocketService } from './shared/services/notificationService/web-socket.service';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy: PreloadAllModules,
@@ -68,6 +69,7 @@ export function createTranslateLoader(http: HttpClient): any {
     ],
     providers: [
         CookieService,
+        WebSocketService,
         {
           provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true
         }

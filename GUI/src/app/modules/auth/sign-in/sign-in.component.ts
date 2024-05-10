@@ -94,7 +94,7 @@ export class AuthSignInComponent implements OnInit {
                 }else if(role === "DOCTOR") {
                     this._router.navigateByUrl('/doctor/appointment/list');
                 }else {
-                    this._router.navigateByUrl('')
+                    this._router.navigateByUrl('/patient/appointment/test')
                 }
             },
             (error) => {

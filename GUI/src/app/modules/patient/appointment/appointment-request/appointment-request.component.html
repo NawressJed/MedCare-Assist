@@ -1,0 +1,45 @@
+<div class="flex flex-col flex-auto md:w-160 md:min-w-160 -m-6">
+
+    <!-- Main -->
+    <div class="flex-auto">
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b">
+
+            <!-- Title -->
+            <div class="flex items-center justify-between">
+                <div class="text-xl font-semibold tracking-tight leading-none text-blue text-blue-600">
+                    Add </div>
+                <button mat-icon-button (click)="onCloseClick()">
+                    <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+            <form class="m-4" (ngSubmit)="onSubmit()">
+                <div class="grid sm:grid-cols-4 gap-3 w-full">
+                    <div class="flex sm:col-span-4">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+                            <input matInput [matDatepicker]="picker2" required [(ngModel)]="appointment.date"
+                                [placeholder]="'Select date'" id="date" name="date">
+                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker2></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-4">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
+                            <mat-select required [(ngModel)]="appointment.doctor" [placeholder]="'Select doctor'"
+                                id="doctor" name="doctor">
+                                <mat-option *ngFor="let doctor of listDoctor" [value]="doctor">{{ doctor.firstname }} {{ doctor.lastname }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    
+                </div>
+                <div class="flex items-center -mx-8 px-8 py-5 justify-end">
+                    <button type="submit" class="px-6 ml-3" [color]="'primary'" mat-flat-button>
+                        Add
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

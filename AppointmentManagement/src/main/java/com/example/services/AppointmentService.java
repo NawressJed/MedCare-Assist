@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface AppointmentService {
     AppointmentDTO createAppointment(AppointmentDTO appointment);
     AppointmentDTO createDoctorAppointment(UUID id, AppointmentDTO appointmentDTO);
+    AppointmentDTO requestAppointment(UUID id, AppointmentDTO appointmentDTO);
     List<AppointmentDTO> getAllAppointments();
     AppointmentDTO findAppointmentByID(UUID appointmentID);
     List<AppointmentDTO> findAppointmentByDoctor(UUID uuid);
