@@ -1,10 +1,10 @@
 import { Component, OnInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FuseCardComponent } from '@fuse/components/card';
-import { DoctorService } from '../../../../../shared/services/admin/doctorService/doctor.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Doctor } from 'app/shared/models/users/doctor/doctor';
+import { UserService } from 'app/shared/services/userService/user.service';
 
 @Component({
   selector: 'app-doctor-add',
@@ -32,7 +32,7 @@ export class DoctorAddComponent implements OnInit {
 
 
   constructor(
-    private doctorService: DoctorService,
+    private userService: UserService,
     private router: Router,
     private _matDialogRef: MatDialogRef<DoctorAddComponent>
   ) { }
@@ -41,7 +41,7 @@ export class DoctorAddComponent implements OnInit {
   }
 
   saveUser() {
-    this.doctorService.createDoctor(this.doctor).subscribe({
+    this.userService.createDoctor(this.doctor).subscribe({
       next: (data) => {
         console.log(data);
         this.onCloseClick();

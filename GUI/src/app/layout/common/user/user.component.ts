@@ -4,17 +4,17 @@ import { BooleanInput } from '@angular/cdk/coercion';
 import { Subject, takeUntil } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { UserAuthService } from 'app/shared/services/authService/user-auth.service';
+import { AuthenticationService } from 'app/shared/services/authService/authentication.service';
 
 @Component({
-    selector       : 'user',
-    templateUrl    : './user.component.html',
-    styleUrls    : ['./user.component.scss'],
-    encapsulation  : ViewEncapsulation.None,
+    selector: 'user',
+    templateUrl: './user.component.html',
+    styleUrls: ['./user.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs       : 'user'
+    exportAs: 'user'
 })
-export class UserComponent implements OnInit, OnDestroy
-{
+export class UserComponent implements OnInit, OnDestroy {
     /* eslint-disable @typescript-eslint/naming-convention */
     static ngAcceptInputType_showAvatar: BooleanInput;
     /* eslint-enable @typescript-eslint/naming-convention */
@@ -33,9 +33,9 @@ export class UserComponent implements OnInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
         private _userAuthService: UserAuthService,
+        private authService: AuthenticationService,
         private _cookieService: CookieService
-    )
-    {
+    ) {
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -45,8 +45,7 @@ export class UserComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         this.name = this._cookieService.get('name');
         this.lastname = this._cookieService.get('lastname')
 
@@ -56,8 +55,7 @@ export class UserComponent implements OnInit, OnDestroy
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
@@ -71,19 +69,26 @@ export class UserComponent implements OnInit, OnDestroy
     /**
      * Sign out
      */
-    signOut(): void
-    {
-        this._userAuthService.clear();
-        this._router.navigate(['/sign-out']);
-        
+    signOut(): void {
+        this.authService.logout().subscribe(
+            response => {
+                console.log('Logout successful');
+                this._userAuthService.clear();
+                this._router.navigate(['/sign-out']);
+
+            },
+            error => {
+                console.error('Error logging out:', error);
+            }
+        );
     }
 
     getFirstLetters(str): string {
         let firstLetters = str
-          .split(' ')
-          .map(word => word[0])
-          .join('.');
-        if(firstLetters.charAt(firstLetters.length - 1) === '.'){
+            .split(' ')
+            .map(word => word[0])
+            .join('.');
+        if (firstLetters.charAt(firstLetters.length - 1) === '.') {
             firstLetters = firstLetters.slice(0, -1);
         }
         return firstLetters;

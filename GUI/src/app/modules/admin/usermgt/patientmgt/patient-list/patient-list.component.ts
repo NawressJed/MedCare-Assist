@@ -7,10 +7,10 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { filter, fromEvent, Observable, Subject, switchMap, BehaviorSubject, takeUntil } from 'rxjs';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { PatientService } from '../../../../../shared/services/admin/patientService/patient.service';
 import { PatientAddComponent } from '../patient-add/patient-add.component';
 import { PatientUpdateComponent } from '../patient-update/patient-update.component';
 import { Patient } from 'app/shared/models/users/patient/patient';
+import { UserService } from 'app/shared/services/userService/user.service';
 
 @Component({
   selector: 'app-patient-list',
@@ -61,7 +61,7 @@ export class PatientListComponent implements OnInit {
    */
   constructor(
     private _fuseConfirmationService: FuseConfirmationService,
-    private patientService: PatientService,
+    private patientService: UserService,
     private _activatedRoute: ActivatedRoute,
     private _changeDetectorRef: ChangeDetectorRef,
     @Inject(DOCUMENT) private _document: any,
@@ -145,7 +145,7 @@ export class PatientListComponent implements OnInit {
     confirmation.afterClosed().subscribe((result) => {
       // If the confirm button is pressed...
       if (result === 'confirmed') {
-        this.patientService.deletePatient(patient).subscribe(
+        this.patientService.deleteUser(patient).subscribe(
           () => {
             console.log('Patient deleted successfully.');
             this.reloadData(); // Reload data after deletion
