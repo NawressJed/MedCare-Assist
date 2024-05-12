@@ -1,10 +1,10 @@
 import { Component, OnInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FuseCardComponent } from '@fuse/components/card';
-import { PatientService } from '../../../../../shared/services/admin/patientService/patient.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Patient } from 'app/shared/models/users/patient/patient';
+import { UserService } from 'app/shared/services/userService/user.service';
 
 @Component({
   selector: 'app-patient-add',
@@ -31,7 +31,7 @@ export class PatientAddComponent implements OnInit {
 
 
   constructor(
-    private patientService: PatientService,
+    private patientService: UserService,
     private router: Router,
     private _matDialogRef: MatDialogRef<PatientAddComponent>
   ) { }

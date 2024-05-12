@@ -41,20 +41,8 @@ export class AuthenticationService {
     return this.http.post<any>(`${this.baseUrl}/update-password?token=${token}`, resetPassword);
   }
 
-
-  /*validateResetToken(token: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/validate-reset-token?token=${token}`).pipe(
-      tap(
-        () => {
-          // Token is valid, navigate to the reset password page
-          this.router.navigate(['/reset-password']);
-        },
-        error => {
-          // Token is invalid, redirect to home page
-          this.router.navigate(['/']);
-        }
-      )
-    );
-  }*/
+  logout(): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/logout`, {});
+  }
 
 }

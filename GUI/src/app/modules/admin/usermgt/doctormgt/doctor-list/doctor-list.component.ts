@@ -7,10 +7,10 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { filter, fromEvent, Observable, Subject, switchMap, BehaviorSubject, takeUntil } from 'rxjs';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { DoctorService } from '../../../../../shared/services/admin/doctorService/doctor.service';
 import { DoctorAddComponent } from '../doctor-add/doctor-add.component';
 import { DoctorUpdateComponent } from '../doctor-update/doctor-update.component';
 import { Doctor } from 'app/shared/models/users/doctor/doctor';
+import { UserService } from 'app/shared/services/userService/user.service';
 
 @Component({
   selector: 'app-doctor-list',
@@ -57,7 +57,7 @@ export class DoctorListComponent implements OnInit {
    */
   constructor(
     private _fuseConfirmationService: FuseConfirmationService,
-    private doctorService: DoctorService,
+    private userService: UserService,
     private _activatedRoute: ActivatedRoute,
     private _changeDetectorRef: ChangeDetectorRef,
     @Inject(DOCUMENT) private _document: any,
@@ -79,7 +79,7 @@ export class DoctorListComponent implements OnInit {
   }
 
   reloadData() {
-    this.doctors = this.doctorService.getDoctorsList();
+    this.doctors = this.userService.getDoctorsList();
     this.doctors.pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe((doctors: Doctor[]) => {
@@ -139,7 +139,7 @@ export class DoctorListComponent implements OnInit {
     confirmation.afterClosed().subscribe((result) => {
       // If the confirm button is pressed...
       if (result === 'confirmed') {
-        this.doctorService.deleteDoctor(doctor).subscribe(
+        this.userService.deleteUser(doctor).subscribe(
           () => {
             console.log('Doctor deleted successfully.');
             this.reloadData(); // Reload data after deletion

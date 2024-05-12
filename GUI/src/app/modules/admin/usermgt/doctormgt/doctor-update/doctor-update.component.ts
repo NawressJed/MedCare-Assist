@@ -1,8 +1,8 @@
 import { Component, OnInit, ElementRef, Inject, ChangeDetectorRef } from '@angular/core';
-import { DoctorService } from '../../../../../shared/services/admin/doctorService/doctor.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Doctor } from 'app/shared/models/users/doctor/doctor';
+import { UserService } from 'app/shared/services/userService/user.service';
 
 @Component({
   selector: 'app-doctor-update',
@@ -20,7 +20,7 @@ export class DoctorUpdateComponent implements OnInit {
   doctor: Doctor;
 
   constructor(
-    private doctorService: DoctorService,
+    private doctorService: UserService,
     private router: Router,
     private _matDialogRef: MatDialogRef<DoctorUpdateComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { doctor: Doctor },
