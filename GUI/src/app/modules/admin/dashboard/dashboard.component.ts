@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { User } from 'app/shared/models/user/user.model';
-import { CognitoService } from 'app/shared/services/cognito/cognito.service';
-import { UserService } from 'app/shared/services/collaborators/user.service';
+import { User } from 'app/shared/models/users/user';
+import { UserService } from 'app/shared/services/userService/user.service';
+import { CookieService } from 'ngx-cookie-service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -15,11 +15,13 @@ export class DashboardComponent implements OnInit {
 
   authenticatedUserId: string;
 
-  constructor(private _apiUser: UserService,
-            private _cognitoService: CognitoService ) { }
+  constructor(
+    private _apiUser: UserService,
+    private _cookieService:  CookieService
+  ) { }
 
   ngOnInit(): void {
-    this.authenticatedUserId = this._cognitoService.getValueFromStorage('ID');
+    this.authenticatedUserId = this._cookieService.get('id');
 
     this.getAuthenticatedUser(this.authenticatedUserId);
   }

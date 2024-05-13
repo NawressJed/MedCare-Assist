@@ -2,6 +2,7 @@ package com.example.controllers;
 
 import com.example.dto.DoctorDTO;
 import com.example.dto.PatientDTO;
+import com.example.dto.UserDTO;
 import com.example.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,11 @@ public class UserController {
     @GetMapping("/get-all-doctors")
     public List<DoctorDTO> getAllDoctors(){
         return userService.getAllDoctors();
+    }
+
+    @GetMapping("/get-user/{id}")
+    public UserDTO getUser(@PathVariable(value = "id") UUID id){
+        return userService.findUserByID(id);
     }
 
     @GetMapping("/get-all-patients")
