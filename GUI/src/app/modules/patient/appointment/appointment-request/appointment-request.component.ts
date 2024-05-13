@@ -7,8 +7,6 @@ import { Appointment } from 'app/shared/models/appointment/appointment';
 import { Doctor } from 'app/shared/models/users/doctor/doctor';
 import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
 import { UserAuthService } from 'app/shared/services/authService/user-auth.service';
-import { NotificationService } from 'app/shared/services/notificationService/notification.service';
-import { WebSocketService } from 'app/shared/services/notificationService/web-socket.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -40,40 +38,15 @@ export class AppointmentRequestComponent implements OnInit {
     private appointmentService: AppointmentService,
     private router: Router,
     private _matDialogRef: MatDialogRef<AppointmentAddComponent>,
-    private _cookie: UserAuthService,
-    private webSocketService: WebSocketService,
-    private notificationService: NotificationService
+    private _cookie: UserAuthService
   ) { }
 
   ngOnInit(): void {
-    this.initializeSocketConnection();
     this.fetchDoctors();
-  }
-
-  ngOnDestroy() {
-    this.disconnectSocket();
-   }
-
-   initializeSocketConnection() {
-    this.webSocketService.connectSocket('message');
-   }
-
-  saveAppointment() {
-    this.appointment.date = new Date(this.appointment.date);
-    this.notificationService.requestAppointment(this.appointment).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.onCloseClick();
-      },
-      error: (e) => {
-        console.log(e);
-      }
-    });
   }
 
   onSubmit() {
     this.submitted = true;
-    this.saveAppointment();
   }
 
   onCloseClick(): void {
@@ -89,9 +62,5 @@ fetchDoctors() {
         this.listDoctor = doctors; 
     });
 }
-
-disconnectSocket() {
-  this.webSocketService.disconnectSocket();
- }
 
 }

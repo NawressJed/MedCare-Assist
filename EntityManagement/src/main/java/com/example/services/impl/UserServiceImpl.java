@@ -2,8 +2,10 @@ package com.example.services.impl;
 
 import com.example.dto.DoctorDTO;
 import com.example.dto.PatientDTO;
+import com.example.dto.UserDTO;
 import com.example.entities.Doctor;
 import com.example.entities.Patient;
+import com.example.entities.UserEntity;
 import com.example.enums.ERole;
 import com.example.mapper.AutoDoctorMapper;
 import com.example.mapper.AutoPatientMapper;
@@ -80,6 +82,16 @@ public class UserServiceImpl implements UserService {
             return autoDoctorMapper.toDto(doctors);
         } catch (Exception e) {
             log.error("ERROR retrieving all doctors " + e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public UserDTO findUserByID(UUID id) {
+        try {
+            return autoUserMapper.toDto(userRepository.findUserEntityById(id));
+        } catch (Exception e) {
+            log.error(("ERROR retrieving user by his ID: "+ id + e));
             throw new RuntimeException(e);
         }
     }

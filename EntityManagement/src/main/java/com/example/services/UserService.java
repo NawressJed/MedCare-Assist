@@ -2,6 +2,7 @@ package com.example.services;
 
 import com.example.dto.DoctorDTO;
 import com.example.dto.PatientDTO;
+import com.example.dto.UserDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,6 +12,7 @@ public interface UserService {
     DoctorDTO createDoctor(DoctorDTO doctorDTO);
     List<PatientDTO> getAllPatients();
     List<DoctorDTO> getAllDoctors();
+    UserDTO findUserByID(UUID id);
     PatientDTO findPatientById(UUID id);
     DoctorDTO findDoctorById(UUID id);
     PatientDTO findUserByEmail(String email);
