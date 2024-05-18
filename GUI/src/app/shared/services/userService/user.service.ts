@@ -18,8 +18,8 @@ export class UserService {
     return this.http.get(`${this.baseUrl}/get-user-by-email/${email}`);
   }
 
-  getUser(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/get-user/${id}`);
+  getUser(id: string): Observable<User> {
+    return this.http.get<User>(`${this.baseUrl}/get-user/${id}`);
   }
 
   getPatient(patient: Patient): Observable<any> {

@@ -61,7 +61,7 @@ export class AppointmentRequestComponent implements OnInit {
 
         // Send notification via WebSocket
         const message = `New appointment request from ${response.patient.firstname} ${response.patient.lastname}`;
-        this.webSocketService.sendMessage('/app/notify', message);
+        this.webSocketService.sendMessage('/app/notify', { content: message });
 
         this._matDialogRef.close();
         this.gotoList();
