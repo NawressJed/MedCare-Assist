@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class AppointmentService {
 
-  private baseUrl = 'http://localhost:8080/appointment-management';
+  private baseUrl = 'http://localhost:8080/core-services';
 
   constructor(private http: HttpClient) { }
 
@@ -17,19 +17,11 @@ export class AppointmentService {
   }
 
   getAppointmentsList(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/get-all-appointments`);
+    return this.http.get(`${this.baseUrl}/get-all`);
   }
 
   getDoctorAppointmentsList(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/doctor/get-appointment/${id}`);
-  }
-
-  getAllPatients(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/get-all-patients`);
-  }
-
-  getAllDoctors(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/get-all-doctors`);
+    return this.http.get(`${this.baseUrl}/doctor-get-appointment/${id}`);
   }
 
   createAppointment(appointment: Appointment): Observable<Object> {
@@ -37,7 +29,7 @@ export class AppointmentService {
   }
 
   createDoctorAppointment(id: string, appointment: Appointment): Observable<Object> {
-    return this.http.post(`${this.baseUrl}/doctor/add-appointment/${id}`, appointment);
+    return this.http.post(`${this.baseUrl}/doctor-add-appointment/${id}`, appointment);
   }
 
   requestAppointment(id: string, appointment: Appointment): Observable<Object> {

@@ -19,6 +19,16 @@ import { UserAuthService } from 'app/shared/services/authService/user-auth.servi
   templateUrl: './appointment-list.component.html',
   styles: [
     `
+    .female {
+      background-color: #ff4d88;
+      color: white; 
+    }
+    
+    .male {
+      background-color: #0033cc;
+      color: white;
+    }
+    
 .inventory-grid {
     grid-template-columns: 48px auto 40px;
 
@@ -31,7 +41,7 @@ import { UserAuthService } from 'app/shared/services/authService/user-auth.servi
     }
 
     @screen lg {
-      grid-template-columns: 48px 150px 150px 150px 150px 150px 150px 500px;
+      grid-template-columns: 48px 200px 200px 200px 200px 200px auto 72px;
     }
 }
 
@@ -67,7 +77,7 @@ export class AppointmentListComponent implements OnInit {
     private _matDialog: MatDialog,
     private _fuseMediaWatcherService: FuseMediaWatcherService,
     private datePipe: DatePipe,
-    private _cookie: UserAuthService
+    private _cookie: CookieService
     
   ) {
   }
@@ -84,7 +94,7 @@ export class AppointmentListComponent implements OnInit {
   }
 
   reloadData() {
-    this.appointments = this.appointmentService.getDoctorAppointmentsList(this._cookie.getId());
+    this.appointments = this.appointmentService.getDoctorAppointmentsList(this._cookie.get('id'));
     this.appointments.pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe((appointments: Appointment[]) => {
@@ -198,4 +208,18 @@ export class AppointmentListComponent implements OnInit {
     return this.datePipe.transform(parsedDate, 'dd/MM/yyyy'); // Format date as dd/mm/yyyy
   }
 
+  formatTime(time: string): string {
+    if (time) {
+      return time.split(':').slice(0, 2).join(':'); // Extract hours and minutes and join them
+    }
+    return '';
+  }
+
+  getGenderStyle(gender: string) {
+    return {
+      backgroundColor: gender === 'FEMALE' ? 'pink' : 'blue',
+      color: 'white'  // Set text color to white for contrast
+    };
+  }   
+  
 }

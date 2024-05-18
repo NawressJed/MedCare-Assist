@@ -18,12 +18,20 @@ export class UserService {
     return this.http.get(`${this.baseUrl}/get-user-by-email/${email}`);
   }
 
+  getUser(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get-user/${id}`);
+  }
+
   getPatient(patient: Patient): Observable<any> {
     return this.http.get(`${this.baseUrl}/get-patient/${patient.id}`);
   }
 
   getPatientsList(): Observable<any> {
     return this.http.get(`${this.baseUrl}/get-all-patients`);
+  }
+
+  getDoctorPatientsList(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get-doctor-patients//${id}`);
   }
 
   createPatient(patient: Patient): Observable<Object> {

@@ -5,7 +5,7 @@ import { Observable, tap } from 'rxjs';
 import { ResetPassword } from '../../models/resetPassword/resetPassword';
 import { Patient } from 'app/shared/models/users/patient/patient';
 import { Doctor } from 'app/shared/models/users/doctor/doctor';
-import { User } from 'app/modules/account-management/user';
+import { User } from 'app/shared/models/users/user';
 @Injectable({
   providedIn: 'root'
 })

@@ -16,27 +16,40 @@ import { AppointmentService } from 'app/shared/services/appointmentService/appoi
   selector: 'app-appointment-list',
   templateUrl: './appointment-list.component.html',
   styles: [
+    /* language=SCSS */
     `
-.inventory-grid {
-    grid-template-columns: 48px auto 40px;
+        .female-chip {
+          background-color: #ff4d88;
+          color: white; 
+        }
+        
+        .male-chip {
+          background-color: #0033cc;
+          color: white;
+        }
 
-    @screen sm {
-        grid-template-columns: 48px 112px 112px 112px 112px 112px 112px auto 72px;
-    }
+        .inventory-grid {
+                grid-template-columns: 48px auto 40px;
 
-    @screen md {
-        grid-template-columns: 48px 112px 112px 112px 112px 112px 112px auto 72px;
-    }
+                @screen sm {
+                    grid-template-columns: 48px auto 112px 72px;
+                }
 
-    @screen lg {
-      grid-template-columns: 48px 150px 150px 150px 150px 150px 150px 500px;
-    }
-}
+                @screen md {
+                    grid-template-columns: 48px 112px auto 112px 72px;
+                }
 
-.action-column {
-    justify-content: center;
-}
-    `]
+                @screen lg {
+                  grid-template-columns: 48px 96px 96px 112px 96px 96px 112px auto 72px;
+                    
+                }
+            }
+
+        .action-column {
+            justify-content: center;
+          }
+        `
+  ],
 })
 export class AppointmentListComponent implements OnInit {
 
@@ -184,6 +197,11 @@ export class AppointmentListComponent implements OnInit {
   convertDateFormat(dateString: string): string {
     const parsedDate = new Date(dateString);
     return this.datePipe.transform(parsedDate, 'dd/MM/yyyy'); // Format date as dd/mm/yyyy
+  }
+
+  convertTimeFormat(dateString: string): string {
+    const parsedDate = new Date(dateString);
+    return this.datePipe.transform(parsedDate, 'HH:mm'); // Format time as HH:mm
   }
 
 }

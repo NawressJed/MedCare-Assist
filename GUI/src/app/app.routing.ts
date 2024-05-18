@@ -27,7 +27,6 @@ export const appRoutes: Route[] = [
             { path: 'reset-password', loadChildren: () => import('app/modules/auth/reset-password/reset-password.module').then(m => m.AuthResetPasswordModule) },
             { path: 'sign-in', loadChildren: () => import('app/modules/auth/sign-in/sign-in.module').then(m => m.AuthSignInModule) },
             { path: 'sign-up', loadChildren: () => import('app/modules/auth/sign-up/sign-up.module').then(m => m.AuthSignUpModule) },
-            { path: 'admin/settings', loadChildren: () => import('app/modules/account-management/settings.module').then(m => m.SettingsModule) },
         ]
     },
 
@@ -94,14 +93,11 @@ export const appRoutes: Route[] = [
                 ]
             },
             {
-                path: 'appointment', children: [
+                path: 'appointments', children: [
                     { path: 'list', loadChildren: () => import('app/modules/admin/appointments-mgt/appointment-list/appointment-list.module').then(m => m.AppointmentListModule) },
                     { path: 'add', loadChildren: () => import('app/modules/admin/appointments-mgt/appointment-add/appointment-add.module').then(m => m.AppointmentAddModule) },
                 ]
             },
-            {
-                path: 'settings', loadChildren: () => import('app/modules/account-management/settings.module').then(m => m.SettingsModule)
-            }
 
         ]
     },
@@ -118,12 +114,21 @@ export const appRoutes: Route[] = [
         },
         children: [
             {
+                path: 'my-patients', children: [
+                    { path: 'list', loadChildren: () => import('app/modules/doctor/my-patients/list/list.module').then(m => m.ListModule) },
+                    
+                ]
+            },
+            {
                 path: 'appointment', children: [
                     { path: 'list', loadChildren: () => import('app/modules/doctor/appointments-mgt/appointment-list/appointment-list.module').then(m => m.AppointmentListModule) },
                     { path: 'add', loadChildren: () => import('app/modules/doctor/appointments-mgt/appointment-add/appointment-add.module').then(m => m.AppointmentAddModule) },
                     { path: 'update', loadChildren: () => import('app/modules/doctor/appointments-mgt/appointment-update/appointment-update.module').then(m => m.AppointmentUpdateModule) },
-                    { path: 'medical-files', loadChildren: () => import('app/modules/account-management/settings.module').then(m => m.SettingsModule) },
+                    
                 ]
+            },
+            {
+                path: 'calendar', loadChildren: () => import('app/modules/doctor/calendar/calendar.module').then(m => m.CalendarModule) 
             }
 
         ]

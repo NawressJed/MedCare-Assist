@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Appointment } from 'app/shared/models/appointment/appointment';
 import { Patient } from 'app/shared/models/users/patient/patient';
 import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
+import { UserService } from 'app/shared/services/userService/user.service';
 
 @Component({
   selector: 'app-appointment-update',
@@ -19,6 +20,7 @@ export class AppointmentUpdateComponent implements OnInit {
 
   constructor(
     private appointmentService: AppointmentService,
+    private _userService: UserService,
     private router: Router,
     private _matDialogRef: MatDialogRef<AppointmentUpdateComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { appointment: Appointment },
@@ -59,7 +61,7 @@ export class AppointmentUpdateComponent implements OnInit {
   }
 
   fetchPatients() {
-    this.appointmentService.getAllPatients().subscribe((patients) => {
+    this._userService.getPatientsList().subscribe((patients) => {
         this.listPatient = patients; 
     });
 }

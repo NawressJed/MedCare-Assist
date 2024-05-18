@@ -7,6 +7,7 @@ import { Patient } from 'app/shared/models/users/patient/patient';
 import { Appointment } from 'app/shared/models/appointment/appointment';
 import { Doctor } from 'app/shared/models/users/doctor/doctor';
 import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
+import { UserService } from 'app/shared/services/userService/user.service';
 
 @Component({
   selector: 'app-appointment-add',
@@ -36,6 +37,7 @@ export class AppointmentAddComponent implements OnInit {
 
   constructor(
     private appointmentService: AppointmentService,
+    private _userService: UserService,
     private router: Router,
     private _matDialogRef: MatDialogRef<AppointmentAddComponent>
   ) { }
@@ -70,17 +72,17 @@ export class AppointmentAddComponent implements OnInit {
   }
 
   gotoList() {
-    this.router.navigate(['admin/appointment/list']);
+    this.router.navigate(['admin/appointments/list']);
   }
 
 fetchPatients() {
-    this.appointmentService.getAllPatients().subscribe((patients) => {
+    this._userService.getPatientsList().subscribe((patients) => {
         this.listPatient = patients; 
     });
 }
 
 fetchDoctors() {
-  this.appointmentService.getAllDoctors().subscribe((doctors) => {
+  this._userService.getDoctorsList().subscribe((doctors) => {
       this.listDoctor = doctors; 
   });
 }

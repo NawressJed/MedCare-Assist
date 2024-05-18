@@ -75,7 +75,7 @@
                     </div>
                     <div class="flex sm:col-span-2">
                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
-                            <input matInput [matDatepicker]="picker2" required [(ngModel)]="patient.birthDate"
+                            <input matInput [matDatepicker]="picker2" required [(ngModel)]="patient.dateOfBirth"
                                 [placeholder]="'Select birth date'" id="birthDate" name="birthDate">
                             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                             <mat-datepicker #picker2></mat-datepicker>

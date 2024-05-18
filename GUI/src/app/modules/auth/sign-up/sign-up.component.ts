@@ -43,9 +43,10 @@ export class AuthSignUpComponent implements OnInit {
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required],
             gender: ['', Validators.required],
-            phone: ['', Validators.required],
+            phoneNumber: ['', Validators.required],
             address: ['', Validators.required],
-            birthDate: ['', Validators.required]
+            zipCode: ['', Validators.required],
+            dateOfBirth: ['', Validators.required]
         });
 
         this.doctorSignUpForm = this._formBuilder.group({
@@ -54,8 +55,10 @@ export class AuthSignUpComponent implements OnInit {
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required],
             gender: ['', Validators.required],
-            phone: ['', Validators.required],
-            officeAddress: ['', Validators.required],
+            phoneNumber: ['', Validators.required],
+            workPhoneNumber: ['', Validators.required],
+            address: ['', Validators.required],
+            zipCode: ['', Validators.required],
             consultationPrice: ['', Validators.required],
             specialty: ['', Validators.required]
         });
@@ -77,7 +80,7 @@ export class AuthSignUpComponent implements OnInit {
 
         console.log(this.tabGroup.selectedIndex)
         if (this.tabGroup.selectedIndex === 0) {
-            this.patient.birthDate = new Date(this.patient.birthDate);
+            this.patient.dateOfBirth = new Date(this.patient.dateOfBirth);
             this.authService.patientRegister(formData).subscribe(
                 () => {
                     this._router.navigateByUrl('/confirmation-required');
