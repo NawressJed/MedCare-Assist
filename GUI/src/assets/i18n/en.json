@@ -217,5 +217,18 @@
         "CONFIRM": "Confirm",
         "CANCEL": "Cancel",
         "MANAGE_TOP_SKILLS": "Manage top skills"
+    },
+
+    "DASHBOARD": {
+        "WELCOME": "Welcome",
+        "COLLABORATORS": "Collaborators",
+        "CLIENTS": "Clients",
+        "SINCE_JANUARY": "Since January 2022",
+        "MISSIONS": "Missions",
+        "TEAMS": "Teams",
+        "TASKS": "Tasks",
+        "TASKS_COMPLETED": "All tasks completed!",
+        "IN_MISSION": "Collaborators in mission"
     }
+
 }

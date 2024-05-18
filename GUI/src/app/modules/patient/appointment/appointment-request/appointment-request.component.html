@@ -25,6 +25,23 @@
                         </mat-form-field>
                     </div>
                     <div class="flex sm:col-span-4">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+                            <!-- Hidden input field to store selected time -->
+                            <input type="hidden" [(ngModel)]="appointment.time" name="time">
+                            <!-- Display mat-select when icon is clicked -->
+                            <mat-select placeholder="Select time" [(ngModel)]="selectedTime" (selectionChange)="onTimeSelected($event.value)">
+                                <!-- Iterate over time options -->
+                                <mat-option *ngFor="let timeOption of timeOptions" [value]="timeOption">
+                                    {{ timeOption }}
+                                </mat-option>
+                            </mat-select>
+                            <!-- Icon to trigger the dropdown -->
+                            <button mat-icon-button (click)="toggleTimePicker()">
+                                <mat-icon svgIcon="heroicons_outline:clock"></mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </div>      
+                    <div class="flex sm:col-span-4">
                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
                             <mat-select required [(ngModel)]="appointment.doctor" [placeholder]="'Select doctor'"
                                 id="doctor" name="doctor">

@@ -19,9 +19,7 @@
         <module>Discovery</module>
         <module>Gateway</module>
         <module>EntityManagement</module>
-        <module>AppointmentManagement</module>
-        <module>Notifications</module>
-        <module>MedicalFiles</module>
+        <module>CoreServices</module>
     </modules>
     <properties>
         <java.version>17</java.version>

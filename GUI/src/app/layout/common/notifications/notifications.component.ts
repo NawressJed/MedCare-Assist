@@ -2,166 +2,143 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton } from '@angular/material/button';
-import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
-import { NotificationService } from 'app/shared/services/notificationService/notification.service';
+import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
 import { Notification } from 'app/shared/models/notification/notification';
 import { CookieService } from 'ngx-cookie-service';
-import { WebSocketService } from 'app/shared/services/notificationService/web-socket.service';
-import { map } from 'rxjs/operators';
+import { User } from 'app/shared/models/users/user';
+import { UserService } from 'app/shared/services/userService/user.service';
+import { NotificationService } from 'app/shared/services/notificationService/notification.service';
+import { WebSocketService } from 'app/shared/services/webSocketService/web-socket.service';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Component({
-    selector: 'notifications',
-    templateUrl: './notifications.component.html',
-    encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs: 'notifications'
+  selector: 'notifications',
+  templateUrl: './notifications.component.html',
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  exportAs: 'notifications'
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
-    @ViewChild('notificationsOrigin') private _notificationsOrigin: MatButton;
-    @ViewChild('notificationsPanel') private _notificationsPanel: TemplateRef<any>;
+  @ViewChild('notificationsOrigin') private _notificationsOrigin: MatButton;
+  @ViewChild('notificationsPanel') private _notificationsPanel: TemplateRef<any>;
 
-    notifications$: Observable<Notification[]>;
-    unreadCount: number = 0;
-    private _overlayRef: OverlayRef;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
-    private wsSubscription: Subscription;
+  private _notificationsSubject: BehaviorSubject<Notification[]> = new BehaviorSubject<Notification[]>([]);
+  notifications$: Observable<Notification[]> = this._notificationsSubject.asObservable();
+  authenticatedUser: User;
+  authenticatedUserId: string;
+  unreadCount: number = 0;
+  private _overlayRef: OverlayRef;
+  private _unsubscribeAll: Subject<any> = new Subject<any>();
+  private wsSubscription: Subscription;
 
-    /**
-     * Constructor
-     */
-    constructor(
-        private _changeDetectorRef: ChangeDetectorRef,
-        private _notificationsService: NotificationService,
-        private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef,
-        private _cookie: CookieService,
-        private webSocketService: WebSocketService
-    ) {
+  constructor(
+    private _changeDetectorRef: ChangeDetectorRef,
+    private _overlay: Overlay,
+    private _viewContainerRef: ViewContainerRef,
+    private _apiUser: UserService,
+    private notificationService: NotificationService,
+    private webSocketService: WebSocketService,
+    private _cookie: CookieService
+  ) { }
+
+  ngOnInit(): void {
+    this.authenticatedUserId = this._cookie.get('id');
+
+    // Load initial notifications
+    this.loadNotifications();
+
+    // Subscribe to WebSocket notifications
+    this.webSocketService.subscribe(`/user/${this.authenticatedUserId}/notify`, (message) => {
+      const notification = JSON.parse(message.body);
+      const currentNotifications = this._notificationsSubject.getValue();
+      this._notificationsSubject.next([notification, ...currentNotifications]);
+
+      // Trigger change detection
+      this._changeDetectorRef.markForCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.wsSubscription) {
+      this.wsSubscription.unsubscribe();
+    }
+    this._unsubscribeAll.complete();
+  }
+
+  loadNotifications(): void {
+    this.notificationService.getNotifications(this.authenticatedUserId).pipe(
+      catchError(error => {
+        console.error('Error fetching notifications:', error);
+        return of([]);
+      })
+    ).subscribe(notifications => {
+      this._notificationsSubject.next(notifications);
+    });
+  }
+
+  openPanel(): void {
+    if (!this._notificationsPanel || !this._notificationsOrigin) {
+      return;
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
-
-
-    ngOnInit(): void {
-        // Initialize notifications$ as an Observable
-        this.notifications$ = this._notificationsService.getRecipientNotifications(this._cookie.get("id"));
+    if (!this._overlayRef) {
+      this._createOverlay();
     }
 
+    this._overlayRef.attach(new TemplatePortal(this._notificationsPanel, this._viewContainerRef));
+  }
 
+  closePanel(): void {
+    this._overlayRef.detach();
+  }
 
+  delete(notification: Notification): void {
+    // Delete the notification
+  }
 
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void {
-        if (this.wsSubscription) {
-            this.wsSubscription.unsubscribe();
-        }
-    }
+  trackByFn(index: number, item: any): any {
+    return item.id || index;
+  }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+  private _createOverlay(): void {
+    this._overlayRef = this._overlay.create({
+      hasBackdrop: true,
+      backdropClass: 'fuse-backdrop-on-mobile',
+      scrollStrategy: this._overlay.scrollStrategies.block(),
+      positionStrategy: this._overlay.position()
+        .flexibleConnectedTo(this._notificationsOrigin._elementRef.nativeElement)
+        .withLockedPosition(true)
+        .withPush(true)
+        .withPositions([
+          {
+            originX: 'start',
+            originY: 'bottom',
+            overlayX: 'start',
+            overlayY: 'top'
+          },
+          {
+            originX: 'start',
+            originY: 'top',
+            overlayX: 'start',
+            overlayY: 'bottom'
+          },
+          {
+            originX: 'end',
+            originY: 'bottom',
+            overlayX: 'end',
+            overlayY: 'top'
+          },
+          {
+            originX: 'end',
+            originY: 'top',
+            overlayX: 'end',
+            overlayY: 'bottom'
+          }
+        ])
+    });
 
-    /**
-     * Open the notifications panel
-     */
-    openPanel(): void {
-        // Return if the notifications panel or its origin is not defined
-        if (!this._notificationsPanel || !this._notificationsOrigin) {
-            return;
-        }
-
-        // Create the overlay if it doesn't exist
-        if (!this._overlayRef) {
-            this._createOverlay();
-        }
-
-        // Attach the portal to the overlay
-        this._overlayRef.attach(new TemplatePortal(this._notificationsPanel, this._viewContainerRef));
-    }
-
-    /**
-     * Close the notifications panel
-     */
-    closePanel(): void {
-        this._overlayRef.detach();
-    }
-
-
-    /**
-     * Delete the given notification
-     */
-    delete(notification: Notification): void {
-        // Delete the notification
-        this._notificationsService.deleteNotification(notification.id).subscribe();
-    }
-
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any {
-        return item.id || index;
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Private methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Create the overlay
-     */
-    private _createOverlay(): void {
-        // Create the overlay
-        this._overlayRef = this._overlay.create({
-            hasBackdrop: true,
-            backdropClass: 'fuse-backdrop-on-mobile',
-            scrollStrategy: this._overlay.scrollStrategies.block(),
-            positionStrategy: this._overlay.position()
-                .flexibleConnectedTo(this._notificationsOrigin._elementRef.nativeElement)
-                .withLockedPosition(true)
-                .withPush(true)
-                .withPositions([
-                    {
-                        originX: 'start',
-                        originY: 'bottom',
-                        overlayX: 'start',
-                        overlayY: 'top'
-                    },
-                    {
-                        originX: 'start',
-                        originY: 'top',
-                        overlayX: 'start',
-                        overlayY: 'bottom'
-                    },
-                    {
-                        originX: 'end',
-                        originY: 'bottom',
-                        overlayX: 'end',
-                        overlayY: 'top'
-                    },
-                    {
-                        originX: 'end',
-                        originY: 'top',
-                        overlayX: 'end',
-                        overlayY: 'bottom'
-                    }
-                ])
-        });
-
-        // Detach the overlay from the portal on backdrop click
-        this._overlayRef.backdropClick().subscribe(() => {
-            this._overlayRef.detach();
-        });
-    }
-
+    this._overlayRef.backdropClick().subscribe(() => {
+      this._overlayRef.detach();
+    });
+  }
 }

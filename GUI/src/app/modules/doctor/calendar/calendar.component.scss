@@ -1,0 +1,34 @@
+.success {
+    color: #17BE1E;
+  }
+  
+  ::ng-deep .appointments.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: #0B8043 !important;
+  }
+  
+  ::ng-deep .appointments.mat-checkbox-ripple .mat-ripple-element {
+    background-color: #0B8043 !important;
+  }
+  
+  @media only screen and (max-width: 1250px) {
+    full-calendar {
+      width: auto;
+      margin: 2em;
+      overflow-x: scroll;
+    }
+  
+    .filter {
+      width: 100%;
+    }
+  }
+  
+  @media only screen and (min-width: 1250px) {
+    full-calendar {
+      width: 80%;
+      margin: 20px;
+    }
+  
+    .filter {
+      width: 20%;
+    }
+  }

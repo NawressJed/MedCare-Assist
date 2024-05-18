@@ -1,7 +1,9 @@
+import { Patient } from "../patient/patient";
 import { User } from "../user";
 
 export class Doctor extends User{
-    officeAddress: string;
+    workPhoneNumber: string;
     consultationPrice: number;
     specialty: string;
+    myPatients: Patient[];
 }

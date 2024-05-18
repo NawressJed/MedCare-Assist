@@ -117,10 +117,10 @@
                                         </mat-form-field>
                                     </div>
                                     <!-- Phone field -->
-                                    <div class="sm:col-span-1 -mt-4">
+                                    <div class="sm:col-span-2 -mt-4">
                                         <mat-form-field class="w-full">
                                             <mat-label>Phone Number</mat-label>
-                                            <input id="company-confirm" matInput [formControlName]="'phone'">
+                                            <input id="company-confirm" matInput [formControlName]="'phoneNumber'">
                                         </mat-form-field>
                                     </div>
                                     <!-- Address field -->
@@ -128,6 +128,13 @@
                                         <mat-form-field class="w-full">
                                             <mat-label>Address</mat-label>
                                             <input id="address" matInput [formControlName]="'address'">
+                                        </mat-form-field>
+                                    </div>
+                                    <!-- Address field -->
+                                    <div class="sm:col-span-1 -mt-4">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Zip Code</mat-label>
+                                            <input id="zipCode" matInput [formControlName]="'zipCode'">
                                         </mat-form-field>
                                     </div>
                                     <!-- Gender field -->
@@ -149,8 +156,8 @@
                                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
                                             <mat-label>Birthdate</mat-label>
                                             <input matInput [matDatepicker]="picker2"
-                                                [placeholder]="'Select birth date'" id="birthDate" name="birthDate"
-                                                matInput [formControlName]="'birthDate'">
+                                                [placeholder]="'Select birth date'" id="dateOfBirth" name="dateOfBirth"
+                                                matInput [formControlName]="'dateOfBirth'">
                                             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                                             <mat-datepicker #picker2></mat-datepicker>
                                         </mat-form-field>
@@ -228,14 +235,28 @@
                                     <div class="sm:col-span-1 -mt-4">
                                         <mat-form-field class="w-full">
                                             <mat-label>Phone Number</mat-label>
-                                            <input id="phone" matInput [formControlName]="'phone'">
+                                            <input id="phoneNumber" matInput [formControlName]="'phoneNumber'">
+                                        </mat-form-field>
+                                    </div>
+                                    <!-- Phone field -->
+                                    <div class="sm:col-span-1 -mt-4">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Work Phone Number</mat-label>
+                                            <input id="workPhoneNumber" matInput [formControlName]="'workPhoneNumber'">
                                         </mat-form-field>
                                     </div>
                                     <!-- Address field -->
                                     <div class="sm:col-span-1 -mt-4">
                                         <mat-form-field class="w-full">
                                             <mat-label>Office Address</mat-label>
-                                            <input id="officeAddress" matInput [formControlName]="'officeAddress'">
+                                            <input id="address" matInput [formControlName]="'address'">
+                                        </mat-form-field>
+                                    </div>
+                                    <!-- Address field -->
+                                    <div class="sm:col-span-1 -mt-4">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Zip Code</mat-label>
+                                            <input id="zipCode" matInput [formControlName]="'zipCode'">
                                         </mat-form-field>
                                     </div>
                                     <!-- Gender field -->

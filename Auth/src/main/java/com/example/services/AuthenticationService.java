@@ -72,7 +72,7 @@ public class AuthenticationService {
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setTo(patient.getEmail());
                 mailMessage.setSubject("Complete Registration!");
-                mailMessage.setFrom("t99est97@gmail.com");
+                mailMessage.setFrom("medcareassist1@gmail.com");
                 mailMessage.setText("To confirm your account, please click here: "
                         + "http://localhost:8081/auth/confirm-account?token=" + confirmToken.getToken());
 
@@ -84,39 +84,38 @@ public class AuthenticationService {
             }
         } catch (MailException ex) {
                 logger.error("ERROR: Sending email!"+ ex);
-                return null;
+                throw new RuntimeException(ex);
         }
     }
 
     public AuthenticationResponse register(DoctorDTO request) {
         try {
             Doctor doctor = autoDoctorMapper.toEntity(request);
-            if (repository.existsByEmail(doctor.getEmail())){
+            if (repository.existsByEmail(doctor.getEmail())) {
                 logger.error("ERROR: Email already in use!");
                 return null;
-            }else {
+            } else {
                 doctor.setRole(ERole.DOCTOR);
                 doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
                 repository.save(doctor);
                 var jwtToken = jwtService.generateToken(autoUserMapper.toDto(doctor));
                 Token confirmToken = confirmationTokenService.generateConfirmToken(autoUserMapper.toDto(doctor));
 
-
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setTo(doctor.getEmail());
                 mailMessage.setSubject("Complete Registration!");
-                mailMessage.setFrom("t99est97@gmail.com");
+                mailMessage.setFrom("medcareassist1@gmail.com");
                 mailMessage.setText("To confirm your account, please click here: "
                         + "http://localhost:8081/auth/confirm-account?token=" + confirmToken.getToken());
 
                 emailSenderService.sendEmail(mailMessage);
                 return AuthenticationResponse.builder()
-                    .accessToken(jwtToken)
-                    .build();
+                        .accessToken(jwtToken)
+                        .build();
             }
         } catch (MailException ex) {
-                logger.error("ERROR: Sending email!"+ ex);
-                return null;
+            logger.error("ERROR: Sending email! " + ex.getMessage(), ex); // Detailed error logging
+            return null;
         }
     }
 
@@ -158,7 +157,7 @@ public class AuthenticationService {
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setTo(user.getEmail());
                 mailMessage.setSubject("Reset Password!");
-                mailMessage.setFrom("t99est97@gmail.com");
+                mailMessage.setFrom("medcareassist1@gmail.com");
                 mailMessage.setText("To reset your password, please click here: "
                         + "http://localhost:4200/reset-password?token=" + token.getToken());
 

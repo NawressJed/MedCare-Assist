@@ -20,12 +20,10 @@ public class GatewayConfig {
         return builder.routes()
                 .route("authentication", r -> r.path("/auth/**")
                         .uri("http://localhost:8081"))
-                .route("user-management", r -> r.path("/user-management/**")
+                .route("core-services", r -> r.path("/core-services/**")
                         .uri("http://localhost:8082"))
-                .route("appointment-management", r -> r.path("/appointment-management/**")
-                        .uri("http://localhost:8084"))
-                .route("notifications", r -> r.path("/notifications/**")
-                        .uri("http://localhost:8085"))
+                .route(r -> r.path("/core-services/ws/**")
+                        .uri("http://localhost:8082"))
                 .build();
     }
 

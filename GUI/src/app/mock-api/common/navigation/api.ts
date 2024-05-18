@@ -63,7 +63,7 @@ export class NavigationMockApi {
                 // },
                 {
                     id: 'profile',
-                    title: 'NAVIGATION.MY_PROFILE',
+                    title: 'My Profile',
                     type: 'basic',
                     icon: 'heroicons_outline:user-circle',
                     link: ''
@@ -113,17 +113,31 @@ export class NavigationMockApi {
                 // },
                 {
                     id: 'profile',
-                    title: 'NAVIGATION.MY_PROFILE',
+                    title: 'My Profile',
                     type: 'basic',
                     icon: 'heroicons_outline:user-circle',
                     link: ''
                 },
                 {
-                    id: 'profile',
-                    title: 'NAVIGATION.MY_PROFILE',
+                    id: 'patients',
+                    title: 'My Patients',
                     type: 'basic',
-                    icon: 'heroicons_outline:user-circle',
-                    link: ''
+                    icon: 'heroicons_outline:user-group',
+                    link: '/doctor/my-patients/list'
+                },
+                {
+                    id: 'appointments',
+                    title: 'My Appointments',
+                    type: 'basic',
+                    icon: 'heroicons_outline:clipboard',
+                    link: '/doctor/appointment/list'
+                },
+                {
+                    id: 'calendar',
+                    title: 'My Calendar',
+                    type: 'basic',
+                    icon: 'heroicons_outline:calendar',
+                    link: '/doctor/calendar'
                 }
             );
         }

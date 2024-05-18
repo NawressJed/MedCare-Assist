@@ -40,7 +40,7 @@ export class PatientAddComponent implements OnInit {
   }
 
   saveUser() {
-    this.patient.birthDate = new Date(this.patient.birthDate);
+    this.patient.dateOfBirth = new Date(this.patient.dateOfBirth);
     this.patientService.createPatient(this.patient).subscribe({
       next: (data) => {
         console.log(data);

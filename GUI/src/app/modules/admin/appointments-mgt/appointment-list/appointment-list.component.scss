@@ -1,0 +1,63 @@
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    .mat-table {
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 1rem;
+      display: table;
+      border-collapse: collapse;
+      margin: 0px;
+    }
+    .mat-row,
+    .mat-header-row {
+      display: table-row;
+    }
+    .mat-cell,
+    .mat-header-cell {
+      word-wrap: initial;
+      display: table-cell;
+      padding: 10px 30px 10px 20px;
+      line-break: unset;
+      width: auto;
+      white-space: nowrap;
+      overflow: hidden;
+      vertical-align: middle;
+    }
+  }
+  
+  mat-form-field {
+    width: 100%;
+  }
+  
+  .mat-button.mat-success,
+  .mat-stroked-button.mat-success {
+      color: #A11D27;
+  }
+  .mat-button.mat-success:hover,
+  .mat-stroked-button.mat-success:hover {
+    background-color: #f0fff3;
+  }
+  
+  .mat-raised-button.mat-success,
+  .mat-flat-button.mat-success,
+  .mat-fab.mat-success,
+  .mat-mini-fab.mat-success {
+    color: #f0fff3;
+    background-color: #A11D27;
+  }
+  
+  .mat-icon-button.mat-success {
+    color:#A11D27;
+  }
+  
+  @media only screen and (min-width: 960px) {
+    .formC {
+      margin-left: 1rem
+    }
+  }
+  
+  th.mat-sort-header-sorted {
+    color: black;
+  }

@@ -7,6 +7,8 @@ import { Appointment } from 'app/shared/models/appointment/appointment';
 import { Doctor } from 'app/shared/models/users/doctor/doctor';
 import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
 import { UserAuthService } from 'app/shared/services/authService/user-auth.service';
+import { UserService } from 'app/shared/services/userService/user.service';
+import { WebSocketService } from 'app/shared/services/webSocketService/web-socket.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -23,30 +25,49 @@ import { Observable } from 'rxjs';
 export class AppointmentRequestComponent implements OnInit {
 
   formFieldHelpers: string[] = [''];
-
   appointments: Observable<Appointment[]>;
   listDoctor: Doctor[] = [];
-
   appointment: Appointment = new Appointment();
   submitted = false;
   selectedImage: File | null = null;
+  selectedTime: string;
+  timeOptions: string[] = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30'];
 
   @ViewChildren(FuseCardComponent, { read: ElementRef }) private _fuseCards: QueryList<ElementRef>;
 
-
   constructor(
     private appointmentService: AppointmentService,
+    private _userService: UserService,
     private router: Router,
     private _matDialogRef: MatDialogRef<AppointmentAddComponent>,
-    private _cookie: UserAuthService
+    private _cookie: UserAuthService,
+    private webSocketService: WebSocketService  // Inject WebSocketService
   ) { }
 
   ngOnInit(): void {
     this.fetchDoctors();
   }
 
+  fetchDoctors() {
+    this._userService.getDoctorsList().subscribe((doctors) => {
+        this.listDoctor = doctors;
+    });
+  }
+
   onSubmit() {
     this.submitted = true;
+    this.appointmentService.requestAppointment(this._cookie.getId(), this.appointment).subscribe((response: Appointment) => {
+        console.log('Appointment request sent successfully:', response);
+
+        // Send notification via WebSocket
+        const message = `New appointment request from ${response.patient.firstname} ${response.patient.lastname}`;
+        this.webSocketService.sendMessage('/app/notify', message);
+
+        this._matDialogRef.close();
+        this.gotoList();
+    }, error => {
+        console.error('Error sending appointment request:', error);
+    });
   }
 
   onCloseClick(): void {
@@ -57,10 +78,16 @@ export class AppointmentRequestComponent implements OnInit {
     this.router.navigate(['patient/appointment/test']);
   }
 
-fetchDoctors() {
-    this.appointmentService.getAllDoctors().subscribe((doctors) => {
-        this.listDoctor = doctors; 
-    });
-}
-
+  onTimeSelected(time: string): void {
+    this.appointment.time = time; // Update the appointment model with the selected time
+  }
+  
+  // Method to toggle the display of mat-select
+  toggleTimePicker(): void {
+    // Open or close the mat-select dropdown
+    const matSelect = document.querySelector('mat-select');
+    if (matSelect) {
+        (matSelect as HTMLElement).click(); // Cast matSelect to HTMLElement and trigger click event
+    }
+  }
 }

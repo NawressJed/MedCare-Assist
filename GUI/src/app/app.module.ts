@@ -18,7 +18,9 @@ import { appRoutes } from 'app/app.routing';
 import { AuthInterceptor } from './core/auth/auth.interceptor';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
-import { WebSocketService } from './shared/services/notificationService/web-socket.service';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { DetailsComponent } from './modules/doctor/my-patients/details/details.component';
+import { AddComponent } from './modules/doctor/my-patients/add/add.component';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy: PreloadAllModules,
@@ -33,6 +35,8 @@ export function createTranslateLoader(http: HttpClient): any {
 @NgModule({
     declarations: [
         AppComponent,
+        DetailsComponent,
+        AddComponent
     ],
     imports     : [
         BrowserModule,
@@ -50,6 +54,7 @@ export function createTranslateLoader(http: HttpClient): any {
         // Layout module of your application
         LayoutModule,
         NgxFlagPickerModule,
+        FullCalendarModule,
 
         // 3rd party modules that require global configuration via forRoot
         MarkdownModule.forRoot({}),
@@ -69,7 +74,6 @@ export function createTranslateLoader(http: HttpClient): any {
     ],
     providers: [
         CookieService,
-        WebSocketService,
         {
           provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true
         }

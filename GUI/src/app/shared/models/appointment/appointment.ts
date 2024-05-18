@@ -5,7 +5,7 @@ import { Patient } from '../users/patient/patient';
 export class Appointment {
     public id: string;
     date: Date = new Date();
-    time: Date = new Date();
+    time: string;
     appointmentStatus: string;
     doctor: Doctor
     patient: Patient
