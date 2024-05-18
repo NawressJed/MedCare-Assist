@@ -44,17 +44,38 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authenticatedUserId = this._cookie.get('id');
 
-    // Load initial notifications
-    this.loadNotifications();
+    // Fetch authenticated user
+    this._apiUser.getUser(this.authenticatedUserId).subscribe((user: User) => {
+      this.authenticatedUser = user;
 
-    // Subscribe to WebSocket notifications
-    this.webSocketService.subscribe(`/user/${this.authenticatedUserId}/notify`, (message) => {
-      const notification = JSON.parse(message.body);
-      const currentNotifications = this._notificationsSubject.getValue();
-      this._notificationsSubject.next([notification, ...currentNotifications]);
+      // Load initial notifications after user is fetched
+      this.loadNotifications();
 
-      // Trigger change detection
-      this._changeDetectorRef.markForCheck();
+      // Subscribe to WebSocket notifications
+      this.webSocketService.subscribe(`/user/${this.authenticatedUserId}/notify`, (message) => {
+        console.log('Received message: ', message);
+
+        // Check if the message object has the expected structure
+        if (message.message) {
+          const notification: Notification = {
+            id: Date.now().toString(), // Generate a unique ID for the notification
+            notificationStatus: 'new', // Set default notification status
+            sender: null, // Assign sender as needed
+            recipient: this.authenticatedUser, // Assign the recipient
+            title: 'New Appointment Request', // Set title as needed
+            message: message.message, // Access message content correctly
+            sentAt: new Date()
+          };
+          console.log('Constructed notification: ', notification);
+          const currentNotifications = this._notificationsSubject.getValue();
+          this._notificationsSubject.next([notification, ...currentNotifications]);
+
+          // Trigger change detection
+          this._changeDetectorRef.markForCheck();
+        } else {
+          console.error('Received message does not have message property', message);
+        }
+      });
     });
   }
 
