@@ -171,6 +171,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointment.setPatient(patient);
             appointment.setAppointmentStatus(EAppointmentStatus.PENDING);
 
+            appointment = appointmentRepository.save(appointment);
+
             String message = "Appointment request from " + patient.getFirstname() + " " + patient.getLastname() +
                     " for " + appointment.getDate() + " at " + appointment.getTime() + ".";
 
@@ -182,16 +184,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 notification.setTitle("Appointment Request");
                 notification.setMessage(message);
                 notification.setSentAt(LocalDateTime.now());
+                notification.setAppointment(appointment);
                 notificationRepository.save(notification);
             } catch (Exception e) {
-                log.error("ERROR saving notification "+e);
+                log.error("ERROR saving notification " + e);
                 throw new RuntimeException(e);
             }
 
-            notificationService.sendNotification(message ,doctor.getId());
-            return mapper.toDto(appointmentRepository.save(appointment));
+            notificationService.sendNotification("Appointment Request", message, appointment.getDoctor().getId(), appointment);
+            return mapper.toDto(appointment);
         } catch (Exception e) {
-            log.error("ERROR creating appointment request"+e);
+            log.error("ERROR creating appointment request" + e);
             throw new RuntimeException(e);
         }
     }
@@ -215,14 +218,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                 notification.setTitle("Appointment Approval");
                 notification.setMessage(message);
                 notification.setSentAt(LocalDateTime.now());
+                notification.setAppointment(appointment);
                 notificationRepository.save(notification);
+
+                notificationService.sendNotification("Appointment Approval", message, appointment.getPatient().getId(), appointment);
             } catch (Exception e) {
                 log.error("ERROR saving notification "+e);
                 throw new RuntimeException(e);
             }
-
-            notificationService.sendNotification(message ,appointment.getPatient().getId());
-
 
             return mapper.toDto(appointmentRepository.save(appointment));
         } catch (Exception e) {
@@ -230,4 +233,5 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new RuntimeException(e);
         }
     }
+
 }

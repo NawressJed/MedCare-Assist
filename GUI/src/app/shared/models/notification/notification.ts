@@ -1,3 +1,4 @@
+import { Appointment } from "../appointment/appointment";
 import { User } from "../users/user";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,6 +10,7 @@ export class Notification {
     title: string;
     message: string;
     sentAt: Date;
+    appointment: Appointment;
 
     constructor() {
         this.id = uuidv4();

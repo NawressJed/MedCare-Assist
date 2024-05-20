@@ -9,7 +9,9 @@ import { User } from 'app/shared/models/users/user';
 import { UserService } from 'app/shared/services/userService/user.service';
 import { NotificationService } from 'app/shared/services/notificationService/notification.service';
 import { WebSocketService } from 'app/shared/services/webSocketService/web-socket.service';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
+import { Appointment } from 'app/shared/models/appointment/appointment';
 
 @Component({
   selector: 'notifications',
@@ -28,7 +30,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   authenticatedUserId: string;
   unreadCount: number = 0;
   private _overlayRef: OverlayRef;
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
+  private _unsubscribeAll: Subject<void> = new Subject<void>();
   private wsSubscription: Subscription;
 
   constructor(
@@ -37,6 +39,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     private _viewContainerRef: ViewContainerRef,
     private _apiUser: UserService,
     private notificationService: NotificationService,
+    private appointmentService: AppointmentService,
     private webSocketService: WebSocketService,
     private _cookie: CookieService
   ) { }
@@ -44,40 +47,25 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authenticatedUserId = this._cookie.get('id');
 
-    // Fetch authenticated user
-    this._apiUser.getUser(this.authenticatedUserId).subscribe((user: User) => {
-      this.authenticatedUser = user;
+    this.loadNotifications();
 
-      // Load initial notifications after user is fetched
-      this.loadNotifications();
+    this.webSocketService.subscribe(`/user/${this.authenticatedUserId}/notify`, (message) => {
+      const notification = new Notification();
+      notification.title = message.title;
+      notification.message = message.message;
+      if (message.appointment) {
+        notification.appointment = new Appointment();
+        notification.appointment.id = message.appointment.id;
+        notification.appointment.date = message.appointment.date;
+        notification.appointment.time = message.appointment.time;
+      }
+      const currentNotifications = this._notificationsSubject.getValue();
+      this._notificationsSubject.next([notification, ...currentNotifications]);
 
-      // Subscribe to WebSocket notifications
-      this.webSocketService.subscribe(`/user/${this.authenticatedUserId}/notify`, (message) => {
-        console.log('Received message: ', message);
-
-        // Check if the message object has the expected structure
-        if (message.message) {
-          const notification: Notification = {
-            id: Date.now().toString(), // Generate a unique ID for the notification
-            notificationStatus: 'new', // Set default notification status
-            sender: null, // Assign sender as needed
-            recipient: this.authenticatedUser, // Assign the recipient
-            title: 'New Appointment Request', // Set title as needed
-            message: message.message, // Access message content correctly
-            sentAt: new Date()
-          };
-          console.log('Constructed notification: ', notification);
-          const currentNotifications = this._notificationsSubject.getValue();
-          this._notificationsSubject.next([notification, ...currentNotifications]);
-
-          // Trigger change detection
-          this._changeDetectorRef.markForCheck();
-        } else {
-          console.error('Received message does not have message property', message);
-        }
-      });
+      this._changeDetectorRef.markForCheck();
     });
   }
+
 
   ngOnDestroy(): void {
     if (this.wsSubscription) {
@@ -97,6 +85,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     });
   }
 
+  
   openPanel(): void {
     if (!this._notificationsPanel || !this._notificationsOrigin) {
       return;
@@ -115,6 +104,22 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   delete(notification: Notification): void {
     // Delete the notification
+  }
+
+  approveNotification(notification: Notification): void {
+    if (notification.appointment && notification.appointment.id) {
+      this.appointmentService.approveAppointment(notification.appointment.id).subscribe({
+        next: (response) => {
+          console.log(`Approved appointment with ID: ${notification.appointment.id}`);
+          console.log(response);  // This will log the plain text response
+        },
+        error: (err) => {
+          console.error('Error approving appointment:', err);
+        }
+      });
+    } else {
+      console.error('Appointment or appointment ID is undefined.');
+    }
   }
 
   trackByFn(index: number, item: any): any {

@@ -1,6 +1,5 @@
-// web-socket.service.ts
 import { Injectable } from '@angular/core';
-import { Client, StompSubscription } from '@stomp/stompjs';
+import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 
 @Injectable({
@@ -8,24 +7,21 @@ import * as SockJS from 'sockjs-client';
 })
 export class WebSocketService {
   private stompClient: Client;
-  private subscriptions: Map<string, StompSubscription> = new Map();
+  private subscriptions: StompSubscription[] = [];
+  authenticatedUserId: string;
 
   constructor() {
-    this.initializeWebSocketConnection();
-  }
-
-  initializeWebSocketConnection() {
-    const serverUrl = 'http://localhost:8080/core-services/notification';
     this.stompClient = new Client({
-      brokerURL: serverUrl,
+      brokerURL: 'ws://localhost:8080/core-services/notification',
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
-      webSocketFactory: () => new SockJS(serverUrl)
+      webSocketFactory: () => new SockJS('http://localhost:8080/core-services/notification'),
     });
 
-    this.stompClient.onConnect = (frame) => {
-      console.log('Connected: ' + frame);
+    this.stompClient.onConnect = () => {
+      console.log('Connected');
+      this.subscribeToTopics();
     };
 
     this.stompClient.onStompError = (frame) => {
@@ -33,42 +29,47 @@ export class WebSocketService {
       console.error('Additional details: ' + frame.body);
     };
 
+    this.stompClient.onWebSocketClose = (evt) => {
+      console.log('WebSocket closed', evt);
+    };
+
     this.stompClient.activate();
   }
 
-  subscribe(destination: string, callback: (message: any) => void) {
-    if (this.subscriptions.has(destination)) {
-      console.warn(`Already subscribed to ${destination}`);
-      return;
-    }
-
-    const subscription: StompSubscription = this.stompClient.subscribe(destination, (message) => {
+  private subscribeToTopics(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions = [];
+    // Add your subscription topics here
+    // Example:
+    this.subscriptions.push(this.stompClient.subscribe(`/user/${this.authenticatedUserId}/notify`, (message: IMessage) => {
       try {
         const parsedMessage = JSON.parse(message.body);
-        console.log('Received message: ', parsedMessage); // Log received message
+        // Handle the parsed message here
+        console.log(parsedMessage);
+      } catch (error) {
+        console.error('Error parsing WebSocket message: ', error);
+      }
+    }));
+  }
+
+  subscribe(topic: string, callback: (message: any) => void): void {
+    const subscription = this.stompClient.subscribe(topic, (message: IMessage) => {
+      try {
+        const parsedMessage = JSON.parse(message.body);
         callback(parsedMessage);
       } catch (error) {
         console.error('Error parsing WebSocket message: ', error);
-        console.error('Received message: ', message.body);
       }
     });
-
-    this.subscriptions.set(destination, subscription);
+    this.subscriptions.push(subscription);
   }
 
-  unsubscribe(destination: string) {
-    const subscription = this.subscriptions.get(destination);
-    if (subscription) {
-      subscription.unsubscribe();
-      this.subscriptions.delete(destination);
+  sendMessage(destination: string, message: any): void {
+    if (this.stompClient.connected) {
+      const jsonMessage = JSON.stringify(message);
+      this.stompClient.publish({ destination, body: jsonMessage });
+    } else {
+      console.error('STOMP client is not connected');
     }
-  }
-
-  sendMessage(destination: string, message: any) {
-    console.log('Sending message: ', message);
-    this.stompClient.publish({
-      destination: destination,
-      body: JSON.stringify(message)
-    });
   }
 }

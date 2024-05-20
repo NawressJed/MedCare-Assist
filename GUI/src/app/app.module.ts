@@ -19,8 +19,6 @@ import { AuthInterceptor } from './core/auth/auth.interceptor';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { DetailsComponent } from './modules/doctor/my-patients/details/details.component';
-import { AddComponent } from './modules/doctor/my-patients/add/add.component';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy: PreloadAllModules,
@@ -35,8 +33,6 @@ export function createTranslateLoader(http: HttpClient): any {
 @NgModule({
     declarations: [
         AppComponent,
-        DetailsComponent,
-        AddComponent
     ],
     imports     : [
         BrowserModule,

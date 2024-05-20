@@ -7,7 +7,6 @@ import { Appointment } from '../../../../shared/models/appointment/appointment';
 import { Patient } from '../../../../shared/models/users/patient/patient';
 import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
 import { CookieService } from 'ngx-cookie-service';
-import { UserAuthService } from 'app/shared/services/authService/user-auth.service';
 import { UserService } from 'app/shared/services/userService/user.service';
 import { DatePipe } from '@angular/common';
 
@@ -16,7 +15,6 @@ import { DatePipe } from '@angular/common';
   templateUrl: './appointment-add.component.html',
   styles: [
     `
-    /* Hide the default browser time input spinner */
 input[type="time"]::-webkit-calendar-picker-indicator {
     display: none;
 }
@@ -30,8 +28,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 export class AppointmentAddComponent implements OnInit {
 
   selectedTime: string;
-    timeOptions: string[] = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30']; // Example time options
-
+  timeOptions: string[] = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'];
 
   formFieldHelpers: string[] = [''];
 
@@ -64,7 +61,7 @@ export class AppointmentAddComponent implements OnInit {
       next: (data) => {
         console.log(data);
         this.onCloseClick();
-        
+
       },
       error: (e) => {
         console.log(e);
@@ -85,24 +82,21 @@ export class AppointmentAddComponent implements OnInit {
     this.router.navigate(['doctor/appointment/list']);
   }
 
-fetchPatients() {
+  fetchPatients() {
     this._userService.getPatientsList().subscribe((patients) => {
-        this.listPatient = patients; 
+      this.listPatient = patients;
     });
-}
-
- // Method to handle time selection
- onTimeSelected(time: string): void {
-  this.appointment.time = time; // Update the appointment model with the selected time
-}
-
-// Method to toggle the display of mat-select
-toggleTimePicker(): void {
-  // Open or close the mat-select dropdown
-  const matSelect = document.querySelector('mat-select');
-  if (matSelect) {
-      (matSelect as HTMLElement).click(); // Cast matSelect to HTMLElement and trigger click event
   }
-}
+
+  onTimeSelected(time: string): void {
+    this.appointment.time = time;
+  }
+
+  toggleTimePicker(): void {
+    const matSelect = document.querySelector('mat-select');
+    if (matSelect) {
+      (matSelect as HTMLElement).click();
+    }
+  }
 
 }
