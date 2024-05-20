@@ -134,7 +134,7 @@ export class AppointmentListComponent implements OnInit {
     if (appointment && appointment.id) {
       const dialogRef = this._matDialog.open(AppointmentUpdateComponent, {
         autoFocus: false,
-        data: { appointment: appointment } // Pass patient object here
+        data: { appointment: appointment } 
       });
       
       dialogRef.afterClosed().subscribe(() => {
@@ -148,7 +148,6 @@ export class AppointmentListComponent implements OnInit {
   deleteAppointment(appointment: Appointment): void {
     console.log("Appointment to be deleted:", appointment);
 
-    // Open the confirmation dialog
     const confirmation = this._fuseConfirmationService.open({
       title: 'Delete Appointment',
       message: 'Are you sure you want to remove this appointment? This action cannot be undone!',
@@ -159,18 +158,15 @@ export class AppointmentListComponent implements OnInit {
       }
     });
 
-    // Subscribe to the confirmation dialog closed action
     confirmation.afterClosed().subscribe((result) => {
-      // If the confirm button is pressed...
       if (result === 'confirmed') {
         this.appointmentService.deleteAppointment(appointment).subscribe(
           () => {
             console.log('Appointment deleted successfully.');
-            this.reloadData(); // Reload data after deletion
+            this.reloadData(); 
           },
           (error) => {
             console.error('Error deleting appointment:', error);
-            // Handle error (e.g., show error message)
           }
         );
       }
@@ -205,12 +201,12 @@ export class AppointmentListComponent implements OnInit {
 
   convertDateFormat(dateString: string): string {
     const parsedDate = new Date(dateString);
-    return this.datePipe.transform(parsedDate, 'dd/MM/yyyy'); // Format date as dd/mm/yyyy
+    return this.datePipe.transform(parsedDate, 'dd/MM/yyyy'); 
   }
 
   formatTime(time: string): string {
     if (time) {
-      return time.split(':').slice(0, 2).join(':'); // Extract hours and minutes and join them
+      return time.split(':').slice(0, 2).join(':'); 
     }
     return '';
   }
@@ -218,7 +214,7 @@ export class AppointmentListComponent implements OnInit {
   getGenderStyle(gender: string) {
     return {
       backgroundColor: gender === 'FEMALE' ? 'pink' : 'blue',
-      color: 'white'  // Set text color to white for contrast
+      color: 'white'  
     };
   }   
   

@@ -7,14 +7,14 @@ import com.example.repositories.AppointmentRepository;
 import com.example.services.AppointmentService;
 import com.example.services.DoctorService;
 import com.example.services.PatientService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @Log4j2
@@ -109,13 +109,19 @@ public class AppointmentController {
     }
 
     @PutMapping("/approve-appointment/{id}")
-    public ResponseEntity<String> approveAppointment(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Map<String, String>> approveAppointment(@PathVariable(value = "id") UUID id) {
         try {
             appointmentService.approveAppointment(id);
-            return ResponseEntity.ok("Appointment approved successfully.");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Appointment approved successfully.");
+            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            log.error("Appointment not found: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Appointment not found"));
         } catch (Exception e) {
             log.error("ERROR approving request! "+ e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to approve appointment request.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Failed to approve appointment"));
         }
     }
+
 }

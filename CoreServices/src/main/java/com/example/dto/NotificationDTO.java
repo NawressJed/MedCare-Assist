@@ -1,5 +1,6 @@
 package com.example.dto;
 
+import com.example.entities.Appointment;
 import com.example.entities.UserEntity;
 import com.example.enums.ENotificationStatus;
 import jakarta.persistence.EnumType;
@@ -23,8 +24,8 @@ public class NotificationDTO {
     private UserEntity sender;
     @ManyToOne
     private UserEntity recipient;
-
     private String message;
-
     private LocalDateTime sentAt;
+    @ManyToOne
+    private Appointment appointment;
 }

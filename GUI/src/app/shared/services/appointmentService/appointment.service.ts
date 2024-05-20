@@ -36,6 +36,10 @@ export class AppointmentService {
     return this.http.post(`${this.baseUrl}/request-appointment/${id}`, appointment);
   }
 
+  approveAppointment(appointmentId: string): Observable<Object> {
+    return this.http.put(`${this.baseUrl}/approve-appointment/${appointmentId}`, null);
+  }
+
   updateAppointment(id: string, value: any): Observable<Object> {
     return this.http.put(`${this.baseUrl}/update-appointment/${id}`, value);
   }

@@ -1,6 +1,7 @@
 package com.example.services.impl;
 
 import com.example.dto.NotificationDTO;
+import com.example.entities.Appointment;
 import com.example.entities.Notification;
 import com.example.mapper.AutoNotificationMapper;
 import com.example.repositories.NotificationRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -25,11 +27,22 @@ public class NotificationServiceImpl implements NotificationService {
     private SimpMessagingTemplate messagingTemplate;
 
     @Override
-    public void sendNotification(String message, UUID userId) {
-        // Create a JSON string for the message
-        String jsonMessage = String.format("{\"message\": \"%s\"}", message);
+    public void sendAppointmentApprovalNotification(String title, String message, UUID appointmentId, UUID userId) {
+        String jsonMessage = String.format("{\"title\": \"%s\", \"message\": \"%s\", \"appointmentId\": \"%s\"}", title, message, appointmentId);
         messagingTemplate.convertAndSendToUser(userId.toString(), "/notify", jsonMessage);
     }
+
+    @Override
+    public void sendNotification(String title, String message, UUID userId, Appointment appointment) {
+        String jsonMessage = String.format("{\"title\": \"%s\", \"message\": \"%s\", \"appointment\": {\"id\": \"%s\"}}", title, message, appointment.getId());
+        messagingTemplate.convertAndSendToUser(userId.toString(), "/notify", jsonMessage);
+    }
+
+//    @Override
+//    public void sendNotification(String title, String message, UUID userId) {
+//        String jsonMessage = String.format("{\"title\": \"%s\", \"message\": \"%s\"}", title, message);
+//        messagingTemplate.convertAndSendToUser(userId.toString(), "/notify", jsonMessage);
+//    }
 
     @Override
     public void deleteNotification(UUID id) {
@@ -45,11 +58,16 @@ public class NotificationServiceImpl implements NotificationService {
         List<Notification> notifications = new ArrayList<>();
         try {
             notifications = notificationRepository.findNotificationByRecipientId(userId);
-            return mapper.toDto(notifications);
+            return notifications.stream().map(notification -> {
+                NotificationDTO dto = mapper.toDto(notification);
+                dto.setAppointment(notification.getAppointment());
+                return dto;
+            }).collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("ERROR retrieving all notifications "+ e.getMessage());
+            log.error("ERROR retrieving all notifications " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
 }
+

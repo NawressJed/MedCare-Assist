@@ -32,4 +32,7 @@ public class Notification {
     private String title;
     private String message;
     private LocalDateTime sentAt;
+    @ManyToOne
+    @JoinColumn(name = "appointment_id", nullable = false)
+    private Appointment appointment;
 }
