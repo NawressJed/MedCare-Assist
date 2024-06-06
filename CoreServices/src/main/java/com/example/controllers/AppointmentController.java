@@ -124,4 +124,20 @@ public class AppointmentController {
         }
     }
 
+    @PutMapping("/reject-appointment/{id}")
+    public ResponseEntity<Map<String, String>> rejectAppointment(@PathVariable(value = "id") UUID id) {
+        try {
+            appointmentService.rejectAppointment(id);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Appointment rejected successfully.");
+            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            log.error("Appointment not found: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Appointment not found"));
+        } catch (Exception e) {
+            log.error("ERROR rejecting request! "+ e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Failed to reject appointment"));
+        }
+    }
+
 }

@@ -2,11 +2,13 @@ package com.example.services;
 
 import com.example.dto.MedicalFileDTO;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.UUID;
 
 public interface MedicalFileService {
     MedicalFileDTO createMedicalFile(MedicalFileDTO medicalFileDTO);
+    MedicalFileDTO createPatientMedicalFile(UUID doctorId, UUID patientID, MedicalFileDTO medicalFileDTO);
     MedicalFileDTO createDoctorMedicalFile(UUID id, MedicalFileDTO medicalFileDTO);
     MedicalFileDTO getMedicalFileByID(UUID id);
     List<MedicalFileDTO> getDoctorMedicalFiles(UUID id);

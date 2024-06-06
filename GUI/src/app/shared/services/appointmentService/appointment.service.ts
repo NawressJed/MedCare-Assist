@@ -40,6 +40,10 @@ export class AppointmentService {
     return this.http.put(`${this.baseUrl}/approve-appointment/${appointmentId}`, null);
   }
 
+  rejectAppointment(appointmentId: string): Observable<Object> {
+    return this.http.put(`${this.baseUrl}/reject-appointment/${appointmentId}`, null);
+  }
+
   updateAppointment(id: string, value: any): Observable<Object> {
     return this.http.put(`${this.baseUrl}/update-appointment/${id}`, value);
   }

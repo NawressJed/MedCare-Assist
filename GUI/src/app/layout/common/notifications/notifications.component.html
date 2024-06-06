@@ -63,23 +63,31 @@
                         <!-- Actions -->
                         <div class="relative flex flex-col my-5 mr-6 ml-2">
                             <!-- Indicator -->
-                            <button class="w-6 h-6 min-h-6" mat-icon-button (click)="toggleRead(notification)"
-                                [matTooltip]="notification.read ? 'Mark as unread' : 'Mark as read'">
-                                <span class="w-2 h-2 rounded-full"
-                                    [ngClass]="{'bg-gray-400 dark:bg-gray-500 sm:opacity-0 sm:group-hover:opacity-100': notification.read, 'bg-primary': !notification.read}"></span>
-                            </button>
-                            <div class="flex">
-                                <!-- Approve -->
+
+                            <!-- Approve and Reject buttons for doctors -->
+                            <ng-container *ngIf="authenticatedUser?.role === 'DOCTOR'">
+                                <button class="w-6 h-6 min-h-6" mat-icon-button (click)="toggleRead(notification)"
+                                    [matTooltip]="notification.read ? 'Mark as unread' : 'Mark as read'">
+                                    <span class="w-2 h-2 rounded-full"
+                                        [ngClass]="{'bg-gray-400 dark:bg-gray-500 sm:opacity-0 sm:group-hover:opacity-100': notification.read, 'bg-primary': !notification.read}"></span>
+                                </button>
                                 <button class="w-6 h-6 min-h-6 sm:opacity-0 sm:group-hover:opacity-100" mat-icon-button
                                     (click)="approveNotification(notification)" [matTooltip]="'Approve'">
                                     <mat-icon class="icon-size-4" [svgIcon]="'heroicons_solid:check'"></mat-icon>
                                 </button>
-                                <!-- Remove -->
                                 <button class="w-6 h-6 min-h-6 sm:opacity-0 sm:group-hover:opacity-100" mat-icon-button
-                                    (click)="delete(notification)" [matTooltip]="'Remove'">
+                                    (click)="rejectNotification(notification)" [matTooltip]="'Reject'">
                                     <mat-icon class="icon-size-4" [svgIcon]="'heroicons_solid:x'"></mat-icon>
                                 </button>
-                            </div>
+                            </ng-container>
+                            <!-- Just a read indicator for patients -->
+                            <ng-container *ngIf="authenticatedUser?.role === 'PATIENT'">
+                                <button class="w-6 h-6 min-h-6" mat-icon-button (click)="toggleRead(notification)"
+                                    [matTooltip]="notification.read ? 'Mark as unread' : 'Mark as read'">
+                                    <span class="w-2 h-2 rounded-full"
+                                        [ngClass]="{'bg-gray-400 dark:bg-gray-500 sm:opacity-0 sm:group-hover:opacity-100': notification.read, 'bg-primary': !notification.read}"></span>
+                                </button>
+                            </ng-container>
                         </div>
                     </div>
 

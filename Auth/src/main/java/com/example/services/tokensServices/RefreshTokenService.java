@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -31,5 +32,14 @@ public class RefreshTokenService {
         refreshToken.setUser(autoUserMapper.toEntity(userDetails));
 
         return tokenRepository.save(refreshToken);
+    }
+
+    public Token verifyExpiration(String token){
+        Token refreshToken = tokenRepository.findByTokenAndTokenType(token, TokenType.REFRESH_TOKEN);
+        if(refreshToken.getExpiresAt().before(new Date())){
+            tokenRepository.delete(refreshToken);
+            throw new RuntimeException(refreshToken + " Refresh token is expired. Please make a new login..!");
+        }
+        return refreshToken;
     }
 }

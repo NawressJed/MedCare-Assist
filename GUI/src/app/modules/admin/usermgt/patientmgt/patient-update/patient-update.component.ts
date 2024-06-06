@@ -31,7 +31,7 @@ export class PatientUpdateComponent implements OnInit {
     this.patient = this.data.patient;
   
     setTimeout(() => {
-      this.patientService.getPatient(this.patient)
+      this.patientService.getPatient(this.patient.id)
         .subscribe(data => {
           console.log(data);
           this.patient = data;

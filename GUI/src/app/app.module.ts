@@ -15,10 +15,10 @@ import { mockApiServices } from 'app/mock-api';
 import { LayoutModule } from 'app/layout/layout.module';
 import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
-import { AuthInterceptor } from './core/auth/auth.interceptor';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { AuthInterceptor } from './shared/services/authService/auth.interceptor';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy: PreloadAllModules,
@@ -34,7 +34,7 @@ export function createTranslateLoader(http: HttpClient): any {
     declarations: [
         AppComponent,
     ],
-    imports     : [
+    imports: [
         BrowserModule,
         BrowserAnimationsModule,
         RouterModule.forRoot(appRoutes, routerConfig),
@@ -56,7 +56,7 @@ export function createTranslateLoader(http: HttpClient): any {
         MarkdownModule.forRoot({}),
 
         TranslateModule.forRoot({
-            defaultLanguage: 'fr',
+            defaultLanguage: 'en',
             loader: {
                 provide: TranslateLoader,
                 useFactory: (createTranslateLoader),
@@ -65,16 +65,15 @@ export function createTranslateLoader(http: HttpClient): any {
             isolate: false
         }),
     ],
-    bootstrap   : [
+    bootstrap: [
         AppComponent
     ],
     providers: [
         CookieService,
         {
-          provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true
+            provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true
         }
-      ]
+    ]
 })
-export class AppModule
-{
+export class AppModule {
 }

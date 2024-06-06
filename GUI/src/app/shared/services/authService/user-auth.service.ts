@@ -58,72 +58,11 @@ export class UserAuthService {
     return this._cookie.get("id")
   }
 
-  public setRefreshToken(refreshToken: string) {
-    this._cookie.set("refreshToken", refreshToken);
-  }
-
-  public getRefreshToken(): string {
-    return this._cookie.get("refreshToken");
-  }
-
-  public setAccessToken(accessToken: string) {
-    this._cookie.set("accessToken", accessToken);
-  }
-
-  public getAccessToken(): string {
-    return this._cookie.get("accessToken");
-  }
-
   public clear() {
     this._cookie.deleteAll();
   }
 
-  public isLoggedIn() {
-    return this.getRole() && this.getRefreshToken();
-  }
 
-  public getUserInfo(accessToken: string, refreshToken: string) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${accessToken}`,
-      })
-    };
-
-    this.http.get<any>('https://' + this.domain + '/oauth2/userInfo', httpOptions)
-      .subscribe({
-        next: (data) => {
-          const email = data.email;
-          // Set tokens in cookies
-          this._cookie.set("accessToken", accessToken);
-          this._cookie.set("refreshToken", refreshToken);
-          // Store email in cookie
-          this._cookie.set("EMAIL", email);
-
-          // Assuming you have a method to get user info from backend using email
-          this._userService.getUserByEmail(email).subscribe({
-            next: (res) => {
-              if (res) {
-                // Set user info in cookies
-                this._cookie.set("NAME", res.firstName);
-                this._cookie.set("LASTNAME", res.lastName);
-                this._cookie.set("ROLE", res.role);
-                this._cookie.set("ID", res.id);
-                // Redirect or perform other actions after sign-in
-                this.redirectAfterSignIn(res.role);
-              } else {
-                this.error500Redirect();
-              }
-            },
-            error: () => {
-              this.error500Redirect();
-            }
-          });
-        },
-        error: () => {
-          this.error500Redirect();
-        }
-      });
-  }
 
   redirectAfterSignIn(role: string) {
     switch (role) {

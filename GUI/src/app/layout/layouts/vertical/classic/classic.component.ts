@@ -45,7 +45,7 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
         public translate: TranslateService
     ) {
         translate.addLangs(['en', 'fr']);
-        translate.setDefaultLang('fr');
+        translate.setDefaultLang('en');
     }
 
     // -----------------------------------------------------------------------------------------------------

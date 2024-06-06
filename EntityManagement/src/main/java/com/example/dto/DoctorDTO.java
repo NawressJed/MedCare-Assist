@@ -2,6 +2,7 @@ package com.example.dto;
 
 import com.example.entities.Patient;
 import com.example.enums.ESpecialty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

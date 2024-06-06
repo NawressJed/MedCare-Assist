@@ -1,14 +1,13 @@
 package com.example.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "patient")
@@ -17,4 +16,8 @@ import java.util.Date;
 @AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "userId")
 public class Patient extends UserEntity {
-    private Date dateOfBirth;}
+    private Date dateOfBirth;
+    @ManyToMany(mappedBy = "myPatients")
+    @JsonBackReference
+    private Set<Doctor> myDoctors;
+}

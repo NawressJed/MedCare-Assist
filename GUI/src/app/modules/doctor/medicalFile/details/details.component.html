@@ -1,0 +1,115 @@
+<div class="absolute inset-0 min-w-0 text-center overflow-auto print:overflow-visible" cdkScrollable>
+
+  <!-- Main -->
+  <div class="inline-block p-6 sm:p-10 text-left print:p-0">
+
+    <!-- Top Bar -->
+    <div class="flex justify-between items-center mb-4 p-4 bg-card rounded-2xl shadow">
+      <div class="text-accent text-2xl font-bold">{{ currentDate }}</div>
+      <button class="ml-4 bg-primary-500 hover:bg-primary-900 dark" mat-flat-button (click)="downloadPDF()">
+        <mat-icon [svgIcon]="'heroicons_solid:printer'"></mat-icon>
+        <span class="ml-2 mr-1">Download</span>
+      </button>
+    </div>
+
+    <!-- Medical File -->
+    <div #content
+      class="w-240 p-16 rounded-2xl shadow bg-card print:w-auto print:rounded-none print:shadow-none print:bg-transparent">
+      <div class="flex items-start justify-between">
+        <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+          <div class="col-span-2 text-4xl tracking-tight text-secondary">Medical File</div>
+          <div class="col-span-2">
+            <span class="font-medium tracking-tight text-secondary">ISSUED </span>
+            <span class="font-medium ml-4">{{ medicalFile?.date | date:'MMM d, y' }}</span>
+          </div>
+        </div>
+        <div class="grid auto-cols-max grid-flow-col gap-x-8 -mr-16 py-6 px-8 rounded-l-2xl bg-primary-100">
+          <div class="place-self-center w-24">
+            <img class="w-24" src="assets/images/logo/logo1.png">
+          </div>
+          <div class="pl-10 border-l text-md">
+            <div class="font-semibold">Doctor's Details</div>
+            <div>{{ medicalFile?.doctor.firstname }} {{ medicalFile?.doctor.lastname }}</div>
+            <div>{{ medicalFile?.doctor.address }} - {{ medicalFile?.doctor.zipCode }}</div>
+            <div>{{ medicalFile?.doctor.phone }}</div>
+            <div>{{ medicalFile?.doctor.workPhoneNumber }}</div>
+            <div>{{ medicalFile?.doctor.email }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-md">
+        <div class="text-xl font-medium">Patient's Details</div>
+        <div>{{ medicalFile?.patient.firstname }} {{ medicalFile?.patient.lastname }}</div>
+        <div>{{ medicalFile?.patient.address }}</div>
+        <div>{{ medicalFile?.patient.phoneNumber }}</div>
+        <div>{{ medicalFile?.patient.email }}</div>
+      </div>
+
+      <!-- Medical file details -->
+      <div class="grid grid-cols-12 gap-x-1 mt-12">
+        <!-- Disease and Severity -->
+        <div class="col-span-12 text-lg font-bold">Disease :</div>
+        <div class="col-span-12 mt-1"></div>
+
+        <!-- Disease and Severity Values -->
+        <div class="col-span-12">{{ medicalFile?.disease }}</div>
+
+        <div class="col-span-12 text-lg font-bold mt-6">Severity :</div>
+
+        <!-- Spacer -->
+        <div class="col-span-12 mt-1"></div>
+
+        <div class="col-span-12">{{ medicalFile?.severity }}</div>
+      </div>
+
+      <!-- Medications -->
+      <div class="text-lg font-bold mt-6">Medications :</div>
+      <div class="grid grid-cols-12 gap-x-1 mt-4">
+        <!-- Columns -->
+        <div class="col-span-3 font-medium text-md text-secondary">Medicine Name</div>
+        <div class="col-span-3 font-medium text-md text-right text-secondary">Dosage</div>
+        <div class="col-span-3 font-medium text-md text-right text-secondary">Frequency</div>
+        <div class="col-span-3 font-medium text-md text-right text-secondary">Duration</div>
+
+        <!-- Divider -->
+        <div class="col-span-12 my-4 border-b"></div>
+
+        <!-- Item -->
+        <ng-container *ngFor="let medication of medicalFile?.medications">
+          <div class="col-span-3">{{ medication.name }}</div>
+          <div class="col-span-3 self-center text-right">{{ medication.dosage }}</div>
+          <div class="col-span-3 self-center text-right">{{ medication.frequency }}</div>
+          <div class="col-span-3 self-center text-right">{{ medication.duration }}</div>
+
+          <!-- Divider -->
+          <div class="col-span-12 my-4 border-b"></div>
+        </ng-container>
+      </div>
+
+      <div class="grid grid-cols-12 gap-x-1 mt-6">
+        <!-- Description -->
+        <div class="col-span-4 text-lg font-bold">Description :</div>
+
+        <!-- Spacer -->
+        <div class="col-span-12 mt-1"></div>
+
+
+        <!-- Description Value -->
+        <div class="col-span-12">{{ medicalFile?.description }}</div>
+      </div>
+
+      <!-- Spacer -->
+      <div class="col-span-12 mt-16"></div>
+
+      <!-- Doctor's Signature -->
+      <div class="grid grid-cols-12 gap-x-2 gap-y-1 ml-auto">
+        <div class="col-span-12 justify-self-end font-medium">Dr. {{ medicalFile?.doctor.firstname }} {{
+          medicalFile?.doctor.lastname }}</div>
+        <div class="col-span-12 justify-self-end font-medium tracking-tight text-hint">{{
+          medicalFile?.doctor.specialty
+          }}</div>
+      </div>
+    </div>
+  </div>
+</div>

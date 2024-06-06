@@ -9,9 +9,9 @@ import java.util.UUID;
 
 public interface MedicalFileRepository extends JpaRepository<MedicalFile, UUID> {
     MedicalFile findMedicalFileById(UUID id);
-    @Query(value = "SELECT m.* FROM medical-file AS m WHERE m.doctor_id = :id ", nativeQuery = true)
+    @Query(value = "SELECT m.* FROM medical_file AS m WHERE m.doctor_id = :id ", nativeQuery = true)
     List<MedicalFile> getMedicalFileByDoctor(UUID id);
 
-    @Query(value = "SELECT m.* FROM medical-file AS m WHERE m.patient_id = :id ", nativeQuery = true)
+    @Query(value = "SELECT m.* FROM medical_file AS m WHERE m.patient_id = :id ", nativeQuery = true)
     List<MedicalFile> getMedicalFileByPatient(UUID id);
 }

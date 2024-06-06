@@ -507,7 +507,7 @@ fuse-vertical-navigation-collapsable-item {
 
                 &.fuse-vertical-navigation-item-active,
                 &.fuse-vertical-navigation-item-active-forced {
-                    @apply bg-blue-600 bg-opacity-100 dark:bg-white dark:bg-opacity-50;
+                    @apply bg-primary-500 bg-opacity-100 dark:bg-white dark:bg-opacity-50;
 
                     .fuse-vertical-navigation-item-icon {
                         @apply opacity-100;

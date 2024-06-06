@@ -16,4 +16,5 @@ public interface AppointmentService {
     void deleteAppointment(UUID appointmentID);
     AppointmentDTO requestAppointment(UUID patientId, AppointmentDTO appointmentDTO);
     AppointmentDTO approveAppointment(UUID appointmentId);
+    void rejectAppointment(UUID appointmentId);
 }

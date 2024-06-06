@@ -211,15 +211,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                     " for " + appointment.getDate() + " at " + appointment.getTime() + " has been approved.";
 
             try {
-                Notification notification = new Notification();
-                notification.setNotificationStatus(ENotificationStatus.SENT);
-                notification.setSender(appointment.getDoctor());
-                notification.setRecipient(appointment.getPatient());
-                notification.setTitle("Appointment Approval");
-                notification.setMessage(message);
-                notification.setSentAt(LocalDateTime.now());
-                notification.setAppointment(appointment);
-                notificationRepository.save(notification);
+                Notification notification = notificationRepository.findNotificationByAppointment(appointment.getId());
+                notificationRepository.delete(notification);
 
                 notificationService.sendNotification("Appointment Approval", message, appointment.getPatient().getId(), appointment);
             } catch (Exception e) {
@@ -230,6 +223,24 @@ public class AppointmentServiceImpl implements AppointmentService {
             return mapper.toDto(appointmentRepository.save(appointment));
         } catch (Exception e) {
             log.error("ERROR approving appointment request", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void rejectAppointment(UUID appointmentId) {
+        try {
+            Appointment appointment = appointmentRepository.findById(appointmentId)
+                    .orElseThrow(() -> new EntityNotFoundException("Appointment not found with id: " + appointmentId));
+
+            appointment.setAppointmentStatus(EAppointmentStatus.REJECTED);
+
+            Notification notification = notificationRepository.findNotificationByAppointment(appointment.getId());
+            notificationRepository.delete(notification);
+
+            appointmentRepository.save(appointment);
+        }catch (Exception e) {
+            log.error("ERROR rejecting appointment with ID: " + appointmentId + e.getMessage());
             throw new RuntimeException(e);
         }
     }
