@@ -93,8 +93,8 @@
                                         <div>{{ appointment.patient.phoneNumber }}</div>
                                         <!-- Gender -->
                                         <li class="relative flex py-7">
-                                            <div class="relative py-1 px-3 text-md font-medium leading-5 rounded-full justify-center"
-                                                [ngClass]="{'female': appointment.patient.gender === 'FEMALE', 'male': appointment.patient.gender === 'MALE'}">
+                                            <div class="py-0.5 px-3 rounded-full text-sm font-semibold"
+                                                [ngClass]="{'text-blue-800 bg-blue-100 dark:text-blue-50 dark:bg-blue-500': appointment.patient.gender === 'MALE', 'text-pink-800 bg-pink-100 dark:text-pink-50 dark:bg-pink-500': appointment.patient.gender === 'FEMALE'}">
                                                 {{ appointment.patient.gender }}
                                             </div>
                                         </li>
@@ -103,10 +103,6 @@
                                             <button class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2" mat-stroked-button>
                                                 <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil'"
                                                     (click)="updateAppointment(appointment)"></mat-icon>
-                                            </button>
-                                            <button class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2" mat-stroked-button>
-                                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:eye'"
-                                                    ></mat-icon>
                                             </button>
                                             <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button>
                                                 <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:trash'"

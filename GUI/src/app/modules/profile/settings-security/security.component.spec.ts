@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MedicalFilesMgtComponent } from './medical-files-mgt.component';
+import { SettingsSecurityComponent } from './security.component';
 
-describe('MedicalFilesMgtComponent', () => {
-  let component: MedicalFilesMgtComponent;
-  let fixture: ComponentFixture<MedicalFilesMgtComponent>;
+describe('SettingsSecurityComponent', () => {
+  let component: SettingsSecurityComponent;
+  let fixture: ComponentFixture<SettingsSecurityComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MedicalFilesMgtComponent ]
+      declarations: [ SettingsSecurityComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MedicalFilesMgtComponent);
+    fixture = TestBed.createComponent(SettingsSecurityComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

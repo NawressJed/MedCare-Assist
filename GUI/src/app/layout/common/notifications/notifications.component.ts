@@ -46,8 +46,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.authenticatedUserId = this._cookie.get('id');
+    this.getAuthenticatedUser(this.authenticatedUserId);
 
-    this.loadNotifications();
+    //this.loadNotifications();
 
     this.webSocketService.subscribe(`/user/${this.authenticatedUserId}/notify`, (message) => {
       const notification = new Notification();
@@ -66,6 +67,13 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     });
   }
 
+  getAuthenticatedUser(id: string): void {
+    this._apiUser.getUser(id).subscribe({
+      next:(result) => {
+        this.authenticatedUser = result;
+      }
+    });
+  }
 
   ngOnDestroy(): void {
     if (this.wsSubscription) {

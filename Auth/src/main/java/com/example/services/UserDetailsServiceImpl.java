@@ -1,11 +1,13 @@
 package com.example.services;
 
+import com.example.dto.UserDetailsImpl;
 import com.example.entities.UserEntity;
 import com.example.mapper.AutoUserMapper;
 import com.example.repositories.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,5 +35,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .build();
 
         return userDetails;
+    }
+
+    public void updateLoggedUser(UserDetailsImpl updatedUser) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = loadUserByUsername(updatedUser.getUsername());
+
+        UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                userDetails.getPassword(),
+                userDetails.getAuthorities()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
 }

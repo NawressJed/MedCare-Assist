@@ -5,5 +5,5 @@ export class Doctor extends User{
     workPhoneNumber: string;
     consultationPrice: number;
     specialty: string;
-    myPatients: Patient[];
+    myPatients: string[];
 }

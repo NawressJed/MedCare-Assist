@@ -79,19 +79,11 @@ export class AuthSignInComponent implements OnInit {
 
         this._authService.signIn(this.signInForm.value).subscribe(
             (response: any) => {
-                this._userAuthService.setRole(response.user.role)
-                this._userAuthService.setEmail(response.user.email)
-                this._userAuthService.setName(response.user.firstname)
-                this._userAuthService.setId(response.user.id)
-                this._userAuthService.setLastname(response.user.lastname)
-                this._userAuthService.setEmail(response.user.email)
-                this._userAuthService.setRefreshToken(response.refreshToken)
-                this._userAuthService.setAccessToken(response.accessToken)
 
                 const role = response.user.role;
                 if(role === "ADMIN") {
                     this._router.navigateByUrl('/admin');
-                }else if(role === "DOCTOR") {
+                }else if(role === "ROLE_DOCTOR") {
                     this._router.navigateByUrl('/doctor/appointment/list');
                 }else {
                     this._router.navigateByUrl('/patient/appointment/test')

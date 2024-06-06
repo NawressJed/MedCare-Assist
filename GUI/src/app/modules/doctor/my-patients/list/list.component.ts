@@ -8,6 +8,8 @@ import { UserService } from 'app/shared/services/userService/user.service';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
+import { AddComponent } from '../../medicalFile/add/add.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-list',
@@ -29,7 +31,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   @ViewChild('matDrawer', { static: true }) matDrawer: MatDrawer;
 
-  patientsCount: Number = 0;
+  patientsCount: number = 0;
   dpatients: Observable<Doctor[]>;
   filteredPatients: Observable<Doctor[]>;
   drawerMode: 'side' | 'over';
@@ -43,7 +45,7 @@ export class ListComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _userService: UserService,
     private datePipe: DatePipe,
-    private _cookie: CookieService
+    private _cookie: CookieService,
   ) { }
 
   ngOnInit(): void {
@@ -65,12 +67,18 @@ export class ListComponent implements OnInit, OnDestroy {
       this.searchForm.get('keywords').valueChanges.pipe(startWith(''))
     ]).pipe(
       map(([patients, search]) => {
+        console.log('Original patients array:', patients);
+        // Reverse the order of the patients
+        let sortedPatients = [...patients].reverse();
+        console.log('Sorted patients array:', sortedPatients); 
         if (!search) {
-          return patients;
+          return sortedPatients;
         }
-        return patients.filter(patient =>
+        const filtered = sortedPatients.filter(patient =>
           `${patient.firstname} ${patient.lastname}`.toLowerCase().includes(search.toLowerCase())
         );
+        console.log('Filtered patients array:', filtered); 
+        return filtered;
       })
     );
 

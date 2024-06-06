@@ -1,1 +1,202 @@
-<p>add works!</p>
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="bg-card">
+        <div
+            class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b bg-card dark:bg-transparent">
+            <div class="justify-start mb-4">
+                <a mat-flat-button (click)="goBack()" rel="noreferrer" [color]="'primary'">
+                    <mat-icon class="icon-size-35" matPrefix [svgIcon]="'heroicons_solid:chevron-left'"></mat-icon>
+                </a>
+            </div>
+            <div class="text-4xl font-extrabold tracking-tight leading-none text-blue text-blue-600">
+                {{ "USER.ADD_PATIENT" | translate }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto border-t -mt-px pt-4 sm:pt-6">
+        <div class="w-full max-w-screen-xl mx-auto">
+            <!-- Tabs -->
+            <mat-tab-group class="sm:px-2" [animationDuration]="'0'">
+
+                <!-- New Patient Tab -->
+                <mat-tab label="New Patient">
+                    <ng-template matTabContent>
+                        <form class="p-4 bg-card shadow rounded-2xl overflow-hidden" [formGroup]="addPatientForm">
+                            <mat-vertical-stepper [linear]="true" #verticalStepper>
+                                <mat-step [formGroupName]="'step1'" [stepControl]="addPatientForm.get('step1')"
+                                    #verticalStepperStep1>
+                                    <ng-template matStepLabel>{{ "USER.PERSONAL_INFORMATIONS" | translate
+                                        }}</ng-template>
+                                    <p class="my-6 font-medium"></p>
+
+                                    <div class="flex">
+                                        <mat-form-field class="flex-auto">
+                                            <input matInput formControlName="firstname"
+                                                placeholder="{{ 'USER.FIRSTNAME' | translate }}" required />
+                                            <mat-icon class="icon-size-5" matPrefix
+                                                [svgIcon]="'heroicons_solid:user'"></mat-icon>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step1').get('firstname').errors?.required">{{
+                                                "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="flex">
+                                        <mat-form-field class="flex-auto">
+                                            <input matInput formControlName="lastname"
+                                                placeholder="{{ 'USER.LASTNAME' | translate }}" required />
+                                            <mat-icon class="icon-size-5" matPrefix
+                                                [svgIcon]="'heroicons_solid:user'"></mat-icon>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step1').get('lastname').errors?.required">{{
+                                                "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="flex">
+                                        <mat-form-field class="flex-auto">
+                                            <input type="text" matInput formControlName="dateOfBirth"
+                                                placeholder="{{ 'USER.BIRTH_DATE' | translate }}"
+                                                onfocus="(this.type='date')" required />
+                                            <mat-icon class="icon-size-5" matPrefix
+                                                [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step1').get('dateOfBirth').errors?.required">{{
+                                                "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step1').get('dateOfBirth').errors?.pattern">{{
+                                                "ERROR_MESSAGE.INVALID_BIRTH_DATE" | translate }}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="flex">
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <mat-select formControlName="gender" required
+                                                placeholder="{{ 'USER.GENDER' | translate }}">
+                                                <mat-option value="MALE">MALE</mat-option>
+                                                <mat-option value="FEMALE">FEMALE</mat-option>
+                                                <mat-option value="OTHER">OTHER</mat-option>
+                                            </mat-select>
+                                            <mat-icon class="icon-size-5" matPrefix
+                                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step1').get('gender').errors?.required">{{
+                                                "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="flex">
+                                        <mat-form-field class="fuse-mat-textarea flex-auto">
+                                            <input type="tel" matInput formControlName="phoneNumber"
+                                                placeholder="{{ 'USER.PHONE_NUMBER' | translate }}" required />
+                                            <mat-icon class="icon-size-5" matPrefix
+                                                [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step1').get('phoneNumber').errors?.required">{{
+                                                "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step1').get('phoneNumber').errors?.pattern">{{
+                                                "ERROR_MESSAGE.VALID_PHONE_NUMBER" | translate }}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="flex">
+                                        <mat-form-field class="flex-auto">
+                                            <input type="email" matInput formControlName="email"
+                                                placeholder="{{ 'USER.EMAIL' | translate }}" required />
+                                            <mat-icon class="icon-size-5" matPrefix
+                                                [svgIcon]="'heroicons_solid:at-symbol'"></mat-icon>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step1').get('email').errors?.required">{{
+                                                "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step1').get('email').errors?.pattern">{{
+                                                "ERROR_MESSAGE.VALID_EMAIL" | translate }}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="flex justify-end">
+                                        <button class="px-8" mat-flat-button [color]="'primary'"
+                                            [disabled]="verticalStepperStep1.stepControl.invalid" type="button"
+                                            matStepperNext>{{ "USER.NEXT" | translate }}</button>
+                                    </div>
+                                </mat-step>
+
+                                <mat-step [formGroupName]="'step2'" [stepControl]="addPatientForm.get('step2')"
+                                    #verticalStepperStep2>
+                                    <ng-template matStepLabel>{{ "USER.ADDRESS" | translate }}</ng-template>
+                                    <p class="my-6 font-medium"></p>
+
+                                    <div class="flex">
+                                        <mat-form-field class="flex-auto gt-xs:pr-3">
+                                            <input matInput formControlName="address"
+                                                placeholder="{{ 'USER.ADDRESS' | translate }}" required />
+                                            <mat-icon class="icon-size-5" matPrefix
+                                                [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step2').get('address').errors?.required">{{
+                                                "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="flex">
+                                        <mat-form-field class="fuse-mat-textarea flex-auto">
+                                            <input type="text" pattern="[0-9]*" matInput formControlName="zipCode"
+                                                placeholder="{{ 'USER.ZIP_CODE' | translate }}" required />
+                                            <mat-icon class="icon-size-5" matPrefix
+                                                [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step2').get('zipCode').errors?.required">{{
+                                                "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
+                                            <mat-error
+                                                *ngIf="addPatientForm.get('step2').get('zipCode').errors?.pattern">{{
+                                                "ERROR_MESSAGE.VALID_ZIPCODE" | translate }}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="flex justify-end">
+                                        <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
+                                            matStepperPrevious>{{ "USER.BACK" | translate }}</button>
+                                        <button class="px-8" mat-flat-button [color]="'primary'" type="button"
+                                            matStepperNext
+                                            [disabled]="verticalStepperStep2.stepControl.pristine || verticalStepperStep2.stepControl.invalid"
+                                            type="submit" (click)="createUser()" [disabled]="disableButton">{{
+                                            "USER.SAVE" | translate }}</button>
+                                    </div>
+                                </mat-step>
+                            </mat-vertical-stepper>
+                        </form>
+                    </ng-template>
+                </mat-tab>
+
+                <!-- Existing Patient Tab -->
+                <mat-tab label="Existing Patient">
+                    <ng-template matTabContent>
+                        <form class="flex flex-col items-start w-full max-w-3xl p-8 space-y-8 rounded-2xl shadow overflow-hidden bg-card">
+                            <mat-form-field class="fuse-mat-no-subscript w-full">
+                                <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+                                <input matInput [formControl]="searchControl" [matAutocomplete]="auto" placeholder="Search for a patient by email">
+                            </mat-form-field>
+                            <mat-autocomplete class="max-h-128 mt-1 rounded" [disableRipple]="true" #auto="matAutocomplete">
+                                <mat-option *ngIf="(filteredPatients$ | async)?.length === 0" disabled>
+                                    No results found!
+                                </mat-option>
+                                <ng-container *ngIf="filteredPatients$ | async as filteredPatients">
+                                    <ng-container *ngFor="let patient of filteredPatients; trackBy: trackByFn">
+                                        <mat-option [value]="patient.email" (click)="addPatientToDoctor(patient)">
+                                            {{ patient.email }} - {{ patient.firstname }} {{ patient.lastname }}
+                                        </mat-option>
+                                    </ng-container>
+                                </ng-container>
+                            </mat-autocomplete>
+                        </form>
+                    </ng-template>
+                </mat-tab>  
+            </mat-tab-group>
+        </div>
+    </div>
+
+</div>

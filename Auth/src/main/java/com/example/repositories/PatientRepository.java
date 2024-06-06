@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface PatientRepository extends JpaRepository<Patient, UUID> {
     Patient findPatientByEmail(String email);
+    Patient findPatientById(UUID id);
 }

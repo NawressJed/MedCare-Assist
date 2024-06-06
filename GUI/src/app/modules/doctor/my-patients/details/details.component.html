@@ -1,1 +1,122 @@
-<p>details works!</p>
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div class="flex flex-col shadow bg-card">
+
+        <!-- Cover image -->
+        <div class="relative flex-0 py-8 px-4 sm:p-16 overflow-hidden bg-blue-900 dark">
+            <svg class="absolute inset-0 pointer-events-none"
+             viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+            <g class="text-blue-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+                <circle r="234" cx="196" cy="23"></circle>
+                <circle r="234" cx="790" cy="491"></circle>
+            </g>
+        </svg>
+        </div>
+
+        <!-- User info -->
+        <div class="flex items-center justify-center w-full mx-auto px-8 lg:h-18 bg-card card">
+            <!-- Details -->
+            <div class="text-lg font-bold leading-none text-center">
+                {{ patient?.firstname }} {{ patient?.lastname }}
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <br />
+
+    <!-- Main -->
+    <div class="flex flex-col w-auto m-15 xl:flex-nowrap lg:flex-nowrap xl:mx-15 card xs:mx-2 xs:mt-1 mt-0">
+        <div class="flex flex-row w-auto m-15 xl:flex-nowrap lg:flex-nowrap xl:mx-15 card xs:mx-2 xs:mt-1">
+            <!-- Card #38 -->
+            <fuse-card class="flex flex-col h-auto w-full p-8 filter-info card">
+                <div class="text-2xl font-semibold leading-tight">
+                    {{ 'USER.BASIC_INFORMATIONS' | translate }}
+                </div>
+                <hr class="w-full border-t mt-6" />
+                <div class="flex items-center mt-4">
+                    <mat-icon class="icon-size-5 mr-3 text-primary" [svgIcon]="'heroicons_solid:user'"></mat-icon>
+                    <span class="leading-none">{{ 'USER.FULL_NAME' | translate }}:</span>
+                    <span class="leading-none ml-1">{{ patient?.firstname }} {{ patient?.lastname }}</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <mat-icon class="icon-size-5 mr-3 text-primary" [svgIcon]="'heroicons_solid:cake'"></mat-icon>
+                    <span class="leading-none">{{ 'USER.BIRTH_DATE' | translate }}:</span>
+                    <span class="leading-none ml-1">{{ patient?.dateOfBirth | date: "dd/MM/yyyy" }}</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <mat-icon class="icon-size-5 mr-3 text-primary" [svgIcon]="'heroicons_solid:user'"></mat-icon>
+                    <span class="leading-none">{{ 'USER.GENDER' | translate }}:</span>
+                    <span class="leading-none ml-1">{{ 'USER.'+patient?.gender | translate }}</span>
+                </div>
+            </fuse-card>
+
+            <!-- Card #50 -->
+            <fuse-card class="flex flex-col h-auto w-full p-8 filter-info card lg:ml-10 xs:mt-10 lg:mt-0">
+                <div class="text-2xl font-semibold leading-tight">
+                    {{ 'USER.PERSONAL_INFORMATIONS' | translate }}
+                </div>
+                <div class="flex items-center mt-6">
+                    <div class="font-medium text-secondary">{{ 'USER.FULL_ADDRESS' | translate }}</div>
+                    <div class="flex-auto ml-2 border-b-2"></div>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex items-center mt-4 truncate">
+                        <mat-icon class="icon-size-5 text-primary"
+                            [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                        <div class="ml-2">{{ 'USER.ADDRESS' | translate }}:</div>
+                        <span class="ml-2">{{ patient?.address }}</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <mat-icon class="icon-size-5 text-primary"
+                            [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                        <div class="ml-2">{{ 'USER.ZIP_CODE' | translate }}:</div>
+                        <span class="ml-2">{{ patient?.zipCode }}</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center mt-6">
+                    <div class="font-medium text-secondary">{{ 'USER.CONTACT' | translate }}</div>
+                    <div class="flex-auto ml-2 border-b-2"></div>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex items-center mt-4">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+                        <div class="ml-2">{{ 'USER.PHONE' | translate }} :</div>
+                        <span class="ml-2"><a [href]="'tel:'+ patient?.phoneNumber">{{ patient?.phoneNumber
+                                }}</a></span>
+                    </div>
+                    <div class="flex items-center mt-4 flex-wrap">
+                        <mat-icon class="icon-size-5 text-primary" [svgIcon]="'heroicons_solid:at-symbol'"></mat-icon>
+                        <div class="ml-2">{{ 'USER.EMAIL' | translate }} :</div>
+                        <span class="ml-2"><a [href]="'mailto:'+ patient?.email">{{ patient?.email }}</a></span>
+                    </div>
+                </div>
+            </fuse-card>
+
+            <fuse-card class="flex flex-col h-auto w-full p-8 filter-info card lg:ml-10 xs:mt-10 lg:mt-0">
+                <div class="flex items-center justify-between">
+                  <div class="text-2xl font-semibold leading-tight">
+                    {{ 'USER.MEDICAL_FILES' | translate }}
+                  </div>
+                  <button class="px-1 sm:px-4 min-w-10" mat-button [color]="'primary'" (click)="addNewMedicalFile()">
+                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
+                  </button>
+                </div>
+                <hr class="w-full border-t mt-6" />
+                <div class="flex flex-col">
+                  <ng-container *ngIf="medicalFiles$ | async as medicalFiles">
+                    <ng-container *ngFor="let file of medicalFiles">
+                      <a
+                        class="hover:underline text-primary-500 cursor-pointer"
+                        [routerLink]="['/doctor/medical-files/details', file.id]">
+                        MedicalFile - {{ file.date | date:'MMM d, y' }}
+                      </a>
+                    </ng-container>
+                  </ng-container>
+                </div>
+              </fuse-card>                 
+        </div>
+    </div>
+</div>

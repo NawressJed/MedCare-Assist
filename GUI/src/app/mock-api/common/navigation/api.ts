@@ -66,7 +66,7 @@ export class NavigationMockApi {
                     title: 'My Profile',
                     type: 'basic',
                     icon: 'heroicons_outline:user-circle',
-                    link: ''
+                    link: '/profile'
                 },
                 {
                     id: 'patients',
@@ -98,7 +98,7 @@ export class NavigationMockApi {
                 }
             );
         }
-        if (this.role === 'DOCTOR') {
+        if (this.role === 'ROLE_DOCTOR') {
             this._defaultNavigation.push(
                 // {
                 //     id: 'dashboard',
@@ -116,7 +116,7 @@ export class NavigationMockApi {
                     title: 'My Profile',
                     type: 'basic',
                     icon: 'heroicons_outline:user-circle',
-                    link: ''
+                    link: '/profile'
                 },
                 {
                     id: 'patients',
@@ -141,7 +141,7 @@ export class NavigationMockApi {
                 }
             );
         }
-        if (this.role === 'PATIENT') {
+        if (this.role === 'ROLE_PATIENT') {
             this._defaultNavigation.push(
                 // {
                 //     id: 'tlDashboard',
@@ -160,6 +160,13 @@ export class NavigationMockApi {
                     type: 'basic',
                     icon: '',
                     link: ''
+                },
+                {
+                    id: 'profile',
+                    title: 'My Profile',
+                    type: 'basic',
+                    icon: 'heroicons_outline:user-circle',
+                    link: '/profile'
                 },
                 {
                     id: 'profile',

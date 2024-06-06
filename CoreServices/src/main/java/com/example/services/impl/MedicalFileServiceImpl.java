@@ -3,17 +3,23 @@ package com.example.services.impl;
 import com.example.dto.MedicalFileDTO;
 import com.example.entities.Doctor;
 import com.example.entities.MedicalFile;
+import com.example.entities.Medication;
+import com.example.entities.Patient;
 import com.example.mapper.AutoMedicalFileMapper;
 import com.example.repositories.DoctorRepository;
 import com.example.repositories.MedicalFileRepository;
+import com.example.repositories.MedicationRepository;
+import com.example.repositories.PatientRepository;
 import com.example.services.MedicalFileService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -21,7 +27,11 @@ public class MedicalFileServiceImpl implements MedicalFileService {
     @Autowired
     DoctorRepository doctorRepository;
     @Autowired
+    PatientRepository patientRepository;
+    @Autowired
     MedicalFileRepository repository;
+    @Autowired
+    MedicationRepository medicationRepository;
     @Autowired
     AutoMedicalFileMapper mapper;
 
@@ -29,7 +39,42 @@ public class MedicalFileServiceImpl implements MedicalFileService {
     public MedicalFileDTO createMedicalFile(MedicalFileDTO medicalFileDTO) {
         try {
             MedicalFile medicalFile = mapper.toEntity(medicalFileDTO);
+            medicalFile.setDate(LocalDateTime.now());
             return mapper.toDto(repository.save(medicalFile));
+        } catch (Exception e) {
+            log.error("ERROR creating new medical file! "+ e);
+            return null;
+        }
+    }
+
+    @Override
+    public MedicalFileDTO createPatientMedicalFile(UUID doctorId, UUID patientID, MedicalFileDTO medicalFileDTO) {
+        try {
+            Doctor doctor = doctorRepository.findDoctorById(doctorId);
+            Patient patient = patientRepository.findPatientById(patientID);
+            MedicalFile medicalFile = mapper.toEntity(medicalFileDTO);
+            medicalFile.setDoctor(doctor);
+            medicalFile.setPatient(patient);
+            medicalFile.setDate(LocalDateTime.now());
+
+            List<Medication> medications = medicalFileDTO.getMedications().stream()
+                    .map(medicationDTO -> {
+                        Medication medication = new Medication();
+                        medication.setName(medicationDTO.getName());
+                        medication.setDosage(medicationDTO.getDosage());
+                        medication.setFrequency(medicationDTO.getFrequency());
+                        medication.setDuration(medicationDTO.getDuration());
+                        medication.setMedicalFile(medicalFile);
+                        return medication;
+                    }).collect(Collectors.toList());
+
+            medicalFile.setMedications(medications);
+
+            MedicalFile savedMedicalFile = repository.save(medicalFile);
+
+            medicationRepository.saveAll(medications);
+
+            return mapper.toDto(savedMedicalFile);
         } catch (Exception e) {
             log.error("ERROR creating new medical file! "+ e);
             return null;
@@ -42,6 +87,7 @@ public class MedicalFileServiceImpl implements MedicalFileService {
             Doctor doctor = doctorRepository.findDoctorById(id);
             MedicalFile medicalFile = mapper.toEntity(medicalFileDTO);
             medicalFile.setDoctor(doctor);
+            medicalFile.setDate(LocalDateTime.now());
             return mapper.toDto(repository.save(medicalFile));
         } catch (Exception e) {
             log.error("ERROR creating medical file by doctor with ID= " + id + e);

@@ -1,41 +1,61 @@
 package com.example.config;
 
-import com.example.entities.UserEntity;
-import com.example.mapper.AutoUserMapper;
 import com.example.dto.UserDetailsImpl;
 import com.example.repositories.TokenRepository;
 import com.example.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
+
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
+
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
-    @Autowired
-    AutoUserMapper autoUserMapper;
+
     @Autowired
     TokenRepository tokenRepository;
+
     @Autowired
     UserRepository userRepository;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractEmail(String token) {
+        return extractClaim(token, claims -> claims.get("email", String.class));
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> {
+            Object roles = claims.get("role");
+            if (roles instanceof List) {
+                return ((List<?>) roles).stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(","));
+            }
+            return roles.toString();
+        });
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -44,12 +64,13 @@ public class JwtService {
     }
 
     public String generateToken(UserDetailsImpl userDetails) {
-        UserEntity user = autoUserMapper.toEntity(userDetails);
         Map<String, Object> claims = new HashMap<>();
-        claims.put("firstname", user.getFirstname());
-        claims.put("role", user.getRole().name());
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        claims.put("role", roles);
 
-        return generateToken(claims, autoUserMapper.toDto(user));
+        return generateToken(claims, userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
@@ -93,12 +114,18 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse JWT", e);
+        }
     }
 
     private Key getSignInKey() {

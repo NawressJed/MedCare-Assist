@@ -2,6 +2,6 @@ package com.example.enums;
 
 public enum ERole {
     ADMIN,
-    DOCTOR,
-    PATIENT;
+    ROLE_DOCTOR,
+    ROLE_PATIENT;
 }

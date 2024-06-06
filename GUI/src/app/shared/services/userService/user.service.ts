@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Doctor } from 'app/shared/models/users/doctor/doctor';
 import { Patient } from 'app/shared/models/users/patient/patient';
@@ -22,9 +22,17 @@ export class UserService {
     return this.http.get<User>(`${this.baseUrl}/get-user/${id}`);
   }
 
-  getPatient(patient: Patient): Observable<any> {
-    return this.http.get(`${this.baseUrl}/get-patient/${patient.id}`);
+  getPatient(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get-patient/${id}`);
   }
+
+  getPatientByEmail(email: string): Observable<Patient[]> {
+    return this.http.get<Patient[]>(`${this.baseUrl}/get-patient-by-email`, { params: { email } });
+  }
+
+  searchPatientsByEmail(email: string): Observable<Patient[]> {
+    return this.http.get<Patient[]>(`${this.baseUrl}/search-patients-by-email`, { params: { email } });
+}
 
   getPatientsList(): Observable<any> {
     return this.http.get(`${this.baseUrl}/get-all-patients`);
@@ -34,16 +42,25 @@ export class UserService {
     return this.http.get(`${this.baseUrl}/get-doctor-patients//${id}`);
   }
 
+  addPatientToDoctor(doctorId: string, patientId: string): Observable<any> {
+    return this.http.put(`${this.baseUrl}/patient-to-doctor/${doctorId}/${patientId}`, {});
+  }
+
+  createPatientToDoctor(id: string, patient: Patient): Observable<Object> {
+    return this.http.put(`${this.baseUrl}/add-patient-to-doctor/${id}`, patient);
+  }
+
   createPatient(patient: Patient): Observable<Object> {
     return this.http.post(`${this.baseUrl}/add-patient`, patient);
   }
 
   updatePatient(id: string, value: any): Observable<Object> {
-    return this.http.put(`${this.baseUrl}/update-patient/${id}`, value);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put(`${this.baseUrl}/update-patient/${id}`, value, { headers });
   }
 
-  getDoctor(doctor: Doctor): Observable<any> {
-    return this.http.get(`${this.baseUrl}/get-doctor/${doctor.id}`);
+  getDoctor(doctorId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get-doctor/${doctorId}`);
   }
 
   getDoctorsList(): Observable<any> {
@@ -55,7 +72,8 @@ export class UserService {
   }
 
   updateDoctor(id: string, value: any): Observable<Object> {
-    return this.http.put(`${this.baseUrl}/update-doctor/${id}`, value);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put(`${this.baseUrl}/update-doctor/${id}`, value, { headers });
   }
 
   deleteUser(user: User): Observable<any> {

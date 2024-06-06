@@ -20,7 +20,6 @@ import java.util.Set;
 @ToString(callSuper = true, exclude = "myDoctors")
 public class Patient extends UserEntity {
     private Date dateOfBirth;
-
     @ManyToMany(mappedBy = "myPatients")
     @JsonBackReference
     private Set<Doctor> myDoctors;

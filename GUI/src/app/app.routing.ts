@@ -67,6 +67,20 @@ export const appRoutes: Route[] = [
         ]
     },
 
+    {
+        path: '',
+        component: LayoutComponent,
+        data: {
+            layout: 'classic'
+        },
+        resolve: {
+            initialData: InitialDataResolver,
+        },
+        children: [
+            { path: 'profile', loadChildren: () => import('app/modules/profile/profile.module').then(m => m.ProfileModule) },
+        ]
+    },
+
     // Admin routes
     {
         path: 'admin',
@@ -116,15 +130,21 @@ export const appRoutes: Route[] = [
             {
                 path: 'my-patients', children: [
                     { path: 'list', loadChildren: () => import('app/modules/doctor/my-patients/list/list.module').then(m => m.ListModule) },
-                    
+                    { path: 'add', loadChildren: () => import('app/modules/doctor/my-patients/add/add.module').then(m => m.AddModule) },
+                    {path: 'details/:id', loadChildren: () => import('app/modules/doctor/my-patients/details/details.module').then(m => m.DetailsModule)},
+                ]
+            },
+            {
+                path: 'medical-files', children: [
+                    { path: 'add', loadChildren: () => import('app/modules/doctor/medicalFile/add/add.module').then(m => m.AddModule) },
+                    {path: 'details/:id', loadChildren: () => import('app/modules/doctor/medicalFile/details/details.module').then(m => m.DetailsModule)},
                 ]
             },
             {
                 path: 'appointment', children: [
                     { path: 'list', loadChildren: () => import('app/modules/doctor/appointments-mgt/appointment-list/appointment-list.module').then(m => m.AppointmentListModule) },
                     { path: 'add', loadChildren: () => import('app/modules/doctor/appointments-mgt/appointment-add/appointment-add.module').then(m => m.AppointmentAddModule) },
-                    { path: 'update', loadChildren: () => import('app/modules/doctor/appointments-mgt/appointment-update/appointment-update.module').then(m => m.AppointmentUpdateModule) },
-                    
+                    { path: 'update', loadChildren: () => import('app/modules/doctor/appointments-mgt/appointment-update/appointment-update.module').then(m => m.AppointmentUpdateModule) },                    
                 ]
             },
             {

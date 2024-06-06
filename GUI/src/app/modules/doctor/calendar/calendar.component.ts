@@ -38,7 +38,7 @@ export class CalendarComponent implements OnInit {
 
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
-    locale: 'fr',
+    locale: 'en',
     weekends: true,
     plugins: [dayGridPlugin],
     height: 800,
@@ -96,7 +96,7 @@ export class CalendarComponent implements OnInit {
   customizeCalendarOptions(): any {
     return {
       initialView: 'dayGridMonth',
-      locale: 'FR',
+      locale: 'EN',
       weekends: true,
       plugins: [dayGridPlugin],
       height: 800,
