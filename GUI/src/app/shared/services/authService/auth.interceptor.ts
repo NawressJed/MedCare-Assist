@@ -56,10 +56,13 @@ export class AuthInterceptor implements HttpInterceptor {
           }),
           catchError((err) => {
             this.isRefreshing = false;
-            this.tokenService.logout();
+            this.authService.logout(refreshToken);
             return throwError(err);
           })
         );
+      } else {
+        this.isRefreshing = false;
+        this.authService.logout(refreshToken);
       }
     }
 

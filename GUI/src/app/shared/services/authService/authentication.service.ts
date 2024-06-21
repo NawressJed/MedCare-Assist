@@ -24,7 +24,7 @@ export class AuthenticationService {
   constructor(private http: HttpClient,
     private _router: Router,
     private _userAuthService: UserAuthService,
-    private _cookiService: CookieService,
+    private _cookieService: CookieService,
     private tokenService: TokenService
   ) { }
 
@@ -66,7 +66,8 @@ export class AuthenticationService {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.post<any>(`${this.baseUrl}/logout`, { refreshToken }, { headers }).pipe(
       tap(() => {
-        this._cookiService.deleteAll;
+        this._cookieService.deleteAll();
+        this.tokenService.clearTokens(); 
       })
     );
   }
@@ -82,9 +83,6 @@ export class AuthenticationService {
       tap(response => {
           console.log("New access token received:", response.accessToken);
           this.tokenService.setAccessToken(response.accessToken);
-
-          console.log("New refresh token received:", response.refreshToken);
-          this.tokenService.setRefreshToken(response.refreshToken);
       })
     );
   }

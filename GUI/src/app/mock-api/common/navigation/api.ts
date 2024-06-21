@@ -138,6 +138,13 @@ export class NavigationMockApi {
                     type: 'basic',
                     icon: 'heroicons_outline:calendar',
                     link: '/doctor/calendar'
+                },
+                {
+                    id: 'chat',
+                    title: 'Chat',
+                    type: 'basic',
+                    icon: 'heroicons_outline:chat-alt',
+                    link: '/chat'
                 }
             );
         }
@@ -174,6 +181,13 @@ export class NavigationMockApi {
                     type: 'basic',
                     icon: 'heroicons_outline:user-circle',
                     link: ''
+                },
+                {
+                    id: 'chat',
+                    title: 'Chat',
+                    type: 'basic',
+                    icon: 'heroicons_outline:chat-alt',
+                    link: '/chat'
                 }
             );
         }

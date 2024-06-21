@@ -78,6 +78,7 @@ export const appRoutes: Route[] = [
         },
         children: [
             { path: 'profile', loadChildren: () => import('app/modules/profile/profile.module').then(m => m.ProfileModule) },
+            { path: 'chat', loadChildren: () => import('app/modules/chat/chat.module').then(m => m.ChatModule) },
         ]
     },
 

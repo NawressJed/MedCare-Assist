@@ -34,9 +34,13 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendNotification(String title, String message, UUID userId, Appointment appointment) {
-        String jsonMessage = String.format("{\"title\": \"%s\", \"message\": \"%s\", \"appointment\": {\"id\": \"%s\"}}", title, message, appointment.getId());
-        messagingTemplate.convertAndSendToUser(userId.toString(), "/notify", jsonMessage);
-    }
+        String jsonMessage;
+        if (appointment != null) {
+            jsonMessage = String.format("{\"title\": \"%s\", \"message\": \"%s\", \"appointment\": {\"id\": \"%s\"}}", title, message, appointment.getId());
+        } else {
+            jsonMessage = String.format("{\"title\": \"%s\", \"message\": \"%s\"}", title, message);
+        }
+        messagingTemplate.convertAndSendToUser(userId.toString(), "/notify", jsonMessage);    }
 
 //    @Override
 //    public void sendNotification(String title, String message, UUID userId) {

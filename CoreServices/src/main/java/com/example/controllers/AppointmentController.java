@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -38,6 +39,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/doctor-add-appointment/{id}")
+    @PreAuthorize("hasRole('ROLE_DOCTOR')")
     public AppointmentDTO createDoctorAppointment(@PathVariable(value = "id") UUID id, @RequestBody AppointmentDTO appointmentDTO) {
         try {
             return appointmentService.createDoctorAppointment(id, appointmentDTO);
@@ -68,6 +70,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/doctor-get-appointment/{id}")
+    @PreAuthorize("hasRole('ROLE_DOCTOR')")
     public List<AppointmentDTO> getAppointmentsByDoctor(@PathVariable(value = "id") UUID id) {
         return appointmentService.findAppointmentByDoctor(id);
     }
