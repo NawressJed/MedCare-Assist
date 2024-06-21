@@ -14,7 +14,6 @@ import { ProfileComponent } from './profile.component';
 import { SettingsAccountComponent } from './account/account.component';
 import { SettingsSecurityComponent } from './settings-security/security.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { AddComponent } from '../doctor/medicalFile/add/add.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CanDeactivateGuardService } from 'app/can-deactivate-guard.service';
 

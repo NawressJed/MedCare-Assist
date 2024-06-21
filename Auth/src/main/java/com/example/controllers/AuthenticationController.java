@@ -84,20 +84,14 @@ public class AuthenticationController {
         if (refreshToken == null) {
             return ResponseEntity.badRequest().body("Refresh token is missing");
         }
-
         try {
             Token verifiedToken = refreshTokenService.verifyExpiration(refreshToken);
             UserEntity userEntity = verifiedToken.getUser();
             UserDetailsImpl userDetails = autoUserMapper.toDto(userEntity);
             String newAccessToken = jwtService.generateToken(userDetails);
-            Token newRefreshToken = refreshTokenService.generateRefreshToken(userDetails);
 
-            tokenRepository.delete(verifiedToken);
-            tokenRepository.save(newRefreshToken);
+            return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
 
-            return ResponseEntity.ok(Map.of("accessToken", newAccessToken, "refreshToken", newRefreshToken));
-        } catch (ExpiredJwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token has expired");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
