@@ -35,4 +35,9 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "appointment_id", nullable = true)
     private Appointment appointment;
+
+    @PrePersist
+    protected void onCreate() {
+        sentAt = LocalDateTime.now();
+    }
 }

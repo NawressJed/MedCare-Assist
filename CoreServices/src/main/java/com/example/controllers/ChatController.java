@@ -1,6 +1,8 @@
 package com.example.controllers;
 
 import com.example.dto.ChatMessageDTO;
+import com.example.entities.UserEntity;
+import com.example.repositories.UserRepository;
 import com.example.services.ChatService;
 import com.example.services.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,8 @@ public class ChatController {
     NotificationService notificationService;
     @Autowired
     SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    UserRepository userRepository;
 
 
     @MessageMapping("/chat.send")
@@ -34,7 +38,8 @@ public class ChatController {
             ChatMessageDTO savedMessage = chatService.save(chatMessageDTO);
 
             // Notify the recipient
-            String notificationMessage = "New message from " + chatMessageDTO.getSenderId();
+            UserEntity user = userRepository.findUserEntityById(chatMessageDTO.getSenderId());
+            String notificationMessage = "You have a new message from " + user.getFirstname() + " " + user.getLastname();
             notificationService.sendNotification("New Message", notificationMessage, chatMessageDTO.getRecipientId(), null);
 
             messagingTemplate.convertAndSendToUser(chatMessageDTO.getRecipientId().toString(), "/queue/messages", savedMessage);

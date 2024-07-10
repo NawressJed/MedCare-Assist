@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NotificationsComponent } from 'app/layout/common/notifications/notifications.component';
 import { SharedModule } from 'app/shared/shared.module';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
     declarations: [
@@ -23,6 +24,9 @@ import { SharedModule } from 'app/shared/shared.module';
     ],
     exports     : [
         NotificationsComponent
+    ],
+    providers: [
+        DatePipe
     ]
 })
 export class NotificationsModule

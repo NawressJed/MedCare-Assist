@@ -1,12 +1,11 @@
 package com.example.dto;
 
-import com.example.config.LocalDateTimeSerializer;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Data
@@ -18,6 +17,9 @@ public class ChatMessageDTO {
     private UUID senderId;
     private UUID recipientId;
     private String content;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime timestamp;
+    private String timestamp;
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp.format(DateTimeFormatter.ISO_DATE_TIME);
+    }
 }

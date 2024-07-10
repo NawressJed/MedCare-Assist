@@ -28,8 +28,7 @@ export const routes: Route[] = [
                         component: ConversationComponent
                     }
                 ]
-            },
-            
+            }
         ]
     }
 ];

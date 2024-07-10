@@ -14,4 +14,12 @@ export class NotificationService {
   getNotifications(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/get-notifications/${id}`);
   }
+
+  getNotificationById(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get-notification/${id}`);
+  }
+
+  markAsRead(notificationId: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/read/${notificationId}`, {});
+  }
 }

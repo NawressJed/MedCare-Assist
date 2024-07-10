@@ -5,13 +5,13 @@ import { CookieService } from 'ngx-cookie-service';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil, switchMap, map } from 'rxjs/operators';
 import { ChatService } from 'app/shared/services/chatService/chat.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ChatMessage } from 'app/shared/models/chat/chat-message';
+import { Router } from '@angular/router';
+import { WebSocketService } from 'app/shared/services/webSocketService/web-socket.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'chat-chats',
     templateUrl: './chats.component.html',
-    styleUrls: ['./chats.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -19,7 +19,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
     chats: any[] = [];
     drawerComponent: 'new-chat';
     drawerOpened: boolean = false;
-    filteredChats: any[];
+    filteredChats: any[] = [];
 
     name: string;
     lastname: string;
@@ -34,9 +34,10 @@ export class ChatsComponent implements OnInit, OnDestroy {
         private _cookieService: CookieService,
         private _userService: UserService,
         private _chatService: ChatService,
+        private _webSocketService: WebSocketService,
         private _router: Router,
-        private _route: ActivatedRoute
-    ) {}
+        private _datePipe: DatePipe
+    ) { }
 
     ngOnInit(): void {
         this.name = this._cookieService.get('name');
@@ -58,6 +59,16 @@ export class ChatsComponent implements OnInit, OnDestroy {
         this.filteredChats = this.chats.filter(chat => chat.name.toLowerCase().includes(query.toLowerCase()));
     }
 
+    onContactSelected(contactId: string): void {
+        console.log('Contact selected:', contactId);
+        this.drawerOpened = false;
+        this._router.navigate(['chat', contactId]).then(success => {
+            console.log('Navigation success:', success);
+        }).catch(error => {
+            console.error('Navigation error:', error);
+        });
+    }    
+
     openNewChat(): void {
         this.drawerComponent = 'new-chat';
         this.drawerOpened = true;
@@ -68,7 +79,16 @@ export class ChatsComponent implements OnInit, OnDestroy {
         this._userService.getUser(id).subscribe({
             next: (result) => {
                 this.authenticatedUser = result;
-                this.fetchChats(); // Fetch chats after authenticated user is set
+                this._webSocketService.setAuthenticatedUserId(id); // Ensure WebSocket is aware of the authenticated user ID
+
+                this._webSocketService.chatMessageReceived
+                    .pipe(takeUntil(this._unsubscribeAll))
+                    .subscribe(message => {
+                        this.fetchChats();  // Fetch chats to update the list
+                    });
+
+                this.fetchChats();
+                this._changeDetectorRef.markForCheck();
             },
             error: (error) => {
                 console.error('Error fetching authenticated user:', error);
@@ -93,7 +113,8 @@ export class ChatsComponent implements OnInit, OnDestroy {
                             partnerId,
                             name: `${user.firstname} ${user.lastname}`,
                             lastMessage: chat.content,
-                            lastMessageDate: new Date(chat.timestamp).toLocaleDateString(),
+                            lastMessageDate: new Date(chat.timestamp),
+                            formattedDate: this._datePipe.transform(new Date(chat.timestamp), 'dd/MM/yyyy'),
                             unreadCount: 0 // Assuming you have a way to get the unread count
                         }))
                     );
@@ -102,7 +123,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
             })
         ).subscribe({
             next: (chats) => {
-                this.chats = chats;
+                this.chats = chats.sort((a, b) => b.lastMessageDate.getTime() - a.lastMessageDate.getTime()); // Sort by date
                 this.filteredChats = this.chats;
                 this._changeDetectorRef.markForCheck();
             },
