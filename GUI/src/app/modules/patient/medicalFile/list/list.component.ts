@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class ListComponent implements OnInit, OnDestroy {
 
-  medicalFiles: MedicalFile[] = [];;
+  medicalFiles: MedicalFile[] = [];
 
   filters: {
     categorySlug$: BehaviorSubject<string>;
