@@ -37,7 +37,7 @@
                                 class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded w-full min-w-50">
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
                                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                                    [placeholder]="'Search appointments'">
+                                    [placeholder]="'Search..'">
                             </mat-form-field>
                         </div>
                         <!-- Add contact button -->
@@ -54,60 +54,132 @@
                         <!-- Header -->
                         <div
                             class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5">
-                            <div>#</div>
+                            <div> </div>
                             <div>Patient Name</div>
-                            <div class="hidden md:block font-semibold">Date & Time</div>
-                            <div>Email</div>
-                            <div>Phone</div>
-                            <div>Gender</div>
-                            <div class="flex items-center action-column">Actions</div>
+                            <div class="hidden md:block">Date & Time</div>
+                            <div class="hidden lg:block">Email</div>
+                            <div class="hidden lg:block">Phone</div>
+                            <div class="hidden lg:block">Gender</div>
+                            <div class="hidden md:block">Appointment Status</div>
+                            <div class="hidden lg:block">
+                                <div class="flex items-center action-column">Actions</div>
+                            </div>
                         </div>
                         <!-- Rows -->
                         <ng-container *ngIf="(appointments | async) as appointments">
                             <ng-container *ngIf="appointments.length > 0; else noAppointments">
                                 <ng-container
                                     *ngFor="let appointment of appointments; let i = index; trackBy: trackByFn">
-                                    <div
-                                        class="inventory-grid grid items-center gap-4 px-6 md:px-8 border-b bg-card">
-                                        <!-- Image -->
-                                        <div class="flex items-center">
-                                            <div
-                                                class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden">
-                                                <!--border-->
-                                                <!-- <img> -->
-                                                <!--<div class="flex items-center justify-center w-full h-full text-xs font-semibold leading-none text-center uppercase" *ngIf="!product.thumbnail">
-                                                  NO THUMB
-                                              </div>-->
-                                            </div>
-                                        </div>
+                                    <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                        <div> </div>
                                         <!-- Patient Name -->
-                                        <div class="font-semibold">{{ appointment.patient.firstname }} {{ appointment.patient.lastname }}
+                                        <div class="font-semibold">{{ appointment.patient.firstname }} {{
+                                            appointment.patient.lastname }}
                                         </div>
                                         <!-- Date -->
                                         <div class="hidden md:block">{{ convertDateFormat(appointment.date) }}, {{
                                             formatTime(appointment.time) }}
                                         </div>
                                         <!-- Email -->
-                                        <div class="hidden md:block"> {{ appointment.patient.email }} </div>
+                                        <div class="hidden lg:block"> {{ appointment.patient.email }} </div>
                                         <!-- Phone -->
-                                        <div>{{ appointment.patient.phoneNumber }}</div>
+                                        <div class="hidden lg:block">{{ appointment.patient.phoneNumber }}</div>
                                         <!-- Gender -->
-                                        <li class="relative flex py-7">
-                                            <div class="py-0.5 px-3 rounded-full text-sm font-semibold"
-                                                [ngClass]="{'text-blue-800 bg-blue-100 dark:text-blue-50 dark:bg-blue-500': appointment.patient.gender === 'MALE', 'text-pink-800 bg-pink-100 dark:text-pink-50 dark:bg-pink-500': appointment.patient.gender === 'FEMALE'}">
-                                                {{ appointment.patient.gender }}
+                                        <div class="hidden lg:block">
+                                            <li class="relative flex py-7">
+                                                <div class="py-0.5 px-3 rounded-full text-sm font-semibold"
+                                                    [ngClass]="{'text-blue-800 bg-blue-100 dark:text-blue-50 dark:bg-blue-500': appointment.patient.gender === 'MALE', 'text-pink-800 bg-pink-100 dark:text-pink-50 dark:bg-pink-500': appointment.patient.gender === 'FEMALE'}">
+                                                    {{ appointment.patient.gender }}
+                                                </div>
+                                            </li>
+                                        </div>
+                                        <!-- Appointment Status -->
+                                        <div class="hidden md:block">
+                                            <div class="w-full sm:col-span-2">
+                                                <div class="flex items-center mt-1.5 px-4 leading-9 rounded-full cursor-pointer w-30 min-w-30"
+                                                    [ngClass]="{
+                                                    'text-red-800 bg-red-200 dark:text-red-100 dark:bg-red-500': appointment.appointmentStatus === 'CANCELLED',
+                                                    'text-green-800 bg-green-200 dark:text-green-100 dark:bg-green-500': appointment.appointmentStatus === 'DONE',
+                                                    'text-blue-800 bg-blue-200 dark:text-blue-100 dark:bg-blue-500': appointment.appointmentStatus === 'UPCOMING'
+                                                }" [matMenuTriggerFor]="statusMenu">
+
+                                                    <!-- Cancelled -->
+                                                    <ng-container *ngIf="appointment.appointmentStatus === 'CANCELLED'">
+                                                        <mat-icon class="icon-size-5 text-current"
+                                                            [svgIcon]="'heroicons_solid:x-circle'"></mat-icon>
+                                                        <span class="ml-2 mr-1 text-md font-medium">Cancelled</span>
+                                                    </ng-container>
+
+                                                    <!-- Done -->
+                                                    <ng-container *ngIf="appointment.appointmentStatus === 'DONE'">
+                                                        <mat-icon class="icon-size-5 text-current"
+                                                            [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                                                        <span class="ml-2 mr-1 text-md font-medium">Done</span>
+                                                    </ng-container>
+
+                                                    <!-- Upcoming -->
+                                                    <ng-container *ngIf="appointment.appointmentStatus === 'UPCOMING'">
+                                                        <mat-icon class="icon-size-5 text-current"
+                                                            [svgIcon]="'heroicons_solid:clock'"></mat-icon>
+                                                        <span class="ml-2 mr-1 text-md font-medium">Upcoming</span>
+                                                    </ng-container>
+                                                </div>
+                                                <mat-menu #statusMenu="matMenu">
+                                                    <!-- Cancelled -->
+                                                    <button
+                                                        [ngClass]="{'bg-hover': appointment.appointmentStatus === 'CANCELLED'}"
+                                                        mat-menu-item (click)="setStatus(appointment, 'CANCELLED')">
+                                                        <span
+                                                            class="inline-flex items-center justify-between w-full min-w-30 leading-5">
+                                                            <span class="font-medium">Cancelled</span>
+                                                            <mat-icon
+                                                                class="mr-0 icon-size-4 text-red-600 dark:text-red-500"
+                                                                [svgIcon]="'heroicons_solid:x-circle'"></mat-icon>
+                                                        </span>
+                                                    </button>
+
+                                                    <!-- Done -->
+                                                    <button
+                                                        [ngClass]="{'bg-hover': appointment.appointmentStatus === 'DONE'}"
+                                                        mat-menu-item (click)="setStatus(appointment, 'DONE')">
+                                                        <span
+                                                            class="inline-flex items-center justify-between w-full min-w-30 leading-5">
+                                                            <span class="font-medium">Done</span>
+                                                            <mat-icon
+                                                                class="mr-0 icon-size-4 text-green-600 dark:text-green-500"
+                                                                [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                                                        </span>
+                                                    </button>
+
+                                                    <!-- Upcoming -->
+                                                    <button
+                                                        [ngClass]="{'bg-hover': appointment.appointmentStatus === 'UPCOMING'}"
+                                                        mat-menu-item (click)="setStatus(appointment, 'UPCOMING')">
+                                                        <span
+                                                            class="inline-flex items-center justify-between w-full min-w-30 leading-5">
+                                                            <span class="font-medium">Upcoming</span>
+                                                            <mat-icon
+                                                                class="mr-0 icon-size-4 text-blue-600 dark:text-blue-500"
+                                                                [svgIcon]="'heroicons_solid:clock'"></mat-icon>
+                                                        </span>
+                                                    </button>
+                                                </mat-menu>
                                             </div>
-                                        </li>
+                                        </div>
+
                                         <!-- Details button -->
-                                        <div class="flex items-center action-column">
-                                            <button class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2" mat-stroked-button>
-                                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil'"
-                                                    (click)="updateAppointment(appointment)"></mat-icon>
-                                            </button>
-                                            <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button>
-                                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:trash'"
-                                                    (click)="deleteAppointment(appointment)"></mat-icon>
-                                            </button>
+                                        <div class="hidden lg:block">
+                                            <div class="flex items-center action-column">
+                                                <button class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                                    mat-stroked-button>
+                                                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil'"
+                                                        (click)="updateAppointment(appointment)"></mat-icon>
+                                                </button>
+                                                <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button>
+                                                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:trash'"
+                                                        (click)="deleteAppointment(appointment)"></mat-icon>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </ng-container>

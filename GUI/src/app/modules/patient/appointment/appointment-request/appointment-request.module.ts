@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FuseCardModule } from '@fuse/components/card';
 import { SharedModule } from 'app/shared/shared.module';
 import { AppointmentRequestComponent } from './appointment-request.component';
+import { DatePipe } from '@angular/common';
 
 export const routes: Route[] = [
     {
@@ -43,7 +44,11 @@ export const routes: Route[] = [
         MatTooltipModule,
         FuseCardModule,
         SharedModule
+    ],
+    providers: [
+        DatePipe
     ]
+
 })
 export class AppointmentRequestModule
 {

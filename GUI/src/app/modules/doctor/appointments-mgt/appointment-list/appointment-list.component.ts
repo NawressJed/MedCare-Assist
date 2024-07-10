@@ -1,48 +1,37 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { DOCUMENT, DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
-import { filter, fromEvent, Observable, Subject, switchMap, BehaviorSubject, takeUntil } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, takeUntil } from 'rxjs';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { AppointmentAddComponent } from '../appointment-add/appointment-add.component';
 import { AppointmentUpdateComponent } from '../appointment-update/appointment-update.component';
 import { AppointmentService } from '../../../../shared/services/appointmentService/appointment.service';
 import { Appointment } from '../../../../shared/models/appointment/appointment';
 import { CookieService } from 'ngx-cookie-service';
-import { UserAuthService } from 'app/shared/services/authService/user-auth.service';
 
 @Component({
   selector: 'app-appointment-list',
   templateUrl: './appointment-list.component.html',
   styles: [
-    `
-    .female {
-      background-color: #ff4d88;
-      color: white; 
-    }
-    
-    .male {
-      background-color: #0033cc;
-      color: white;
-    }
-    
+    `    
 .inventory-grid {
-    grid-template-columns: 48px auto 40px;
+      display: grid;
+      grid-template-columns: 48px auto 40px; 
 
-    @screen sm {
-        grid-template-columns: 48px 112px 112px 112px 112px 112px 112px auto 72px;
-    }
+      @screen sm {
+        grid-template-columns: 48px 200px auto 72px;
+      }
 
-    @screen md {
-        grid-template-columns: 48px 112px 112px 112px 112px 112px 112px auto 72px;
-    }
+      @screen md {
+        grid-template-columns: 48px 200px 200px auto 72px;
+      }
 
-    @screen lg {
-      grid-template-columns: 48px 200px 200px 200px 200px 200px auto 72px;
-    }
+      @screen lg {
+        grid-template-columns: 48px 200px 200px 200px 200px 200px 200px auto 72px;
+      }
 }
 
 .action-column {
@@ -75,10 +64,9 @@ export class AppointmentListComponent implements OnInit {
     @Inject(DOCUMENT) private _document: any,
     private _router: Router,
     private _matDialog: MatDialog,
-    private _fuseMediaWatcherService: FuseMediaWatcherService,
     private datePipe: DatePipe,
     private _cookie: CookieService
-    
+
   ) {
   }
 
@@ -99,8 +87,10 @@ export class AppointmentListComponent implements OnInit {
       takeUntil(this._unsubscribeAll)
     ).subscribe((appointments: Appointment[]) => {
       this.appointmentsCount = appointments.length;
+      this._changeDetectorRef.markForCheck(); 
     });
-  }
+}
+
   /**
    * On destroy
    */
@@ -124,19 +114,32 @@ export class AppointmentListComponent implements OnInit {
       data: {
       }
     });
-  
+
     dialogRef.afterClosed().subscribe(() => {
       this.reloadData();
     });
   }
 
+  setStatus(appointment: Appointment, status: string): void {
+    appointment.appointmentStatus = status;
+    this.appointmentService.updateStatus(appointment.id, status).subscribe({
+        next: (data) => {
+            console.log('Appointment status updated successfully');
+            this.reloadData(); // Refresh data after update
+        },
+        error: (e) => {
+            console.log('Error updating appointment status', e);
+        }
+    });
+}
+
   updateAppointment(appointment: Appointment): void {
     if (appointment && appointment.id) {
       const dialogRef = this._matDialog.open(AppointmentUpdateComponent, {
         autoFocus: false,
-        data: { appointment: appointment } 
+        data: { appointment: appointment }
       });
-      
+
       dialogRef.afterClosed().subscribe(() => {
         this.reloadData();
       });
@@ -163,7 +166,7 @@ export class AppointmentListComponent implements OnInit {
         this.appointmentService.deleteAppointment(appointment).subscribe(
           () => {
             console.log('Appointment deleted successfully.');
-            this.reloadData(); 
+            this.reloadData();
           },
           (error) => {
             console.error('Error deleting appointment:', error);
@@ -201,21 +204,13 @@ export class AppointmentListComponent implements OnInit {
 
   convertDateFormat(dateString: string): string {
     const parsedDate = new Date(dateString);
-    return this.datePipe.transform(parsedDate, 'dd/MM/yyyy'); 
+    return this.datePipe.transform(parsedDate, 'dd/MM/yyyy');
   }
 
   formatTime(time: string): string {
     if (time) {
-      return time.split(':').slice(0, 2).join(':'); 
+      return time.split(':').slice(0, 2).join(':');
     }
     return '';
   }
-
-  getGenderStyle(gender: string) {
-    return {
-      backgroundColor: gender === 'FEMALE' ? 'pink' : 'blue',
-      color: 'white'  
-    };
-  }   
-  
 }

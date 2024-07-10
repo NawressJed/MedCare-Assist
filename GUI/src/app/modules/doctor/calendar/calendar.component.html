@@ -1,14 +1,16 @@
 <div class="flex flex-auto bg-card xs:flex-col lg:flex-row justify-start">
     <div class="filter bg-card">
-        <div class="flex flex-col p-6 mt-15">
-            <div class="flex flex-col">
-                <h2 class="text-xl font-semibold">My calendars</h2>
-                <hr class="hidden lg:flex mx-2 border-l-2">
-                <section class="example-section" [formGroup]="filter">
-                    <p><mat-checkbox [checked]="true" [color]="'primary'" class="appointments" (change)="filterAppointments($event.checked)">Appointments</mat-checkbox></p>
-                  </section>
-            </div>
+      <div class="flex flex-col p-6 mt-15">
+        <div class="flex flex-col">
+          <h2 class="text-xl font-semibold">My calendars</h2>
+          <hr class="hidden lg:flex mx-2 border-l-2">
+          <section class="example-section mt-6" [formGroup]="filter">
+            <p><mat-checkbox [checked]="true" [color]="'primary'" class="appointments" (change)="filterAppointments($event.checked)">Appointments</mat-checkbox></p>
+            <p><mat-checkbox [checked]="true" [color]="'warn'" class="schedules" (change)="filterAvailability($event.checked)">Availability</mat-checkbox></p>
+          </section>
         </div>
+      </div>
     </div>
     <full-calendar *ngIf="show" [options]="calendarOptions"></full-calendar>
-</div>
+  </div>
+  

@@ -20,6 +20,12 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CalendarComponent } from './calendar.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { AddComponent } from './add/add.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import moment from 'moment';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { UpdateComponent } from './update/update.component';
 
 const calendarRoutes: Route[] = [
   {
@@ -30,17 +36,21 @@ const calendarRoutes: Route[] = [
 
 @NgModule({
   declarations: [
-    CalendarComponent
+    CalendarComponent,
+    AddComponent,
+    UpdateComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(calendarRoutes),
     MatButtonModule,
     MatDividerModule,
+    MatDatepickerModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatMenuModule,
+    MatMomentDateModule,
     MatTooltipModule,
     FuseCardModule,
     SharedModule,
@@ -59,7 +69,21 @@ const calendarRoutes: Route[] = [
     TranslateModule
   ],
   providers: [
-    DatePipe
+    DatePipe,
+      {
+          provide : MAT_DATE_FORMATS,
+          useValue: {
+              parse  : {
+                  dateInput: moment.ISO_8601
+              },
+              display: {
+                  dateInput         : 'll',
+                  monthYearLabel    : 'MMM YYYY',
+                  dateA11yLabel     : 'LL',
+                  monthYearA11yLabel: 'MMMM YYYY'
+              }
+          }
+      }
   ]
 })
 export class CalendarModule { }

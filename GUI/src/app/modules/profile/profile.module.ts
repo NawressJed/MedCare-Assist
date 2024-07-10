@@ -16,6 +16,7 @@ import { SettingsSecurityComponent } from './settings-security/security.componen
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CanDeactivateGuardService } from 'app/can-deactivate-guard.service';
+import { DatePipe } from '@angular/common';
 
 export const routes: Route[] = [
     {
@@ -51,7 +52,8 @@ export const routes: Route[] = [
         TranslateModule
     ],
     providers: [
-        CanDeactivateGuardService
+        CanDeactivateGuardService,
+        DatePipe
     ]
 })
 export class ProfileModule

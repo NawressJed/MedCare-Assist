@@ -14,6 +14,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class PatientDTO extends UserDTO {
     private Date dateOfBirth;
-    @ManyToMany(mappedBy = "myPatients")
-    private Set<Doctor> myDoctors;
+//    @ManyToMany(mappedBy = "myPatients")
+//    private Set<Doctor> myDoctors;
 }

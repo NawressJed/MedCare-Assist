@@ -73,7 +73,6 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             notifications = notificationRepository.findNotificationByRecipientId(userId);
 
-            // Mark unread notifications as read
             notifications.stream()
                     .filter(notification -> notification.getNotificationStatus() == ENotificationStatus.UNREAD)
                     .forEach(notification -> {

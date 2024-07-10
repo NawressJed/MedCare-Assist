@@ -1,11 +1,9 @@
 package com.example.services.impl;
 
 import com.example.dto.AppointmentDTO;
-import com.example.entities.Appointment;
-import com.example.entities.Doctor;
-import com.example.entities.Notification;
-import com.example.entities.Patient;
+import com.example.entities.*;
 import com.example.enums.EAppointmentStatus;
+import com.example.enums.EApprovalStatus;
 import com.example.enums.ENotificationStatus;
 import com.example.mapper.AutoAppointmentMapper;
 import com.example.mapper.AutoDoctorMapper;
@@ -16,16 +14,24 @@ import com.example.services.DoctorService;
 import com.example.services.NotificationService;
 import com.example.services.PatientService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.ws.rs.NotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Log4j2
@@ -52,6 +58,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     PatientRepository patientRepository;
     @Autowired
     DoctorRepository doctorRepository;
+    @Autowired
+    ScheduleRepository scheduleRepository;
     private final Logger logger = LoggerFactory.getLogger(AppointmentServiceImpl.class);
 
     @Override
@@ -67,7 +75,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             }else {
                 appointment1.setDoctor(doctorRepository.findDoctorById(appointment1.getDoctor().getId()));
                 appointment1.setPatient(patientRepository.findPatientById(appointment1.getPatient().getId()));
-                appointment1.setAppointmentStatus(EAppointmentStatus.PENDING);
+                appointment1.setApprovalStatus(EApprovalStatus.PENDING);
                 return mapper.toDto(appointmentRepository.save(appointment1));
             }
         } catch (Exception e) {
@@ -81,11 +89,35 @@ public class AppointmentServiceImpl implements AppointmentService {
         try {
             Doctor doc = doctorRepository.findDoctorById(id);
             Patient patient = patientRepository.findPatientById(appointmentDTO.getPatient().getId());
+
+            Appointment appointment = mapper.toEntity(appointmentDTO);
+
+            Schedule schedule = scheduleRepository.findByDoctorIdAndDateAndStartTime(doc.getId(), appointment.getDate(), appointment.getTime())
+                    .orElse(null);
+
+            if (schedule != null && !schedule.isAvailable()) {
+                throw new RuntimeException("Time slot not available");
+            }
+
+            if (schedule == null) {
+                schedule = new Schedule();
+                schedule.setDoctor(doc);
+                schedule.setDate(appointment.getDate());
+                schedule.setStartTime(appointment.getTime());
+                schedule.setEndTime(appointment.getTime().plusHours(1));
+                schedule.setAvailable(false);
+            } else {
+                schedule.setAvailable(false);
+            }
+
+            scheduleRepository.save(schedule);
+
+
             if (doc != null) {
-                Appointment appointment = mapper.toEntity(appointmentDTO);
                 appointment.setDoctor(doc);
                 appointment.setPatient(patient);
-                appointment.setAppointmentStatus(EAppointmentStatus.APPROVED);
+                appointment.setApprovalStatus(EApprovalStatus.APPROVED);
+                appointment.setAppointmentStatus(EAppointmentStatus.UPCOMING);
                 return mapper.toDto(appointmentRepository.save(appointment));
             }
             logger.error("No such doctor with this ID = "+id);
@@ -143,12 +175,28 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentDTO updateAppointment(AppointmentDTO appointment) {
+    public AppointmentDTO updateAppointment(AppointmentDTO appointmentDTO) {
         try {
-            return mapper.toDto(appointmentRepository.save(mapper.toEntity(appointment)));
+            Appointment appointment = mapper.toEntity(appointmentDTO);
+            appointment.setDoctor(doctorRepository.findDoctorById(appointment.getDoctor().getId()));
+            appointment.setPatient(patientRepository.findPatientById(appointment.getPatient().getId()));
+            appointment.setApprovalStatus(EApprovalStatus.APPROVED);
+            return mapper.toDto(appointmentRepository.save(appointment));
         } catch (Exception e){
             logger.error("Error updating appointment", e);
             return null;
+        }
+    }
+
+    @Override
+    public AppointmentDTO updateAppointmentStatus(UUID appointmentId, String newStatus) {
+        try {
+            Appointment appointment = appointmentRepository.findById(appointmentId)
+                    .orElseThrow(() -> new NotFoundException("Appointment not found"));
+            appointment.setAppointmentStatus(EAppointmentStatus.valueOf(newStatus));
+            return mapper.toDto(appointmentRepository.save(appointment));
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -164,20 +212,28 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentDTO requestAppointment(UUID patientId, AppointmentDTO appointmentDTO) {
         try {
+            // Validate input data
+            if (appointmentDTO.getDate() == null || appointmentDTO.getTime() == null || appointmentDTO.getDoctor() == null) {
+                log.error("Invalid appointment request: Missing required fields.");
+                throw new IllegalArgumentException("Missing required fields.");
+            }
+
             Appointment appointment = mapper.toEntity(appointmentDTO);
             Patient patient = patientRepository.findPatientById(patientId);
             Doctor doctor = doctorMapper.toEntity(doctorService.getDoctor(appointment.getDoctor().getId()));
             appointment.setDoctor(doctor);
             appointment.setPatient(patient);
-            appointment.setAppointmentStatus(EAppointmentStatus.PENDING);
+            appointment.setApprovalStatus(EApprovalStatus.PENDING);
 
             appointment = appointmentRepository.save(appointment);
 
             String message = "Appointment request from " + patient.getFirstname() + " " + patient.getLastname() +
                     " for " + appointment.getDate() + " at " + appointment.getTime() + ".";
 
+            Notification notification = new Notification();
+
             try {
-                Notification notification = new Notification();
+
                 notification.setNotificationStatus(ENotificationStatus.SENT);
                 notification.setSender(patient);
                 notification.setRecipient(doctor);
@@ -205,14 +261,26 @@ public class AppointmentServiceImpl implements AppointmentService {
             Appointment appointment = appointmentRepository.findById(appointmentId)
                     .orElseThrow(() -> new EntityNotFoundException("Appointment not found with id: " + appointmentId));
 
-            appointment.setAppointmentStatus(EAppointmentStatus.APPROVED);
+            appointment.setApprovalStatus(EApprovalStatus.APPROVED);
+            appointment.setAppointmentStatus(EAppointmentStatus.UPCOMING);
 
             String message = "Your appointment request with Dr. " + appointment.getDoctor().getFirstname() + " " + appointment.getDoctor().getLastname() +
                     " for " + appointment.getDate() + " at " + appointment.getTime() + " has been approved.";
 
+            Notification notification = new Notification();
+
             try {
-                Notification notification = notificationRepository.findNotificationByAppointment(appointment.getId());
-                notificationRepository.delete(notification);
+//                Notification notification = notificationRepository.findNotificationByAppointment(appointment.getId());
+//                notificationRepository.delete(notification);
+
+                notification.setNotificationStatus(ENotificationStatus.UNREAD);
+                notification.setSender(appointment.getDoctor());
+                notification.setRecipient(appointment.getPatient());
+                notification.setTitle("Appointment Approval");
+                notification.setMessage(message);
+                notification.setSentAt(LocalDateTime.now());
+                notification.setAppointment(appointment);
+                notificationRepository.save(notification);
 
                 notificationService.sendNotification("Appointment Approval", message, appointment.getPatient().getId(), appointment);
             } catch (Exception e) {
@@ -233,7 +301,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             Appointment appointment = appointmentRepository.findById(appointmentId)
                     .orElseThrow(() -> new EntityNotFoundException("Appointment not found with id: " + appointmentId));
 
-            appointment.setAppointmentStatus(EAppointmentStatus.REJECTED);
+            appointment.setApprovalStatus(EApprovalStatus.REJECTED);
 
             Notification notification = notificationRepository.findNotificationByAppointment(appointment.getId());
             notificationRepository.delete(notification);
@@ -244,5 +312,4 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new RuntimeException(e);
         }
     }
-
 }

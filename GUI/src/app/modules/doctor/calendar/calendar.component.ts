@@ -3,11 +3,17 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { CalendarOptions, FullCalendarComponent } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction'; // import interaction plugin
 import { Appointment } from 'app/shared/models/appointment/appointment';
 import { User } from 'app/shared/models/users/user';
 import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
 import { UserService } from 'app/shared/services/userService/user.service';
 import { CookieService } from 'ngx-cookie-service';
+import { AddComponent } from './add/add.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ScheduleService } from 'app/shared/services/scheduleService/schedule.service';
+import { Schedule } from 'app/shared/models/schedule/schedule';
+import { UpdateComponent } from './update/update.component';
 
 @Component({
   selector: 'app-calendar',
@@ -28,6 +34,8 @@ export class CalendarComponent implements OnInit {
 
   appointments: Appointment[];
 
+  schedules: Schedule[];
+
   randomObjects = [];
 
   show = false;
@@ -40,7 +48,7 @@ export class CalendarComponent implements OnInit {
     initialView: 'dayGridMonth',
     locale: 'en',
     weekends: true,
-    plugins: [dayGridPlugin],
+    plugins: [dayGridPlugin, interactionPlugin],
     height: 800,
     eventSources: Object.assign([], this.randomObjects),
     headerToolbar: {
@@ -48,6 +56,7 @@ export class CalendarComponent implements OnInit {
       center: 'title',
       end: 'today prev,next'
     },
+    dateClick: this.handleDateClick.bind(this)
   };
 
   constructor(
@@ -56,12 +65,14 @@ export class CalendarComponent implements OnInit {
     private _userService: UserService,
     private _cookieService: CookieService,
     private _formBuilder: FormBuilder,
+    private _matDialog: MatDialog,
+    private _scheduleService: ScheduleService
   ) { }
 
   ngOnInit(): void {
     this.show = true;
     this.getAuthenticatedUser(this._cookieService.get('id'));
-    this.getAppointments();
+
   }
 
   getAppointments(): void {
@@ -84,11 +95,41 @@ export class CalendarComponent implements OnInit {
       }
     });
   }
-  
+
+  getSchedules(): void {
+    const schedules = [];
+    this._scheduleService.getDoctorSchedules(this._cookieService.get('id')).subscribe({
+      next: (result) => {
+        this.schedules = result;
+        for (const scheduleDate of result) {
+          const title = `Not Available at ${this.formatTime(scheduleDate.startTime)}`;
+          schedules.push({
+            title: title,
+            date: this._datePipe.transform(scheduleDate.date, 'yyyy-MM-dd'),
+            extendedProps: {
+              id: scheduleDate.id,
+              available: scheduleDate.available
+            }
+          });
+        }
+        const object = {
+          id: 'schedules',
+          events: schedules,
+          color: 'red'
+        };
+        this.randomObjects = [object, ...this.randomObjects];
+        this.calendarOptions = this.customizeCalendarOptions();
+      }
+    });
+  }
+
+
   getAuthenticatedUser(id: string): void {
     this._userService.getUser(id).subscribe({
-      next:(result) => {
+      next: (result) => {
         this.authenticatedUser = result;
+        this.getAppointments();
+        this.getSchedules();
       }
     });
   }
@@ -98,7 +139,7 @@ export class CalendarComponent implements OnInit {
       initialView: 'dayGridMonth',
       locale: 'EN',
       weekends: true,
-      plugins: [dayGridPlugin],
+      plugins: [dayGridPlugin, interactionPlugin],
       height: 800,
       eventSources: Object.assign([], this.randomObjects),
       headerToolbar: {
@@ -106,15 +147,67 @@ export class CalendarComponent implements OnInit {
         center: 'title',
         end: 'today prev,next'
       },
+      dateClick: this.handleDateClick.bind(this),
+      eventClick: this.handleEventClick.bind(this),
     };
   }
 
-  handleDateClick(arg) {
-    alert('date click! ' + arg.dateStr);
+  addNewSchedule(): void {
+    const dialogRef = this._matDialog.open(AddComponent, {
+      autoFocus: false,
+      data: {
+        doctorId: this.authenticatedUser.id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getSchedules();
+      }
+    });
+  }
+
+  handleEventClick(arg): void {
+    const event = arg.event;
+    const scheduleId = event.extendedProps.id;
+
+    const dialogRef = this._matDialog.open(UpdateComponent, {
+      autoFocus: false,
+      data: {
+        scheduleId: scheduleId,
+        doctorId: this.authenticatedUser.id,
+        date: event.startStr,
+        startTime: event.start,
+        endTime: event.end,
+        available: event.extendedProps.available
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getSchedules();
+      }
+    });
+  }
+
+  handleDateClick(arg): void {
+    const dialogRef = this._matDialog.open(AddComponent, {
+      autoFocus: false,
+      data: {
+        date: arg.dateStr,
+        doctorId: this.authenticatedUser.id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getSchedules();
+      }
+    });
   }
 
   filterAppointments(value): void {
-    if(value === true) {
+    if (value === true) {
       this.getAppointments();
       this.calendarOptions = this.customizeCalendarOptions();
     } else {
@@ -127,9 +220,23 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  filterAvailability(value): void {
+    if (value === true) {
+      this.getSchedules();
+      this.calendarOptions = this.customizeCalendarOptions();
+    } else {
+      for (const object of this.randomObjects) {
+        if (object.id === 'schedules') {
+          this.randomObjects.splice(this.randomObjects.indexOf(object), 1);
+        }
+      }
+      this.calendarOptions = this.customizeCalendarOptions();
+    }
+  }
+
   formatTime(time: string): string {
     if (time) {
-      return time.split(':').slice(0, 2).join(':'); // Extract hours and minutes and join them
+      return time.split(':').slice(0, 2).join(':');
     }
     return '';
   }

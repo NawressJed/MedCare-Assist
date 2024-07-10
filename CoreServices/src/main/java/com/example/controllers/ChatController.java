@@ -24,8 +24,6 @@ public class ChatController {
     @Autowired
     ChatService chatService;
     @Autowired
-    NotificationService notificationService;
-    @Autowired
     SimpMessagingTemplate messagingTemplate;
     @Autowired
     UserRepository userRepository;
@@ -37,11 +35,6 @@ public class ChatController {
         try {
             ChatMessageDTO savedMessage = chatService.save(chatMessageDTO);
 
-            // Notify the recipient
-            UserEntity user = userRepository.findUserEntityById(chatMessageDTO.getSenderId());
-            String notificationMessage = "You have a new message from " + user.getFirstname() + " " + user.getLastname();
-            notificationService.sendNotification("New Message", notificationMessage, chatMessageDTO.getRecipientId(), null);
-
             messagingTemplate.convertAndSendToUser(chatMessageDTO.getRecipientId().toString(), "/queue/messages", savedMessage);
 
             return savedMessage;
@@ -51,30 +44,9 @@ public class ChatController {
         }
     }
 
-//    @PostMapping("/message")
-//    public ResponseEntity<ChatMessageDTO> sendMessage(@RequestBody ChatMessageDTO chatMessage) {
-//        try {
-//            // Save chat message to the database
-//            ChatMessageDTO savedMessage = chatService.save(chatMessage);
-//
-//            // Send the message to the recipient (optional, in case you want real-time notification)
-//            messagingTemplate.convertAndSendToUser(
-//                    chatMessage.getRecipientId().toString(),
-//                    "/queue/messages",
-//                    savedMessage
-//            );
-//
-//            return ResponseEntity.ok(savedMessage);
-//        } catch (Exception e) {
-//            log.error("Error sending message", e);
-//            return ResponseEntity.status(500).build();
-//        }
-//    }
-
     @GetMapping("/chat/history")
     public ResponseEntity<List<ChatMessageDTO>> getChatHistory(Principal principal) {
         try {
-            // Assuming you have a method to get the user ID from the principal
             UUID userId = chatService.getUserIdByEmail(principal.getName());
             List<ChatMessageDTO> chatHistory = chatService.getChatHistory(userId);
             return ResponseEntity.ok(chatHistory);
@@ -84,7 +56,6 @@ public class ChatController {
         }
     }
 
-    // Get messages between two users
     @GetMapping("/messages")
     public ResponseEntity<List<ChatMessageDTO>> getMessagesBetween(
             @RequestParam UUID senderId, @RequestParam UUID recipientId) {

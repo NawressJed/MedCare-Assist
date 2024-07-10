@@ -1,10 +1,9 @@
 package com.example.entities;
 
 import com.example.enums.ESpecialty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -15,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "userId")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Doctor extends UserEntity {
     private String workPhoneNumber;
     private float consultationPrice;

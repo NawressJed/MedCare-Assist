@@ -2,12 +2,14 @@ package com.example.services.impl;
 
 import com.example.dto.ChatMessageDTO;
 import com.example.entities.ChatMessage;
+import com.example.entities.UserEntity;
 import com.example.mapper.AutoChatMessageMapper;
 import com.example.repositories.ChatMessageRepository;
 import com.example.repositories.ChatRoomRepository;
 import com.example.repositories.UserRepository;
 import com.example.services.ChatRoomService;
 import com.example.services.ChatService;
+import com.example.services.NotificationService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class ChatServiceImpl implements ChatService {
     @Autowired
     ChatRoomService chatRoomService;
     @Autowired
+    NotificationService notificationService;
+    @Autowired
     AutoChatMessageMapper mapper;
 
     @Override
@@ -41,6 +45,11 @@ public class ChatServiceImpl implements ChatService {
 
             chatMessage.setChatRoom(chatRoomRepository.findChatRoomById(chatRoomId));
 
+
+            UserEntity user = userRepository.findUserEntityById(chatMessageDTO.getSenderId());
+            String notificationMessage = "You have a new message from " + user.getFirstname() + " " + user.getLastname();
+            notificationService.sendNotification("New Message", notificationMessage, chatMessageDTO.getRecipientId(), null);
+
             return mapper.toDto(chatMessageRepository.save(chatMessage));
         } catch (Exception e) {
             log.error("Error in save", e);
@@ -50,17 +59,27 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public UUID getUserIdByEmail(String email) {
-        return userRepository.findByEmail(email).getId();
+        try {
+            return userRepository.findByEmail(email).getId();
+        } catch (Exception e) {
+            log.error("ERROR retrieving user by its email " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public List<ChatMessageDTO> getChatHistory(UUID userId) {
-        List<ChatMessage> allMessages = chatMessageRepository.findChatHistory(userId);
-        return mapper.toDto(allMessages.stream()
-                .collect(Collectors.groupingBy(cm -> cm.getSenderId().equals(userId) ? cm.getRecipientId() : cm.getSenderId()))
-                .values().stream()
-                .map(messages -> messages.get(0))
-                .collect(Collectors.toList()));
+        try {
+            List<ChatMessage> allMessages = chatMessageRepository.findChatHistory(userId);
+            return mapper.toDto(allMessages.stream()
+                    .collect(Collectors.groupingBy(cm -> cm.getSenderId().equals(userId) ? cm.getRecipientId() : cm.getSenderId()))
+                    .values().stream()
+                    .map(messages -> messages.get(0))
+                    .collect(Collectors.toList()));
+        } catch (Exception e) {
+            log.error("ERROR retrieving user's chat history " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -88,8 +107,8 @@ public class ChatServiceImpl implements ChatService {
                     ))
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error in findChatMessages", e);
-            throw new RuntimeException("Error in findChatMessages", e);
+            log.error("ERROR in findChatMessages " + e.getMessage());
+            throw new RuntimeException("ERROR in findChatMessages", e);
         }
     }
 }

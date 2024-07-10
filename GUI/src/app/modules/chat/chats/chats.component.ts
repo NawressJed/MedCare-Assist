@@ -79,12 +79,12 @@ export class ChatsComponent implements OnInit, OnDestroy {
         this._userService.getUser(id).subscribe({
             next: (result) => {
                 this.authenticatedUser = result;
-                this._webSocketService.setAuthenticatedUserId(id); // Ensure WebSocket is aware of the authenticated user ID
+                this._webSocketService.setAuthenticatedUserId(id); 
 
                 this._webSocketService.chatMessageReceived
                     .pipe(takeUntil(this._unsubscribeAll))
                     .subscribe(message => {
-                        this.fetchChats();  // Fetch chats to update the list
+                        this.fetchChats(); 
                     });
 
                 this.fetchChats();
@@ -115,7 +115,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
                             lastMessage: chat.content,
                             lastMessageDate: new Date(chat.timestamp),
                             formattedDate: this._datePipe.transform(new Date(chat.timestamp), 'dd/MM/yyyy'),
-                            unreadCount: 0 // Assuming you have a way to get the unread count
+                            unreadCount: 0 
                         }))
                     );
                 });
@@ -123,7 +123,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
             })
         ).subscribe({
             next: (chats) => {
-                this.chats = chats.sort((a, b) => b.lastMessageDate.getTime() - a.lastMessageDate.getTime()); // Sort by date
+                this.chats = chats.sort((a, b) => b.lastMessageDate.getTime() - a.lastMessageDate.getTime());
                 this.filteredChats = this.chats;
                 this._changeDetectorRef.markForCheck();
             },

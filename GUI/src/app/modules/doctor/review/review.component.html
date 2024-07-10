@@ -1,0 +1,79 @@
+<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+  <mat-drawer-container class="flex-auto h-full">
+    <!-- Drawer -->
+    <mat-drawer class="w-full md:w-160 dark:bg-gray-900" [mode]="drawerMode" [opened]="false" [position]="'end'"
+      [disableClose]="true" #matDrawer>
+      <router-outlet></router-outlet>
+    </mat-drawer>
+
+    <mat-drawer-content class="flex flex-col">
+      <!-- Main -->
+      <div class="flex-auto">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b bg-card dark:bg-transparent">
+          <!-- Title -->
+          <div>
+            <div class="text-4xl font-extrabold tracking-tight leading-none text-blue text-blue-600">My Reviews</div>
+          </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="flex-auto p-6 sm:p-10">
+          <!-- Top Bar -->
+          <div class="mb-4 p-4 bg-card rounded-2xl shadow">
+            <div class="text-accent text-2xl font-bold mb-2">Overall Rating</div>
+            <div class="flex items-center">
+              <span class="text-3xl font-bold mr-2">{{ overallRating | number: '1.1-1' }}</span>
+              <div class="flex items-center">
+                <mat-icon *ngFor="let star of [1, 2, 3, 4, 5]" class="text-orange-500 icon-size-5">
+                  {{ star <= overallRating ? 'star' : (star - overallRating < 1 ? 'star_half' : 'star_border') }}
+                </mat-icon>
+              </div>
+              <span class="text-gray-600 ml-2">(Based on {{ reviewCount }} reviews)</span>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-6">
+            <ng-container *ngIf="reviews$ | async as reviews; else noReviews">
+              <ng-container *ngFor="let review of reviews">
+                <div [ngClass]="{'max-w-xs': isShortContent(review?.reviewText), 'max-w-lg': !isShortContent(review?.reviewText)}" class="flex-grow mb-2 break-inside-avoid w-full">
+                  <div [ngClass]="{'p-4': isShortContent(review?.reviewText), 'p-6': !isShortContent(review?.reviewText)}" class="flex flex-col justify-between bg-white shadow rounded-2xl">
+                    <div class="flex flex-col">
+                      <div class="flex items-center py-4 border-b">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full overflow-hidden bg-gray-200 text-gray-600 text-lg">
+                          {{ review?.patient?.firstname[0] }}{{ review?.patient?.lastname[0] }}
+                        </div>
+                        <div class="min-w-0 ml-4 flex-auto">
+                          <div class="font-bold leading-5 truncate text-lg">
+                            {{ review?.patient.firstname }} {{ review?.patient.lastname }}
+                          </div>
+                          <div class="flex items-center text-secondary">
+                            <span class="text-sm">{{ review?.timestamp | date: 'MMM dd, yyyy' }}</span>
+                          </div>
+                        </div>
+                        <div class="flex items-center">
+                          <div class="flex items-center justify-end">
+                            <mat-icon *ngFor="let star of [1, 2, 3, 4, 5]" class="text-orange-500 icon-size-5">
+                              {{ star <= review?.rating ? 'star' : 'star_border' }}
+                            </mat-icon>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mt-2 text-secondary">
+                        {{ review?.reviewText || '' }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+            <ng-template #noReviews>
+              <div class="text-center text-gray-500">No reviews available.</div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>

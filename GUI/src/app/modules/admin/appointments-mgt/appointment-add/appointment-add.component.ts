@@ -48,7 +48,7 @@ export class AppointmentAddComponent implements OnInit {
   }
 
   saveAppointment() {
-    this.appointment.date = new Date(this.appointment.date);
+    //this.appointment.date = new Date(this.appointment.date);
     this.appointmentService.createAppointment(this.appointment).subscribe({
       next: (data) => {
         console.log(data);

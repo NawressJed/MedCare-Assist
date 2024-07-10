@@ -1,0 +1,114 @@
+<div class="flex flex-col max-w-240 md:min-w-160 max-h-screen -m-6">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg font-medium">Update Schedule</div>
+        <button mat-icon-button (click)="close()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+
+    <!-- Form -->
+    <form class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto" [formGroup]="scheduleForm" (ngSubmit)="submit()">
+        <div class="flex flex-wrap items-center">
+            <div class="grid grid-cols-4 gap-6 w-full">
+                <div class=" sm:col-span-2">
+                    <mat-form-field class="fuse-mat-no-subscript w-full" [floatLabel]="'always'">
+                        <mat-label>Start Time</mat-label>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:clock'" matPrefix></mat-icon>
+                        <input type="time" [formControlName]="'startTime'" matInput>
+                    </mat-form-field>
+                </div>
+                <div class=" sm:col-span-2">
+                    <mat-form-field class="fuse-mat-no-subscript w-full" [floatLabel]="'always'">
+                        <mat-label>End Time</mat-label>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:clock'" matPrefix></mat-icon>
+                        <input type="time" [formControlName]="'endTime'" matInput>
+                    </mat-form-field>
+                </div>
+                <!-- Availability -->
+            <div class="col-span-2 sm:col-span-1">
+                <div class="font-medium">Availability</div>
+                <div
+                    class="flex items-center mt-1.5 px-4 leading-9 rounded-full cursor-pointer"
+                    [ngClass]="{'text-green-800 bg-green-200 dark:text-green-100 dark:bg-green-500': scheduleForm.get('available').value === true,
+                                'text-red-800 bg-red-200 dark:text-red-100 dark:bg-red-500': scheduleForm.get('available').value === false}"
+                    [matMenuTriggerFor]="priorityMenu">
+
+                    <!-- Available -->
+                    <ng-container *ngIf="scheduleForm.get('available').value === true">
+                        <span class="ml-2 mr-1 text-md font-medium">Available</span>
+                    </ng-container>
+
+                    <!-- Not Available -->
+                    <ng-container *ngIf="scheduleForm.get('available').value === false">
+                        <span class="ml-2 mr-1 text-md font-medium">Not available</span>
+                    </ng-container>
+
+                </div>
+                <mat-menu #priorityMenu="matMenu">
+                    <!-- Available -->
+                    <button
+                        [ngClass]="{'bg-hover': scheduleForm.get('available').value === true}"
+                        mat-menu-item (click)="scheduleForm.get('available').setValue(true)">
+                        <span class="inline-flex items-center justify-between w-full min-w-30 leading-5">
+                            <span class="font-medium">Available</span>
+                            <mat-icon
+                                class="mr-0 icon-size-4 text-green-600 dark:text-green-500"></mat-icon>
+                        </span>
+                    </button>
+
+                    <!-- Not Available -->
+                    <button
+                        [ngClass]="{'bg-hover': scheduleForm.get('available').value === false}"
+                        mat-menu-item (click)="scheduleForm.get('available').setValue(false)">
+                        <span class="inline-flex items-center justify-between w-full min-w-30 leading-5">
+                            <span class="font-medium">Not available</span>
+                            <mat-icon
+                                class="mr-0 icon-size-4 text-gray-600 dark:text-gray-500"></mat-icon>
+                        </span>
+                    </button>
+                </mat-menu>
+            </div>
+                <!-- Date -->
+                <div class="col-span-2 sm:col-span-1">
+                    <div class="font-medium">Date</div>
+                    <div class="relative flex items-center mt-1.5 px-4 leading-9 rounded-full cursor-pointer"
+                        [ngClass]="{ 'text-gray-500 bg-gray-100 dark:text-gray-300 dark:bg-gray-700': true}"
+                        (click)="dueDatePicker.open()">
+                        <mat-icon class="icon-size-5 text-current" svgIcon="heroicons_solid:calendar"></mat-icon>
+                        <span class="ml-2 text-md font-medium">
+                            <ng-container *ngIf="scheduleForm.get('date').value">{{ scheduleForm.get('date').value |
+                                date:'longDate' }}</ng-container>
+                            <ng-container *ngIf="!scheduleForm.get('date').value">Not set</ng-container>
+                        </span>
+                        <mat-form-field
+                            class="fuse-mat-no-subscript fuse-mat-dense invisible absolute inset-0 -mt-2.5 opacity-0 pointer-events-none">
+                            <input matInput [formControlName]="'date'" [matDatepicker]="dueDatePicker">
+                            <mat-datepicker #dueDatePicker>
+                                <mat-datepicker-actions>
+                                    <button mat-button (click)="scheduleForm.get('date').setValue(null)"
+                                        matDatepickerCancel>Clear</button>
+                                    <button class="" mat-flat-button color="primary" matDatepickerApply>Select</button>
+                                </mat-datepicker-actions>
+                            </mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-end mt-4 sm:mt-6">
+            <div class="flex items-center mt-4 sm:mt-0">
+                <!-- Discard -->
+                <button type="button" class="ml-auto sm:ml-0" mat-stroked-button (click)="delete()">
+                    Delete
+                </button>
+                <!-- Update -->
+                <button type="submit" class="order-first sm:order-last sm:mx-3" mat-flat-button color="primary">
+                    Update
+                </button>
+            </div>
+        </div>
+    </form>
+
+</div>

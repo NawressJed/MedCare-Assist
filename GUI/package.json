@@ -29,6 +29,7 @@
         "@fullcalendar/bootstrap5": "^5.11.0",
         "@fullcalendar/core": "^5.11.0",
         "@fullcalendar/daygrid": "^5.11.0",
+        "@fullcalendar/interaction": "^5.11.0",
         "@ngx-translate/core": "^14.0.0",
         "@ngx-translate/http-loader": "^7.0.0",
         "@stomp/stompjs": "^7.0.0",

@@ -28,7 +28,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 export class AppointmentAddComponent implements OnInit {
 
   selectedTime: string;
-  timeOptions: string[] = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'];
+  timeOptions: string[] = ['20:40', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'];
 
   formFieldHelpers: string[] = [''];
 
@@ -56,18 +56,17 @@ export class AppointmentAddComponent implements OnInit {
   }
 
   saveAppointment() {
-    this.appointment.date = new Date(this.appointment.date);
-    this.appointmentService.createDoctorAppointment(this._cookie.get('id'), this.appointment).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.onCloseClick();
+    this.appointment.date = this._datePipe.transform(this.appointment.date, 'yyyy-MM-dd');
 
+    this.appointmentService.createDoctorAppointment(this._cookie.get("id"), this.appointment).subscribe({
+      next: (data) => {
+        console.log('Appointment created successfully', data);
       },
       error: (e) => {
-        console.log(e);
+        console.log('Error creating appointment', e);
       }
     });
-  }
+}
 
   onSubmit() {
     this.submitted = true;

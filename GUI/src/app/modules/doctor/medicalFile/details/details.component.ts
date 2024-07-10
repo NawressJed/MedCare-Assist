@@ -33,14 +33,19 @@ export class MedicalFileDetailsComponent implements OnInit {
 
   loadMedicalFile(medicalFileId: string): void {
     this.medicalFileService.getMedicalFileById(medicalFileId).subscribe({
-      next: (file) => {
-        this.medicalFile = file;
-      },
-      error: (err) => {
-        console.error('Error loading medical file:', err); 
-      }
+        next: (file) => {
+            this.medicalFile = file;
+            // Ensure the date is a Date object
+            if (typeof this.medicalFile.date === 'string') {
+                this.medicalFile.date = new Date(this.medicalFile.date);
+            }
+        },
+        error: (err) => {
+            console.error('Error loading medical file:', err); 
+        }
     });
-  }
+}
+
 
   setCurrentDate(): void {
     const date = new Date();
