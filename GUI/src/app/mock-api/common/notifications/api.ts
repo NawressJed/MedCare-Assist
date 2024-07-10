@@ -27,29 +27,6 @@ export class NotificationsMockApi implements OnInit {
   ngOnInit(): void {
     this.authenticatedUserId = this._cookie.get('id');
 
-    this.loadNotifications();
-
-    // Subscribe to WebSocket notifications
-    this.webSocketService.subscribe('/user/${this.authenticatedUserId}/notify', (message) => {
-      const notification = JSON.parse(message.body);
-      this.notifications.unshift(notification);
-    });
-  }
-
-  getAuthenticatedUser(id: string): void {
-    this._apiUser.getUser(id).subscribe({
-      next:(result) => {
-        this.authenticatedUser = result;
-      }
-    });
-  }
-
-  loadNotifications() {
-    this.notificationService.getNotifications(this.authenticatedUserId).subscribe((data) => {
-      this.notifications = data;
-    }, error => {
-      console.error('Error fetching notifications:', error);
-    });
   }
 
   /*markAllAsRead() {

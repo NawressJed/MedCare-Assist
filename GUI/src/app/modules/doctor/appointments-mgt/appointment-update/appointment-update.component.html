@@ -9,7 +9,7 @@
             <!-- Title -->
             <div class="flex items-center justify-between">
                 <div class="text-xl font-semibold tracking-tight leading-none text-blue text-blue-600">
-                    Update </div>
+                    Update appointment</div>
                 <button mat-icon-button (click)="onCloseClick()">
                     <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
                 </button>
@@ -25,6 +25,19 @@
                         </mat-form-field>
                     </div>
                     <div class="flex sm:col-span-4">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
+                            <input type="hidden" [(ngModel)]="appointment.time" name="time">
+                            <mat-select placeholder="Select time" [(ngModel)]="selectedTime" (selectionChange)="onTimeSelected($event.value)" name="selectedTime">
+                                <mat-option *ngFor="let timeOption of timeOptions" [value]="timeOption">
+                                    {{ timeOption }}
+                                </mat-option>
+                            </mat-select>
+                            <button mat-icon-button (click)="toggleTimePicker()">
+                                <mat-icon svgIcon="heroicons_outline:clock"></mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-4">
                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
                             <mat-select required [(ngModel)]="appointment.patient" [placeholder]="'Select patient'"
                                 id="patient" name="patient">
@@ -32,7 +45,6 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    
                 </div>
                 <div class="flex items-center -mx-8 px-8 py-5 justify-end">
                     <button type="submit" class="px-6 ml-3" [color]="'primary'" mat-flat-button>

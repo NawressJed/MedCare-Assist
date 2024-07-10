@@ -67,17 +67,13 @@ export class ListComponent implements OnInit, OnDestroy {
       this.searchForm.get('keywords').valueChanges.pipe(startWith(''))
     ]).pipe(
       map(([patients, search]) => {
-        console.log('Original patients array:', patients);
-        // Reverse the order of the patients
         let sortedPatients = [...patients].reverse();
-        console.log('Sorted patients array:', sortedPatients); 
         if (!search) {
           return sortedPatients;
         }
         const filtered = sortedPatients.filter(patient =>
           `${patient.firstname} ${patient.lastname}`.toLowerCase().includes(search.toLowerCase())
         );
-        console.log('Filtered patients array:', filtered); 
         return filtered;
       })
     );
@@ -85,7 +81,6 @@ export class ListComponent implements OnInit, OnDestroy {
     this.dpatients.pipe(
       takeUntil(this._unsubscribeAll)
     ).subscribe((patients: Doctor[]) => {
-      console.log('Doctor Patients:', patients);
       this.patientsCount = patients.length;
     });
   }

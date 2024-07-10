@@ -26,5 +26,6 @@ public class Doctor extends UserEntity {
             name = "patients_doctors",
             joinColumns = @JoinColumn(name = "doctor_id"),
             inverseJoinColumns = @JoinColumn(name = "patient_id"))
+    @JsonManagedReference
     private Set<Patient> myPatients;
 }

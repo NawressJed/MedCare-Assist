@@ -1,6 +1,7 @@
 package com.example.services;
 
 import com.example.dto.AppointmentDTO;
+import com.example.enums.EAppointmentStatus;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +14,7 @@ public interface AppointmentService {
     List<AppointmentDTO> findAppointmentByDoctor(UUID uuid);
     List<AppointmentDTO> findAppointmentByPatient(UUID uuid);
     AppointmentDTO updateAppointment(AppointmentDTO appointment);
+    AppointmentDTO updateAppointmentStatus(UUID appointmentId, String newStatus);
     void deleteAppointment(UUID appointmentID);
     AppointmentDTO requestAppointment(UUID patientId, AppointmentDTO appointmentDTO);
     AppointmentDTO approveAppointment(UUID appointmentId);

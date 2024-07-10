@@ -25,9 +25,7 @@
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Firstname</mat-label>
                     <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:user'" matPrefix></mat-icon>
-                    <input matInput formControlName="firstname">
-                    <mat-error *ngIf="accountForm.get('firstname').errors?.required">{{
-                        "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
+                    <input matInput formControlName="firstname" readonly style="pointer-events: none;">
                 </mat-form-field>
             </div>
             <!-- Lastname -->
@@ -35,9 +33,7 @@
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Lastname</mat-label>
                     <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:user'" matPrefix></mat-icon>
-                    <input matInput formControlName="lastname">
-                    <mat-error *ngIf="accountForm.get('lastname').errors?.required">{{
-                        "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
+                    <input matInput formControlName="lastname" readonly style="pointer-events: none;">
                 </mat-form-field>
             </div>
             <!-- Email -->
@@ -45,11 +41,7 @@
                 <mat-form-field class="fuse-mat-no-subscript w-full">
                     <mat-label>Email</mat-label>
                     <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:mail'" matPrefix></mat-icon>
-                    <input type="email" matInput formControlName="email">
-                    <mat-error *ngIf="accountForm.get('email').errors?.required">{{
-                        "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
-                    <mat-error *ngIf="accountForm.get('email').errors?.pattern">{{
-                        "ERROR_MESSAGE.VALID_EMAIL" | translate }}</mat-error>
+                    <input matInput formControlName="email" [value]="accountForm.get('email').value" readonly style="pointer-events: none;">
                 </mat-form-field>
             </div>
             <!-- Phone Number -->
@@ -97,8 +89,6 @@
                         <mat-option [value]="'FEMALE'">Female</mat-option>
                         <mat-option [value]="'OTHER'">Other</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="accountForm.get('gender').errors?.required">{{
-                        "ERROR_MESSAGE.REQUIRED" | translate }}</mat-error>
                 </mat-form-field>
             </div>
             <!-- Specialty -->

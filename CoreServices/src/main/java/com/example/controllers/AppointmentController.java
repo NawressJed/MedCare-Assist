@@ -40,12 +40,13 @@ public class AppointmentController {
 
     @PostMapping("/doctor-add-appointment/{id}")
     @PreAuthorize("hasRole('ROLE_DOCTOR')")
-    public AppointmentDTO createDoctorAppointment(@PathVariable(value = "id") UUID id, @RequestBody AppointmentDTO appointmentDTO) {
+    public ResponseEntity<AppointmentDTO> createDoctorAppointment(@PathVariable(value = "id") UUID id, @RequestBody AppointmentDTO appointmentDTO) {
         try {
-            return appointmentService.createDoctorAppointment(id, appointmentDTO);
+            AppointmentDTO createdAppointment = appointmentService.createDoctorAppointment(id, appointmentDTO);
+            return ResponseEntity.ok(createdAppointment);
         } catch (Exception e) {
-            log.error("ERROR creating doctor's appointment!!");
-            throw new RuntimeException(e);
+            log.error("ERROR creating doctor's appointment!!", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -76,6 +77,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/patient-get-appointment/{id}")
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     public List<AppointmentDTO> getAppointmentsByPatient(@PathVariable(value = "id") UUID id) {
         return appointmentService.findAppointmentByPatient(id);
     }
@@ -95,6 +97,18 @@ public class AppointmentController {
         }
     }
 
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<AppointmentDTO> updateAppointmentStatus(@PathVariable(value = "id") UUID appointmentId, @RequestBody Map<String, String> update) {
+        try {
+            String newStatus = update.get("status");
+            AppointmentDTO updatedAppointment = appointmentService.updateAppointmentStatus(appointmentId, newStatus);
+            return ResponseEntity.ok(updatedAppointment);
+        } catch (Exception e) {
+            log.error("ERROR updating appointment's status" + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
     @DeleteMapping("/delete-appointment/{id}")
     public void deleteAppointment(@PathVariable UUID id){
         appointmentService.deleteAppointment(id);
@@ -103,10 +117,15 @@ public class AppointmentController {
     @PostMapping("/request-appointment/{id}")
     public ResponseEntity<AppointmentDTO> requestAppointment(@PathVariable(value = "id") UUID id, @RequestBody AppointmentDTO appointmentDTO) {
         try {
+            log.info("Received appointment request: {}", appointmentDTO);
+
+            if (appointmentDTO.getDate() == null || appointmentDTO.getTime() == null || appointmentDTO.getDoctor() == null) {
+                throw new IllegalArgumentException("Missing required fields.");
+            }
             AppointmentDTO createdAppointment = appointmentService.requestAppointment(id, appointmentDTO);
             return ResponseEntity.ok(createdAppointment);
         } catch (Exception e) {
-            log.error("ERROR sending request! ", e);
+            log.error("ERROR : " + e.getMessage());
             return ResponseEntity.status(500).body(null);
         }
     }

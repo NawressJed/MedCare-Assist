@@ -140,6 +140,13 @@ export class NavigationMockApi {
                     link: '/doctor/calendar'
                 },
                 {
+                    id: 'reviews',
+                    title: 'Reviews',
+                    type: 'basic',
+                    icon: 'heroicons_outline:star',
+                    link: '/doctor/reviews'
+                },
+                {
                     id: 'chat',
                     title: 'Chat',
                     type: 'basic',
@@ -162,13 +169,6 @@ export class NavigationMockApi {
                 //     }
                 // },
                 {
-                    id: 'org',
-                    title: 'NAVIGATION.ORGANIZATIONAL_CHART',
-                    type: 'basic',
-                    icon: '',
-                    link: ''
-                },
-                {
                     id: 'profile',
                     title: 'My Profile',
                     type: 'basic',
@@ -176,11 +176,36 @@ export class NavigationMockApi {
                     link: '/profile'
                 },
                 {
-                    id: 'profile',
-                    title: 'NAVIGATION.MY_PROFILE',
+                    id      : 'appointments',
+                    title   : 'Appointments',
+                    type    : 'collapsable',
+                    icon    : 'heroicons_outline:clipboard',
+                    children: [
+                        {
+                            id   : 'appointments.book',
+                            title: 'Book Appointment',
+                            type : 'basic',
+                        },
+                        {
+                            id   : 'appointments.upcoming',
+                            title: 'Upcoming Appointments',
+                            type : 'basic',
+                            link: '/patient/appointment/upcoming'
+                        },
+                        {
+                            id   : 'appointments.past',
+                            title: 'Past Appointments',
+                            type : 'basic',
+                            link: '/patient/appointment/past'
+                        }
+                    ]
+                },
+                {
+                    id: 'medical files',
+                    title: 'Medical Files',
                     type: 'basic',
-                    icon: 'heroicons_outline:user-circle',
-                    link: ''
+                    icon: 'heroicons_outline:document-text',
+                    link: '/patient/medicalfile/list'
                 },
                 {
                     id: 'chat',

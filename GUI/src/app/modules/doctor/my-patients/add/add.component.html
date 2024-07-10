@@ -175,18 +175,25 @@
                 <!-- Existing Patient Tab -->
                 <mat-tab label="Existing Patient">
                     <ng-template matTabContent>
-                        <form class="flex flex-col items-start w-full max-w-3xl p-8 space-y-8 rounded-2xl shadow overflow-hidden bg-card">
+                        <form
+                            class="flex flex-col items-start w-full max-w-3xl p-8 space-y-8 rounded-2xl shadow overflow-hidden bg-card">
                             <mat-form-field class="fuse-mat-no-subscript w-full">
+                                <mat-label>Add existing patient</mat-label>
                                 <mat-icon matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
-                                <input matInput [formControl]="searchControl" [matAutocomplete]="auto" placeholder="Search for a patient by email">
+                                <input matInput [formControl]="searchControl" [matAutocomplete]="auto"
+                                    placeholder="Email address">
+                                <button mat-icon-button matSuffix (click)="addPatient()">
+                                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
+                                </button>
                             </mat-form-field>
-                            <mat-autocomplete class="max-h-128 mt-1 rounded" [disableRipple]="true" #auto="matAutocomplete">
+                            <mat-autocomplete class="max-h-128 mt-1 rounded" [disableRipple]="true"
+                                #auto="matAutocomplete">
                                 <mat-option *ngIf="(filteredPatients$ | async)?.length === 0" disabled>
                                     No results found!
                                 </mat-option>
                                 <ng-container *ngIf="filteredPatients$ | async as filteredPatients">
                                     <ng-container *ngFor="let patient of filteredPatients; trackBy: trackByFn">
-                                        <mat-option [value]="patient.email" (click)="addPatientToDoctor(patient)">
+                                        <mat-option [value]="patient.email">
                                             {{ patient.email }} - {{ patient.firstname }} {{ patient.lastname }}
                                         </mat-option>
                                     </ng-container>
@@ -194,7 +201,8 @@
                             </mat-autocomplete>
                         </form>
                     </ng-template>
-                </mat-tab>  
+                </mat-tab>
+
             </mat-tab-group>
         </div>
     </div>

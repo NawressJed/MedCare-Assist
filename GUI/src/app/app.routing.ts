@@ -150,6 +150,9 @@ export const appRoutes: Route[] = [
             },
             {
                 path: 'calendar', loadChildren: () => import('app/modules/doctor/calendar/calendar.module').then(m => m.CalendarModule) 
+            },
+            {
+                path: 'reviews', loadChildren: () => import('app/modules/doctor/review/review.module').then(m => m.ReviewModule) 
             }
 
         ]
@@ -170,7 +173,15 @@ export const appRoutes: Route[] = [
                 path: 'appointment', children: [
                     { path: 'test', loadChildren: () => import('app/modules/patient/appointment/testt/testt/testt.module').then(m => m.TesttModule)},
                     { path: 'request', loadChildren: () => import('app/modules/patient/appointment/appointment-request/appointment-request.module').then(m => m.AppointmentRequestModule) },
-                    ]
+                    { path: 'past', loadChildren: () => import('app/modules/patient/appointment/past/past.module').then(m => m.PastModule) },
+                    { path: 'upcoming', loadChildren: () => import('app/modules/patient/appointment/upcoming/upcoming.module').then(m => m.UpcomingModule) },
+                    { path: 'review', loadChildren: () => import('app/modules/patient/appointment/review/review.module').then(m => m.ReviewModule) },
+                ]
+            },
+            {
+                path: 'medicalfile', children: [
+                    { path: 'list', loadChildren: () => import('app/modules/patient/medicalFile/list/list.module').then(m => m.ListModule)},
+                ]
             }
 
         ]

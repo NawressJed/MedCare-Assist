@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
@@ -48,6 +49,7 @@ export class SettingsAccountComponent implements OnInit {
     private auth: AuthenticationService,
     private _cookieService: CookieService,
     private router: Router,
+    private datePipe: DatePipe
   ) { }
 
   ngOnInit(): void {
@@ -58,17 +60,17 @@ export class SettingsAccountComponent implements OnInit {
 
   initializeForm(): void {
     this.accountForm = this._formBuilder.group({
-      firstname: ['', Validators.required],
-      lastname: ['', Validators.required],
-      email: ['', [Validators.required, Validators.pattern(this.regExpEmail)]],
-      phoneNumber: ['', [Validators.required, Validators.pattern(this.regExpPhone), Validators.minLength(8), Validators.maxLength(12)]],
+      firstname: [''],
+      lastname: [''],
+      email: [''],
+      phoneNumber: ['', [Validators.pattern(this.regExpPhone), Validators.minLength(8), Validators.maxLength(12)]],
       workPhoneNumber: ['', this.role === 'ROLE_DOCTOR' ? Validators.required: null],
-      gender: ['', Validators.required],
-      address: ['', Validators.required],
-      zipCode: ['', [Validators.required, Validators.pattern(this.regExpZipCode)]],
+      gender: [''],
+      address: [''],
+      zipCode: ['', [Validators.pattern(this.regExpZipCode)]],
       specialty: ['', this.role === 'ROLE_DOCTOR' ? Validators.required: null],
       consultationPrice: ['', this.role === 'ROLE_DOCTOR' ? Validators.required: null],
-      dateOfBirth: ['', this.role === 'ROLE_PATIENT' ? [Validators.required, Validators.pattern(this.regExpDate)]: null]
+      dateOfBirth: ['', this.role === 'ROLE_PATIENT' ? [Validators.pattern(this.regExpDate)]: null]
     });
   }
 
@@ -101,7 +103,7 @@ export class SettingsAccountComponent implements OnInit {
           this.accountForm.patchValue({
             lastname: this.user.lastname,
             firstname: this.user.firstname,
-            dateOfBirth: this.user.dateOfBirth,
+            dateOfBirth: this.formatDate(this.user.dateOfBirth),
             gender: this.user.gender,
             phoneNumber: this.user.phoneNumber,
             address: this.user.address,
@@ -114,6 +116,10 @@ export class SettingsAccountComponent implements OnInit {
         }
       });
     }
+  }
+
+  formatDate(date: string): string {
+    return this.datePipe.transform(date, 'MM-dd-yyyy');
   }
 
   updateUser(): void {

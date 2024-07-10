@@ -177,6 +177,18 @@ export class AddComponent implements OnInit, AfterViewInit {
     }
   }
 
+  addPatient(): void {
+    const email = this.searchControl.value;
+    this.filteredPatients$.subscribe(patients => {
+        const patient = patients.find(p => p.email === email);
+        if (patient) {
+            this.addPatientToDoctor(patient);
+        } else {
+            console.error('No patient found with this email');
+        }
+    });
+}
+
   createUser(): void {
     this.errors = [];
     if (this.addPatientForm.valid) {

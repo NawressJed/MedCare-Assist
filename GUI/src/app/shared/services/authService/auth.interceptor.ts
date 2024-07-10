@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { catchError, switchMap, filter, take } from 'rxjs/operators';
 import { AuthenticationService } from './authentication.service';
 import { TokenService } from '../tokenService/token.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,11 @@ export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  constructor(private authService: AuthenticationService, private tokenService: TokenService) { }
+  constructor(
+    private authService: AuthenticationService, 
+    private tokenService: TokenService,
+    private _cookieService: CookieService
+  ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authReq = req;
@@ -50,6 +55,7 @@ export class AuthInterceptor implements HttpInterceptor {
         return this.authService.refreshToken({ refreshToken }).pipe(
           switchMap((token: any) => {
             this.isRefreshing = false;
+            this._cookieService.delete("access_token");
             this.tokenService.setAccessToken(token.accessToken);
             this.refreshTokenSubject.next(token.accessToken);
             return next.handle(this.addTokenHeader(request, token.accessToken));

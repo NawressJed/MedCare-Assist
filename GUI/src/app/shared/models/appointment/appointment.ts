@@ -4,13 +4,13 @@ import { Patient } from '../users/patient/patient';
 
 export class Appointment {
     public id: string;
-    date: Date = new Date();
+    date: string;
     time: string;
     appointmentStatus: string;
     doctor: Doctor
     patient: Patient
 
-    constructor() {
-        this.id = uuidv4();
-      }
+  constructor() {
+    this.id = uuidv4();
+  }
 }

@@ -29,6 +29,7 @@ public class NotificationController {
         try {
             return service.getNotificationById(id);
         }catch (Exception e) {
+            log.error("ERROR retrieving notification by its ID " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -47,7 +48,7 @@ public class NotificationController {
         try {
             service.markAsRead(notificationId);
         } catch (Exception e) {
-            log.error("ERROR marking as read notification " + e.getMessage());
+            log.error("ERROR marking notification as read " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
