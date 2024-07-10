@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import * as SockJS from 'sockjs-client';
 
 @Injectable({
@@ -8,22 +9,33 @@ import * as SockJS from 'sockjs-client';
 export class WebSocketService {
   private stompClient: Client;
   private subscriptions: StompSubscription[] = [];
-  authenticatedUserId: string; // Ensure this is set appropriately
+  public notificationReceived: Subject<any> = new Subject<any>();
+  public chatMessageReceived: Subject<any> = new Subject<any>();
+  private isConnected: boolean = false;
+  authenticatedUserId: string;
 
   constructor() {
-    // Initializing the STOMP client
+    this.initializeWebSocket();
+  }
+
+  private initializeWebSocket(): void {
+    if (this.isConnected) {
+      console.warn('WebSocket is already connected');
+      return;
+    }
+
     this.stompClient = new Client({
       brokerURL: 'ws://localhost:8080/core-services/ws',
-      reconnectDelay: 5000, 
+      reconnectDelay: 5000,
       heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000, 
+      heartbeatOutgoing: 4000,
       webSocketFactory: () => new SockJS('http://localhost:8080/core-services/ws'),
     });
 
-    // Setting up the connection event handlers
     this.stompClient.onConnect = () => {
       console.log('Connected');
-      this.subscribeToTopics(); // Subscribing to topics on connect
+      this.isConnected = true;
+      this.subscribeToTopics();
     };
 
     this.stompClient.onStompError = (frame) => {
@@ -33,53 +45,58 @@ export class WebSocketService {
 
     this.stompClient.onWebSocketClose = (evt) => {
       console.log('WebSocket closed', evt);
+      this.isConnected = false;
     };
 
-    this.stompClient.activate(); // Activating the STOMP client
+    this.stompClient.activate();
   }
 
-  // Subscribe to predefined topics
+  setAuthenticatedUserId(userId: string): void {
+    this.authenticatedUserId = userId;
+    if (this.isConnected) {
+      this.subscribeToTopics();
+    }
+  }
+
   private subscribeToTopics(): void {
+    // Unsubscribe from all previous subscriptions
     this.subscriptions.forEach(sub => sub.unsubscribe());
     this.subscriptions = [];
-    // Subscription for notifications
-    this.subscriptions.push(this.stompClient.subscribe(`/user/${this.authenticatedUserId}/notify`, (message: IMessage) => {
-      try {
-        const parsedMessage = JSON.parse(message.body);
-      } catch (error) {
-        console.error('Error parsing WebSocket message: ', error);
-      }
-    }));
-    // Subscription for chat messages
-    this.subscriptions.push(this.stompClient.subscribe(`/user/${this.authenticatedUserId}/queue/messages`, (message: IMessage) => {
-      try {
-        const parsedMessage = JSON.parse(message.body);
-        console.log('Received message:', parsedMessage);
-        // Handle incoming chat messages here
-      } catch (error) {
-        console.error('Error parsing WebSocket message: ', error);
-      }
-    }));
-  }
 
-  // Subscribe to a specific topic
-  subscribe(topic: string, callback: (message: any) => void): void {
-    const subscription = this.stompClient.subscribe(topic, (message: IMessage) => {
+    if (!this.authenticatedUserId) {
+      console.warn('Authenticated user ID is not set');
+      return;
+    }
+
+    // Subscription for notifications
+    const notificationSub = this.stompClient.subscribe(`/user/${this.authenticatedUserId}/notify`, (message: IMessage) => {
       try {
         const parsedMessage = JSON.parse(message.body);
-        callback(parsedMessage);
+        this.notificationReceived.next(parsedMessage);
       } catch (error) {
-        console.error('Error parsing WebSocket message: ', error);
+        console.error('Error parsing WebSocket message:', error);
       }
     });
-    this.subscriptions.push(subscription); // Keeping track of subscriptions to manage them later
+
+    // Subscription for chat messages
+    const chatSub = this.stompClient.subscribe(`/user/${this.authenticatedUserId}/queue/messages`, (message: IMessage) => {
+      try {
+        const parsedMessage = JSON.parse(message.body);
+        this.chatMessageReceived.next(parsedMessage);
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+      }
+    });
+
+    // Store subscriptions for later management
+    this.subscriptions.push(notificationSub, chatSub);
   }
 
-  // Send a message to a specific destination
-  sendMessage(destination: string, message: any): void {
+  sendMessage(destination: string, message: any, recipientUserId?: string): void {
     if (this.stompClient.connected) {
-      const jsonMessage = JSON.stringify(message);
-      this.stompClient.publish({ destination, body: jsonMessage }); // Publish message if connected
+      const jsonMessage = JSON.stringify({ ...message, senderId: this.authenticatedUserId });
+      const targetDestination = recipientUserId ? `/user/${recipientUserId}${destination}` : destination;
+      this.stompClient.publish({ destination: targetDestination, body: jsonMessage });
     } else {
       console.error('STOMP client is not connected');
     }

@@ -64,15 +64,18 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public void deleteChat(UUID chatId) {
+
+    }
+
+    @Override
     public List<ChatMessageDTO> findChatMessages(UUID senderId, UUID recipientId) {
         try {
-            // Get chat room ID
             UUID chatRoomId = chatRoomService.getOrCreateChatRoomId(senderId, recipientId, false);
             if (chatRoomId == null) {
                 return List.of();
             }
 
-            // Fetch messages in the chat room
             List<ChatMessage> messages = chatMessageRepository.findByChatRoomId(chatRoomId);
             return messages.stream()
                     .map(message -> new ChatMessageDTO(
@@ -81,7 +84,7 @@ public class ChatServiceImpl implements ChatService {
                             message.getSenderId(),
                             message.getRecipientId(),
                             message.getContent(),
-                            message.getTimestamp()
+                            message.getTimestamp().toString()
                     ))
                     .collect(Collectors.toList());
         } catch (Exception e) {

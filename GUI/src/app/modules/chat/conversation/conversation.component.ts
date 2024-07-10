@@ -8,6 +8,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { User } from 'app/shared/models/users/user';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { WebSocketService } from 'app/shared/services/webSocketService/web-socket.service';
+import { Patient } from 'app/shared/models/users/patient/patient';
+import { Doctor } from 'app/shared/models/users/doctor/doctor';
 
 @Component({
     selector: 'chat-conversation',
@@ -17,16 +19,13 @@ import { WebSocketService } from 'app/shared/services/webSocketService/web-socke
 })
 export class ConversationComponent implements OnInit, OnDestroy {
     @ViewChild('messageInput') messageInput: ElementRef;
-    chat: any = { messages: [] };
+    chat: any = { messages: [], recipient: null };
     drawerMode: 'over' | 'side' = 'side';
     drawerOpened: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     authenticatedUser: User;
     recipient: User;
-
-    name: string;
-    lastname: string;
 
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
@@ -53,6 +52,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        
         const userId = this._cookieService.get("id");
 
         this.getAuthenticatedUser(userId);
@@ -74,10 +74,12 @@ export class ConversationComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
 
-        this._webSocketService.subscribe(`/user/${userId}/queue/messages`, (message) => {
-            this.chat.messages.push(message);
-            this._changeDetectorRef.markForCheck();
-        });
+            this._webSocketService.chatMessageReceived.pipe(
+                takeUntil(this._unsubscribeAll)
+              ).subscribe(message => {
+                this.chat.messages.push(message);
+                this._changeDetectorRef.markForCheck();
+              });
     }
 
     ngOnDestroy(): void {
@@ -111,44 +113,53 @@ export class ConversationComponent implements OnInit, OnDestroy {
     }
 
     loadConversation(senderId: string, recipientId: string): void {
-
-        this._chatService.getChats(senderId, recipientId)
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe({
-                next: (messages) => {
-                    if (messages.length > 0) {
-                        this.loadRecipientDetails(recipientId);
-                        this.chat = {
-                            messages: this.sortMessagesByTimestamp(messages.map(msg => ({
-                                ...msg,
-                                isMine: msg.senderId === this.authenticatedUser.id
-                            })))
-                        };
-                    } else {
-                        console.log("No messages found for conversation");
-                    }
-                    this._changeDetectorRef.markForCheck();
-                },
-                error: (err) => {
-                    console.error('Failed to load conversation messages', err);
-                }
-            });
+        this._chatService.getChats(senderId, recipientId).pipe(takeUntil(this._unsubscribeAll)).subscribe({
+            next: (messages) => {
+                this.chat.messages = this.sortMessagesByTimestamp(messages.map(msg => ({
+                    ...msg,
+                    isMine: msg.senderId === this.authenticatedUser.id,
+                    timestamp: new Date(msg.timestamp)
+                })));
+                this.loadRecipientDetails(recipientId);
+                this._changeDetectorRef.markForCheck();
+            },
+            error: (err) => console.error('Failed to load conversation messages', err)
+        });
     }
 
     loadRecipientDetails(recipientId: string): void {
         this._userService.getUser(recipientId).pipe(takeUntil(this._unsubscribeAll)).subscribe({
             next: (user) => {
                 this.recipient = user;
-                this.name = user.firstname;
-                this.lastname = user.lastname;
-                this._changeDetectorRef.markForCheck();
+    
+                if (isPatient(this.recipient)) {
+                    this._userService.getPatient(this.recipient.id).subscribe({
+                        next: (patientDetails) => {
+                            Object.assign(this.recipient, patientDetails);
+                            this._changeDetectorRef.markForCheck();
+                        },
+                        error: (err) => {
+                            console.error('Failed to fetch patient details', err);
+                        }
+                    });
+                } else if (isDoctor(this.recipient)) {
+                    this._userService.getDoctor(this.recipient.id).subscribe({
+                        next: (doctorDetails) => {
+                            Object.assign(this.recipient, doctorDetails);
+                            this._changeDetectorRef.markForCheck();
+                        },
+                        error: (err) => {
+                            console.error('Failed to fetch doctor details', err);
+                        }
+                    });
+                }
             },
             error: (err) => {
                 console.error('Failed to fetch recipient details', err);
             }
         });
     }
-
+    
     sortMessagesByTimestamp(messages: any[]): any[] {
         return messages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
     }
@@ -173,4 +184,14 @@ export class ConversationComponent implements OnInit, OnDestroy {
     trackByFn(index: number, item: any): any {
         return item.id || index;
     }
+    
+}
+
+
+function isPatient(user: User): user is Patient {
+    return user.role === 'ROLE_PATIENT';
+}
+
+function isDoctor(user: User): user is Doctor {
+    return user.role === 'ROLE_DOCTOR';
 }

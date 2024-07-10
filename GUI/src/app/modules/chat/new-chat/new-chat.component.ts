@@ -1,69 +1,60 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
+import { Router } from '@angular/router';
+import { Doctor } from 'app/shared/models/users/doctor/doctor';
 import { ChatService } from 'app/shared/services/chatService/chat.service';
+import { UserService } from 'app/shared/services/userService/user.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-    selector       : 'chat-new-chat',
-    templateUrl    : './new-chat.component.html',
-    encapsulation  : ViewEncapsulation.None,
+    selector: 'chat-new-chat',
+    templateUrl: './new-chat.component.html',
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewChatComponent implements OnInit, OnDestroy
-{
+export class NewChatComponent implements OnInit, OnDestroy {
     @Input() drawer: MatDrawer;
-    contacts: any[] = [
-        {
-          id: 1,
-          name: 'Bernard Langley',
-          lastMessage: 'See you tomorrow!',
-          lastMessageDate: '26/04/2021',
-          unreadCount: 2
-        },
-    ];
+    @Output() contactSelected = new EventEmitter<string>();
+    contacts: any[] = [];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    /**
-     * Constructor
-     */
-    constructor(private _chatService: ChatService)
-    {
+    constructor(
+        private _chatService: ChatService,
+        private _userService: UserService,
+        private _router: Router
+    ) {}
+
+    ngOnInit(): void {
+        // Initial fetch if necessary
+        this.fetchContacts();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
-    ngOnInit(): void
-    {
-       
-    }
-
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
-        // Unsubscribe from all subscriptions
+    ngOnDestroy(): void {
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+    fetchContacts(): void {
+        this._userService.getDoctorsList()
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((doctors) => {
+                this.contacts = doctors.map(doctor => ({
+                    id: doctor.id,
+                    firstname: doctor.firstname,
+                    lastname: doctor.lastname
+                }));
+            });
+    }
 
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any
-    {
+    openConversation(contact: any): void {
+        console.log('Attempting to open conversation for:', contact);
+        this.drawer.close().then(() => {
+            console.log('Drawer closed, emitting contactSelected event');
+            this.contactSelected.emit(contact.id);
+        });
+    }    
+
+    trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 }

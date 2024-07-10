@@ -1,8 +1,11 @@
 <div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
-    <ng-container *ngIf="chat.messages.length > 0; else selectChatOrStartNew">
         <mat-drawer-container class="flex-auto h-full" [hasBackdrop]="false">
             <!-- Drawer -->
             <mat-drawer class="w-full sm:w-100 lg:border-l lg:shadow-none dark:bg-gray-900" [autoFocus]="false" [mode]="drawerMode" [position]="'end'" [(opened)]="drawerOpened" #drawer>
+                <!-- Contact info -->
+                <chat-contact-info
+                    [drawer]="drawer"
+                    [recipient]="recipient"></chat-contact-info>
             </mat-drawer>
 
             <!-- Drawer content -->
@@ -18,10 +21,10 @@
                     <div class="flex items-center ml-2 lg:ml-0 mr-2 cursor-pointer" (click)="openContactInfo()">
                         <div class="relative flex flex-0 items-center justify-center w-10 h-10">
                             <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                {{name?.charAt(0)}}
+                                {{recipient?.firstname.charAt(0)}}
                             </div>
                         </div>
-                        <div class="ml-4 text-lg font-medium leading-5 truncate">{{name}} {{lastname}}</div>
+                        <div class="ml-4 text-lg font-medium leading-5 truncate">{{recipient?.firstname}} {{recipient?.lastname}}</div>
                     </div>
 
                     <button class="ml-auto" mat-icon-button [matMenuTriggerFor]="conversationHeaderMenu">
@@ -40,14 +43,15 @@
                 </div>
 
                 <!-- Conversation -->
-                    <div class="flex flex-col flex-auto overflow-y-auto shrink p-6 bg-card dark:bg-transparent">
+                <div class="flex overflow-y-auto flex-col-reverse">
+                    <div class="flex flex-col flex-auto shrink p-6 bg-card dark:bg-transparent">
                         <ng-container *ngFor="let message of chat.messages; let i = index; let first = first; let last = last; trackBy: trackByFn">
                             <!-- Start of the day -->
                             <ng-container *ngIf="first || (chat.messages[i - 1].timestamp | date:'d') !== (message.timestamp | date:'d')">
                                 <div class="flex items-center justify-center my-3 -mx-6">
                                     <div class="flex-auto border-b"></div>
                                     <div class="flex-0 mx-4 text-sm font-medium leading-5 text-secondary">
-                                        {{message.timestamp | date: 'longDate'}}
+                                        {{ message.timestamp | date:'longDate' }}
                                     </div>
                                     <div class="flex-auto border-b"></div>
                                 </div>
@@ -77,6 +81,7 @@
                                 </ng-container>
                             </div>
                         </ng-container>
+                    </div>
                 </div>
 
                 <!-- Message field -->
@@ -93,15 +98,7 @@
                 </div>
             </mat-drawer-content>
         </mat-drawer-container>
-    </ng-container>
 
-    <!-- Select chat or start new template -->
-    <ng-template #selectChatOrStartNew>
-        <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
-            <mat-icon class="icon-size-24" [svgIcon]="'iconsmind:speach_bubble'"></mat-icon>
-            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Select a conversation or start a new chat</div>
-        </div>
-    </ng-template>
 
     <!-- Speech bubble tail SVG -->
     <!-- @formatter:off -->

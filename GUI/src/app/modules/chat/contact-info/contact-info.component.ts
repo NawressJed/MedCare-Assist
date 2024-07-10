@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
+import { User } from 'app/shared/models/users/user';
 
 @Component({
     selector       : 'chat-contact-info',
@@ -9,7 +10,7 @@ import { MatDrawer } from '@angular/material/sidenav';
 })
 export class ContactInfoComponent
 {
-    @Input() chat: any;
+    @Input() recipient: User;
     @Input() drawer: MatDrawer;
 
     /**
