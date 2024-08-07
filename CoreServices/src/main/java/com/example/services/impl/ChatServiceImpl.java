@@ -47,11 +47,6 @@ public class ChatServiceImpl implements ChatService {
 
             chatMessage.setChatRoom(chatRoomRepository.findChatRoomById(chatRoomId));
 
-
-            UserEntity user = userRepository.findUserEntityById(chatMessageDTO.getSenderId());
-            String notificationMessage = "You have a new message from " + user.getFirstname() + " " + user.getLastname();
-            notificationService.sendNotification("New Message", notificationMessage, chatMessageDTO.getRecipientId(), null);
-
             return mapper.toDto(chatMessageRepository.save(chatMessage));
         } catch (Exception e) {
             log.error("Error in save", e);

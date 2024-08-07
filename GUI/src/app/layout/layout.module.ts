@@ -16,7 +16,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { EmptyLayoutModule } from './layouts/empty/empty.module';
 import { ClassicLayoutModule } from './layouts/vertical/classic/classic.module';
 import { ChatbotModule } from './common/chatbot/chatbot.module';
-import { ModernLayoutModule } from './layouts/horizontal/modern/modern.module';
 
 
 @NgModule({
@@ -26,7 +25,6 @@ import { ModernLayoutModule } from './layouts/horizontal/modern/modern.module';
     imports     : [
         EmptyLayoutModule,
         ClassicLayoutModule,
-        ModernLayoutModule,
         HttpClientModule,
         RouterModule,
         MatButtonModule,
@@ -45,8 +43,7 @@ import { ModernLayoutModule } from './layouts/horizontal/modern/modern.module';
     exports     : [
         LayoutComponent,
         EmptyLayoutModule,
-        ClassicLayoutModule,
-        ModernLayoutModule
+        ClassicLayoutModule
     ]
 })
 export class LayoutModule

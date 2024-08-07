@@ -25,6 +25,8 @@ public class ChatMessage {
     private ChatRoom chatRoom;
     private UUID senderId;
     private UUID recipientId;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
     private LocalDateTime timestamp;
 

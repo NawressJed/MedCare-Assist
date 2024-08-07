@@ -29,7 +29,7 @@ export class ChatService {
     }
   
     sendMessage(message: ChatMessage): void {
-      this.http.post(`${this.baseUrl}/message`, message).subscribe();
+      this.http.post(`${this.baseUrl}/chatbot/message`, message).subscribe();
     }
 
     deleteChat(senderId: string, recipientId: string): Observable<void> {
