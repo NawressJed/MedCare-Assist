@@ -1,0 +1,55 @@
+<div class="flex flex-col items-center pb-6 px-6 sm:pb-10 sm:px-16">
+    <!-- Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-y-8 md:gap-y-0 md:gap-x-6 w-full max-w-sm md:max-w-4xl -mt-16 sm:-mt-24">
+        <!-- FAQs card -->
+        <div class="relative flex flex-col rounded-2xl shadow hover:shadow-lg overflow-hidden bg-card transition-shadow ease-in-out duration-150">
+            <div class="flex flex-col flex-auto items-center p-8 text-center">
+                <div class="text-2xl font-semibold">FAQs</div>
+                <div class="md:max-w-40 mt-1 text-secondary">Frequently asked questions and answers</div>
+            </div>
+            <div class="flex items-center justify-center py-4 px-8 text-primary-500 dark:text-primary-400 bg-gray-50 dark:bg-transparent dark:border-t">
+                <a
+                    class="flex items-center"
+                    [routerLink]="['faqs']">
+                    <span class="absolute inset-0"></span>
+                    <span class="font-medium">Go to FAQs</span>
+                    <mat-icon
+                        class="ml-2 icon-size-5 text-current"
+                        [svgIcon]="'heroicons_solid:arrow-narrow-right'"></mat-icon>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="w-full max-w-sm md:max-w-6xl mt-7 sm:mt-10">
+    <owl-carousel-o [options]="carouselOptions">
+        <ng-template carouselSlide>
+            <div class="item">
+                <img src="assets/images/specialties/dentist.png" alt="Specialty Image"/>
+            </div>
+        </ng-template>
+        <ng-template carouselSlide>
+            <div class="item">
+                <img src="assets/images/specialties/dentist.png" alt="Specialty Image"/>
+            </div>
+        </ng-template>
+        <ng-template carouselSlide>
+            <div class="item">
+                <img src="assets/images/specialties/dentist.png" alt="Specialty Image"/>
+            </div>
+        </ng-template>
+        <ng-template carouselSlide>
+            <div class="item">
+                <img src="assets/images/specialties/dentist.png" alt="Specialty Image"/>
+            </div>
+        </ng-template>
+        <ng-template carouselSlide>
+            <div class="item">
+                <img src="assets/images/specialties/dentist.png" alt="Specialty Image"/>
+            </div>
+        </ng-template>
+    </owl-carousel-o>
+</div>

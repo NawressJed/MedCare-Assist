@@ -10,7 +10,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import { MedicalFile } from 'app/shared/models/medicalFile/medical-file';
 import { MedicalFileService } from 'app/shared/services/medicalFileService/medical-file.service';
-import { DetailsModule } from '../../medicalFile/details/details.module';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-details',
@@ -32,7 +32,8 @@ export class DetailsComponent implements OnInit {
     private _route: ActivatedRoute,
     private _matDialog: MatDialog,
     private _cookieService: CookieService,
-    private _medicalFileService: MedicalFileService
+    private _medicalFileService: MedicalFileService,
+    private _location: Location
   ) { }
 
   ngOnInit(): void {
@@ -81,6 +82,10 @@ export class DetailsComponent implements OnInit {
         medicalFileId
       }
     });
+  }
+
+  goBack(): void {
+    this._location.back();
   }
 
 }

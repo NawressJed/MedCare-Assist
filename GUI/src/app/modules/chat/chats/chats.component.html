@@ -86,13 +86,11 @@
             </ng-template>
     
             <!-- Conversation -->
-            <ng-container *ngIf="chats && chats.length > 0">
                 <div class="flex-auto border-l"
                     [ngClass]="{'z-20 absolute inset-0 lg:static lg:inset-auto flex': selectedChat && selectedChat.id,
                                 'hidden lg:flex': !selectedChat || !selectedChat.id}">
                     <router-outlet></router-outlet>
                 </div>
-            </ng-container>
     
         </mat-drawer-content>
     

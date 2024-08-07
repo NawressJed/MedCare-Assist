@@ -67,7 +67,6 @@ export class AuthenticationService {
     return this.http.post<any>(`${this.baseUrl}/logout`, { refreshToken }, { headers }).pipe(
       tap(() => {
         this._cookieService.deleteAll();
-        this.tokenService.clearTokens(); 
       })
     );
   }
@@ -76,6 +75,12 @@ export class AuthenticationService {
     const authToken = this.tokenService.getAccessToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${authToken}`);
     return this.http.put<string>(`${this.baseUrl}/account/update/doctor/${id}`, doctor, { headers });
+  }
+
+  updatePatient(id: string, doctor: any): Observable<string> {
+    const authToken = this.tokenService.getAccessToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${authToken}`);
+    return this.http.put<string>(`${this.baseUrl}/account/update/patient/${id}`, doctor, { headers });
   }
 
   refreshToken(token: { refreshToken: string }): Observable<any> {

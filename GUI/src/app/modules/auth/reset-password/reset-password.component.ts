@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
@@ -6,13 +6,18 @@ import { FuseAlertType } from '@fuse/components/alert';
 import { FuseValidators } from '@fuse/validators';
 import { AuthenticationService } from '../../../shared/services/authService/authentication.service';
 
+declare var particlesJS: any;
+
 @Component({
     selector: 'reset-password-modern-reversed',
     templateUrl: './reset-password.component.html',
+    styleUrls: ['./reset-password.component.scss'],
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations
 })
-export class AuthResetPasswordComponent implements OnInit {
+export class AuthResetPasswordComponent implements AfterViewInit {
+    @ViewChild('particlesJs', { static: true }) particlesJs: ElementRef;
+
     alert: { type: FuseAlertType; message: string } = {
         type: 'success',
         message: ''
@@ -51,6 +56,11 @@ export class AuthResetPasswordComponent implements OnInit {
                 validators: FuseValidators.mustMatch('newPassword', 'confirmPassword')
             }
         );
+    }
+
+    ngAfterViewInit(): void {
+        particlesJS.load(this.particlesJs.nativeElement.id, 'assets/particlesjs-config.json');
+
     }
 
     // -----------------------------------------------------------------------------------------------------

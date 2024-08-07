@@ -13,5 +13,5 @@ public interface ChatService {
     List<ChatMessageDTO> findChatMessages(UUID senderId, UUID recipientId);
     UUID getUserIdByEmail(String email);
     List<ChatMessageDTO> getChatHistory(UUID userId);
-    void deleteChat(UUID chatId);
+    void deleteChat(UUID senderId, UUID recipientId);
 }

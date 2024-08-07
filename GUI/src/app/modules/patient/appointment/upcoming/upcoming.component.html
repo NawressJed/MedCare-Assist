@@ -62,7 +62,7 @@
                         <div
                             class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5">
                             <div> </div>
-                            <div>Doctor's Name</div>
+                            <div>Doctor</div>
                             <div class="hidden md:block">Date & Time</div>
                             <div class="hidden lg:block">Email</div>
                             <div class="hidden lg:block">Work Phone Number</div>
@@ -77,7 +77,7 @@
                                     <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                                         <div> </div>
                                         <!-- Patient Name -->
-                                        <div class="font-semibold">{{ appointment.doctor.firstname }} {{
+                                        <div class="font-semibold">Dr. {{ appointment.doctor.firstname }} {{
                                             appointment.doctor.lastname }}
                                         </div>
                                         <!-- Date -->
@@ -91,7 +91,7 @@
                                         <!-- Gender -->
                                         <div class="hidden lg:block">
                                             <li class="relative flex py-7">
-                                                <div class="py-0.5 px-3 rounded-full text-sm font-semibold">
+                                                <div class="py-0.5  rounded-full text-sm font-semibold">
                                                     {{ appointment.doctor.specialty }}
                                                 </div>
                                             </li>

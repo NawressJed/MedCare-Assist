@@ -1,15 +1,13 @@
 <div class="flex flex-col flex-auto md:w-160 md:min-w-160 -m-6">
-
     <!-- Main -->
     <div class="flex-auto">
-
         <!-- Header -->
         <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b">
-
             <!-- Title -->
             <div class="flex items-center justify-between">
                 <div class="text-xl font-semibold tracking-tight leading-none text-blue text-blue-600">
-                    Update appointment</div>
+                    Update appointment
+                </div>
                 <button mat-icon-button (click)="onCloseClick()">
                     <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
                 </button>
@@ -19,31 +17,93 @@
                     <div class="flex sm:col-span-4">
                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
                             <input matInput [matDatepicker]="picker2" required [(ngModel)]="appointment.date"
-                                [placeholder]="'Select date'" id="date" name="date">
+                                [placeholder]="'Select date'" id="date" name="date" (dateChange)="onDateChange($event)">
                             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                             <mat-datepicker #picker2></mat-datepicker>
                         </mat-form-field>
                     </div>
                     <div class="flex sm:col-span-4">
-                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
-                            <input type="hidden" [(ngModel)]="appointment.time" name="time">
-                            <mat-select placeholder="Select time" [(ngModel)]="selectedTime" (selectionChange)="onTimeSelected($event.value)" name="selectedTime">
-                                <mat-option *ngFor="let timeOption of timeOptions" [value]="timeOption">
-                                    {{ timeOption }}
-                                </mat-option>
-                            </mat-select>
-                            <button mat-icon-button (click)="toggleTimePicker()">
-                                <mat-icon svgIcon="heroicons_outline:clock"></mat-icon>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" *ngFor="let timeSlot of timeSlots" class="p-2 rounded border"
+                                [ngClass]="{
+                                        'bg-gray-300': !timeSlot.available,
+                                        'bg-white': timeSlot.available && selectedTime !== timeSlot.time,
+                                        'bg-primary text-white': selectedTime === timeSlot.time
+                                    }" [disabled]="!timeSlot.available" (click)="selectSlot(timeSlot)">
+                                {{ timeSlot.time }}
                             </button>
-                        </mat-form-field>
+                        </div>
                     </div>
                     <div class="flex sm:col-span-4">
                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
                             <mat-select required [(ngModel)]="appointment.patient" [placeholder]="'Select patient'"
                                 id="patient" name="patient">
-                                <mat-option *ngFor="let patient of listPatient" [value]="patient">{{ patient.firstname }} {{ patient.lastname }}</mat-option>
+                                <mat-option *ngFor="let patient of listPatient" [value]="patient">
+                                    {{ patient.firstname }} {{ patient.lastname }}
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
+                    </div>
+                    <div class="flex w-full sm:col-span-4">
+                        <div class="flex items-center px-4 leading-9 rounded-full cursor-pointer w-30 min-w-30"
+                            [ngClass]="{
+                                'text-red-800 bg-red-200 dark:text-red-100 dark:bg-red-500': appointment.appointmentStatus === 'CANCELLED',
+                                'text-green-800 bg-green-200 dark:text-green-100 dark:bg-green-500': appointment.appointmentStatus === 'DONE',
+                                'text-blue-800 bg-blue-200 dark:text-blue-100 dark:bg-blue-500': appointment.appointmentStatus === 'UPCOMING'
+                            }" [matMenuTriggerFor]="statusMenu">
+
+                            <!-- Cancelled -->
+                            <ng-container *ngIf="appointment.appointmentStatus === 'CANCELLED'">
+                                <mat-icon class="icon-size-5 text-current"
+                                    [svgIcon]="'heroicons_solid:x-circle'"></mat-icon>
+                                <span class="ml-2 mr-1 text-md font-medium">Cancelled</span>
+                            </ng-container>
+
+                            <!-- Done -->
+                            <ng-container *ngIf="appointment.appointmentStatus === 'DONE'">
+                                <mat-icon class="icon-size-5 text-current"
+                                    [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                                <span class="ml-2 mr-1 text-md font-medium">Done</span>
+                            </ng-container>
+
+                            <!-- Upcoming -->
+                            <ng-container *ngIf="appointment.appointmentStatus === 'UPCOMING'">
+                                <mat-icon class="icon-size-5 text-current"
+                                    [svgIcon]="'heroicons_solid:clock'"></mat-icon>
+                                <span class="ml-2 mr-1 text-md font-medium">Upcoming</span>
+                            </ng-container>
+                        </div>
+                        <mat-menu #statusMenu="matMenu">
+                            <!-- Cancelled -->
+                            <button [ngClass]="{'bg-hover': appointment.appointmentStatus === 'CANCELLED'}"
+                                mat-menu-item (click)="setStatus(appointment, 'CANCELLED')">
+                                <span class="inline-flex items-center justify-between w-full min-w-30 leading-5">
+                                    <span class="font-medium">Cancelled</span>
+                                    <mat-icon class="mr-0 icon-size-4 text-red-600 dark:text-red-500"
+                                        [svgIcon]="'heroicons_solid:x-circle'"></mat-icon>
+                                </span>
+                            </button>
+
+                            <!-- Done -->
+                            <button [ngClass]="{'bg-hover': appointment.appointmentStatus === 'DONE'}" mat-menu-item
+                                (click)="setStatus(appointment, 'DONE')">
+                                <span class="inline-flex items-center justify-between w-full min-w-30 leading-5">
+                                    <span class="font-medium">Done</span>
+                                    <mat-icon class="mr-0 icon-size-4 text-green-600 dark:text-green-500"
+                                        [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                                </span>
+                            </button>
+
+                            <!-- Upcoming -->
+                            <button [ngClass]="{'bg-hover': appointment.appointmentStatus === 'UPCOMING'}" mat-menu-item
+                                (click)="setStatus(appointment, 'UPCOMING')">
+                                <span class="inline-flex items-center justify-between w-full min-w-30 leading-5">
+                                    <span class="font-medium">Upcoming</span>
+                                    <mat-icon class="mr-0 icon-size-4 text-blue-600 dark:text-blue-500"
+                                        [svgIcon]="'heroicons_solid:clock'"></mat-icon>
+                                </span>
+                            </button>
+                        </mat-menu>
                     </div>
                 </div>
                 <div class="flex items-center -mx-8 px-8 py-5 justify-end">

@@ -1,19 +1,18 @@
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { map, Observable, of, startWith } from 'rxjs';
-import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
-import { FuseAlertComponent } from '@fuse/components/alert';
-import { Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Error } from 'app/shared/models/Error/Error';
+import { Observable, of } from 'rxjs';
+import { switchMap, debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { CanComponentDeactivate } from 'app/can-deactivate-guard.service';
 import { UserService } from 'app/shared/services/userService/user.service';
 import { CookieService } from 'ngx-cookie-service';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Patient } from 'app/shared/models/users/patient/patient';
 import { User } from 'app/shared/models/users/user';
+import { CanComponentDeactivate } from 'app/can-deactivate-guard.service';
+import { Error } from 'app/shared/models/Error/Error';
 
 @Component({
   selector: 'app-add',
@@ -65,11 +64,8 @@ export class AddComponent implements OnInit, AfterViewInit {
   });
   buttonClicked = false;
 
-  // eslint-disable-next-line @typescript-eslint/member-ordering
-  @ViewChild('SuccessAlert') SuccessAlert: FuseAlertComponent;
-
-  // eslint-disable-next-line @typescript-eslint/member-ordering
-  @ViewChild('ErrorAlert') ErrorAlert: FuseAlertComponent;
+  showSuccessAlert = false;
+  showErrorAlert = false;
 
   constructor(private _formBuilder: FormBuilder,
               private apiUser: UserService,
@@ -83,7 +79,6 @@ export class AddComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.getAuthenticatedUser(this._cookieService.get('id'));
 
-    /* Patterns */
     const regExpPhone = new RegExp(/^(\+216\d{8}|0\d{8})$/);
     const regExpEmail = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
     const regExpZipCode = new RegExp(/[0-9]{4}/g);
@@ -153,14 +148,11 @@ export class AddComponent implements OnInit, AfterViewInit {
       this.apiUser.addPatientToDoctor(this.authenticatedUserId, patient.id).subscribe({
         next: (response) => {
           console.log('Patient added successfully', response);
-          if (this.SuccessAlert) {
-            this.SuccessAlert.show();
-          }
+          this.showSuccessAlert = true;
+          this.showErrorAlert = false;
           this.cdr.detectChanges();
           setTimeout(() => {
-            if (this.SuccessAlert) {
-              this.SuccessAlert.dismiss();
-            }
+            this.showSuccessAlert = false;
             this.buttonClicked = true;
             this.router.navigateByUrl('/doctor/my-patients/list');
           }, 2000);
@@ -168,10 +160,9 @@ export class AddComponent implements OnInit, AfterViewInit {
         },
         error: (error) => {
           console.error('Error adding patient to doctor', error);
-          if (this.ErrorAlert) {
-            this.ErrorAlert.show();
-          }
-          // Handle error, perhaps show an error alert
+          this.showSuccessAlert = false;
+          this.showErrorAlert = true;
+          this.cdr.detectChanges();
         }
       });
     }
@@ -180,14 +171,17 @@ export class AddComponent implements OnInit, AfterViewInit {
   addPatient(): void {
     const email = this.searchControl.value;
     this.filteredPatients$.subscribe(patients => {
-        const patient = patients.find(p => p.email === email);
-        if (patient) {
-            this.addPatientToDoctor(patient);
-        } else {
-            console.error('No patient found with this email');
-        }
+      const patient = patients.find(p => p.email === email);
+      if (patient) {
+        this.addPatientToDoctor(patient);
+      } else {
+        console.error('No patient found with this email');
+        this.showSuccessAlert = false;
+        this.showErrorAlert = true;
+        this.cdr.detectChanges();
+      }
     });
-}
+  }
 
   createUser(): void {
     this.errors = [];
@@ -205,17 +199,11 @@ export class AddComponent implements OnInit, AfterViewInit {
         next: (r) => {
           console.log('Patient created successfully:', r);
           window.scrollTo(0, 0);
-          if (this.ErrorAlert) {
-            this.ErrorAlert.dismiss();
-          }
-          if (this.SuccessAlert) {
-            this.SuccessAlert.show();
-          }
+          this.showSuccessAlert = true;
+          this.showErrorAlert = false;
           this.cdr.detectChanges();
           setTimeout(() => {
-            if (this.SuccessAlert) {
-              this.SuccessAlert.dismiss();
-            }
+            this.showSuccessAlert = false;
             this.buttonClicked = true;
             this.router.navigateByUrl('/doctor/my-patients/list');
           }, 2000);
@@ -230,9 +218,8 @@ export class AddComponent implements OnInit, AfterViewInit {
           } else {
             this.errors.push(new Error(null, this.translate.instant('ERROR_500')));
           }
-          if (this.ErrorAlert) {
-            this.ErrorAlert.show();
-          }
+          this.showSuccessAlert = false;
+          this.showErrorAlert = true;
           this.cdr.detectChanges();
           window.scrollTo(0, 0);
         }
@@ -240,11 +227,10 @@ export class AddComponent implements OnInit, AfterViewInit {
     }
   }
 
-  reset(): void
-    {
-        this.searchForm.reset(this.searchForm);
-    }
-  
+  reset(): void {
+    this.searchForm.reset(this.searchForm);
+  }
+
   canDeactivate(component: CanComponentDeactivate,
                 route: ActivatedRouteSnapshot,
                 state: RouterStateSnapshot,
@@ -259,5 +245,4 @@ export class AddComponent implements OnInit, AfterViewInit {
   trackByFn(index: number, item: any): any {
     return item.id || index;
   }
-
 }

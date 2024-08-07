@@ -63,7 +63,7 @@ export function createTranslateLoader(http: HttpClient): any {
                 deps: [HttpClient]
             },
             isolate: false
-        }),
+        })
     ],
     bootstrap: [
         AppComponent

@@ -12,4 +12,5 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, UUID> 
     @Query("SELECT cm FROM ChatMessage cm WHERE cm.senderId = :userId OR cm.recipientId = :userId ORDER BY cm.timestamp DESC")
     List<ChatMessage> findChatHistory(UUID userId);
     List<ChatMessage> findBySenderIdAndRecipientId(UUID senderId, UUID recipientId);
+    void deleteByChatRoomId(UUID id);
 }

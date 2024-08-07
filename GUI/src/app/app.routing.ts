@@ -171,9 +171,9 @@ export const appRoutes: Route[] = [
         children: [
             {
                 path: 'appointment', children: [
-                    { path: 'test', loadChildren: () => import('app/modules/patient/appointment/testt/testt/testt.module').then(m => m.TesttModule)},
-                    { path: 'request', loadChildren: () => import('app/modules/patient/appointment/appointment-request/appointment-request.module').then(m => m.AppointmentRequestModule) },
+                    { path: 'book/:id', loadChildren: () => import('app/modules/patient/appointment/book/book.module').then(m => m.BookModule) },
                     { path: 'past', loadChildren: () => import('app/modules/patient/appointment/past/past.module').then(m => m.PastModule) },
+                    { path: 'doctors', loadChildren: () => import('app/modules/patient/appointment/doctors/doctors.module').then(m => m.DoctorsModule) },
                     { path: 'upcoming', loadChildren: () => import('app/modules/patient/appointment/upcoming/upcoming.module').then(m => m.UpcomingModule) },
                     { path: 'review', loadChildren: () => import('app/modules/patient/appointment/review/review.module').then(m => m.ReviewModule) },
                 ]

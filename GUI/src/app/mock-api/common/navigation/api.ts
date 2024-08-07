@@ -50,17 +50,10 @@ export class NavigationMockApi {
         this.role = this._authService.getRole();
         if (this.role === 'ADMIN') {
             this._defaultNavigation.push(
-                // {
-                //     id: 'dashboard',
-                //     title: 'NAVIGATION.DASHBOARD',
-                //     type: 'basic',
-                //     icon: 'heroicons_outline:chart-pie',
-                //     link: '/dashboard',
-                //     badge: {
-                //         title: 'W.I.P',
-                //         classes: 'px-2 bg-primary text-white rounded-full'
-                //     }
-                // },
+                {
+                    id: 'divider-1',
+                    type: 'divider'
+                },
                 {
                     id: 'profile',
                     title: 'My Profile',
@@ -100,119 +93,137 @@ export class NavigationMockApi {
         }
         if (this.role === 'ROLE_DOCTOR') {
             this._defaultNavigation.push(
-                // {
-                //     id: 'dashboard',
-                //     title: 'NAVIGATION.DASHBOARD',
-                //     type: 'basic',
-                //     icon: 'heroicons_outline:chart-pie',
-                //     link: '/dashboard',
-                //     badge: {
-                //         title: 'W.I.P',
-                //         classes: 'px-2 bg-primary text-white rounded-full'
-                //     }
-                // },
                 {
-                    id: 'profile',
-                    title: 'My Profile',
-                    type: 'basic',
-                    icon: 'heroicons_outline:user-circle',
-                    link: '/profile'
+                    id: 'divider-1',
+                    type: 'divider'
                 },
                 {
-                    id: 'patients',
-                    title: 'My Patients',
-                    type: 'basic',
-                    icon: 'heroicons_outline:user-group',
-                    link: '/doctor/my-patients/list'
-                },
-                {
-                    id: 'appointments',
-                    title: 'My Appointments',
-                    type: 'basic',
-                    icon: 'heroicons_outline:clipboard',
-                    link: '/doctor/appointment/list'
-                },
-                {
-                    id: 'calendar',
-                    title: 'My Calendar',
-                    type: 'basic',
-                    icon: 'heroicons_outline:calendar',
-                    link: '/doctor/calendar'
-                },
-                {
-                    id: 'reviews',
-                    title: 'Reviews',
-                    type: 'basic',
-                    icon: 'heroicons_outline:star',
-                    link: '/doctor/reviews'
-                },
-                {
-                    id: 'chat',
-                    title: 'Chat',
-                    type: 'basic',
-                    icon: 'heroicons_outline:chat-alt',
-                    link: '/chat'
-                }
+                    id: 'dashboards',
+                    title: 'Main Menu',
+                    type: 'group',
+                    icon: 'heroicons_outline:home',
+                    children: [
+                        {
+                            id: 'appointments',
+                            title: 'My Appointments',
+                            type: 'basic',
+                            icon: 'heroicons_outline:clipboard',
+                            link: '/doctor/appointment/list'
+                        },
+                        {
+                            id: 'patients',
+                            title: 'My Patients',
+                            type: 'basic',
+                            icon: 'heroicons_outline:user-group',
+                            link: '/doctor/my-patients/list'
+                        },
+                        {
+                            id: 'calendar',
+                            title: 'My Calendar',
+                            type: 'basic',
+                            icon: 'heroicons_outline:calendar',
+                            link: '/doctor/calendar'
+                        },
+                        {
+                            id: 'reviews',
+                            title: 'Reviews',
+                            type: 'basic',
+                            icon: 'heroicons_outline:star',
+                            link: '/doctor/reviews'
+                        },
+                        {
+                            id: 'chat',
+                            title: 'Chat',
+                            type: 'basic',
+                            icon: 'heroicons_outline:chat-alt',
+                            link: '/chat'
+                        }
+                    ]},
+                    {
+                        id      : 'dashboards',
+                        title   : 'Preferences',
+                        type    : 'group',
+                        icon    : 'heroicons_outline:home',
+                        children: [
+                            {
+                                id: 'profile',
+                                title: 'My Profile',
+                                type: 'basic',
+                                icon: 'heroicons_outline:user-circle',
+                                link: '/profile'
+                            },
+                        ]
+                    }
             );
         }
         if (this.role === 'ROLE_PATIENT') {
             this._defaultNavigation.push(
-                // {
-                //     id: 'tlDashboard',
-                //     title: 'NAVIGATION.DASHBOARD',
-                //     type: 'basic',
-                //     icon: 'heroicons_outline:chart-pie',
-                //     link: 'team/dashboard',
-                //     badge: {
-                //         title: 'W.I.P',
-                //         classes: 'px-2 bg-primary text-white rounded-full'
-                //     }
-                // },
                 {
-                    id: 'profile',
-                    title: 'My Profile',
-                    type: 'basic',
-                    icon: 'heroicons_outline:user-circle',
-                    link: '/profile'
+                    id: 'divider-1',
+                    type: 'divider'
                 },
                 {
-                    id      : 'appointments',
-                    title   : 'Appointments',
-                    type    : 'collapsable',
-                    icon    : 'heroicons_outline:clipboard',
+                    id: 'dashboards',
+                    title: 'Main Menu',
+                    type: 'group',
+                    icon: 'heroicons_outline:home',
                     children: [
                         {
-                            id   : 'appointments.book',
-                            title: 'Book Appointment',
-                            type : 'basic',
+                            id: 'appointments',
+                            title: 'Appointments',
+                            type: 'collapsable',
+                            icon: 'heroicons_outline:clipboard',
+                            children: [
+                                {
+                                    id: 'appointments.book',
+                                    title: 'Book Appointment',
+                                    type: 'basic',
+                                    link: '/patient/appointment/doctors'
+                                },
+                                {
+                                    id: 'appointments.upcoming',
+                                    title: 'Upcoming Appointments',
+                                    type: 'basic',
+                                    link: '/patient/appointment/upcoming'
+                                },
+                                {
+                                    id: 'appointments.past',
+                                    title: 'Past Appointments',
+                                    type: 'basic',
+                                    link: '/patient/appointment/past'
+                                }
+                            ]
                         },
                         {
-                            id   : 'appointments.upcoming',
-                            title: 'Upcoming Appointments',
-                            type : 'basic',
-                            link: '/patient/appointment/upcoming'
+                            id: 'medical files',
+                            title: 'Medical Files',
+                            type: 'basic',
+                            icon: 'heroicons_outline:document-text',
+                            link: '/patient/medicalfile/list'
                         },
                         {
-                            id   : 'appointments.past',
-                            title: 'Past Appointments',
-                            type : 'basic',
-                            link: '/patient/appointment/past'
+                            id: 'chat',
+                            title: 'Chat',
+                            type: 'basic',
+                            icon: 'heroicons_outline:chat-alt',
+                            link: '/chat'
                         }
                     ]
                 },
                 {
-                    id: 'medical files',
-                    title: 'Medical Files',
-                    type: 'basic',
-                    icon: 'heroicons_outline:document-text',
-                    link: '/patient/medicalfile/list'
-                },
-                {
-                    id: 'chat',
-                    title: 'Chat',
-                    type: 'basic',
-                    icon: 'heroicons_outline:chat-alt',
-                    link: '/chat'
+                    id      : 'dashboards',
+                    title   : 'Preferences',
+                    type    : 'group',
+                    icon    : 'heroicons_outline:home',
+                    children: [
+                        {
+                            id: 'profile',
+                            title: 'My Profile',
+                            type: 'basic',
+                            icon: 'heroicons_outline:user-circle',
+                            link: '/profile'
+                        },
+                    ]
                 }
             );
         }

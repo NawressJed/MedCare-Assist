@@ -67,4 +67,10 @@ public class ChatController {
             return ResponseEntity.status(500).build();
         }
     }
+
+    @DeleteMapping("/delete/{senderId}/{recipientId}")
+    public ResponseEntity<Void> deleteChat(@PathVariable UUID senderId, @PathVariable UUID recipientId) {
+        chatService.deleteChat(senderId, recipientId);
+        return ResponseEntity.noContent().build();
+    }
 }

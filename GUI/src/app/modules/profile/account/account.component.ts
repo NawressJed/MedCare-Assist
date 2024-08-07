@@ -60,17 +60,17 @@ export class SettingsAccountComponent implements OnInit {
 
   initializeForm(): void {
     this.accountForm = this._formBuilder.group({
-      firstname: [''],
-      lastname: [''],
-      email: [''],
+      firstname: [{ value: '', disabled: true }],
+      lastname: [{ value: '', disabled: true }],
+      email: [{ value: '', disabled: true }],
       phoneNumber: ['', [Validators.pattern(this.regExpPhone), Validators.minLength(8), Validators.maxLength(12)]],
-      workPhoneNumber: ['', this.role === 'ROLE_DOCTOR' ? Validators.required: null],
+      workPhoneNumber: ['', this.role === 'ROLE_DOCTOR' ? Validators.required : null],
       gender: [''],
       address: [''],
       zipCode: ['', [Validators.pattern(this.regExpZipCode)]],
-      specialty: ['', this.role === 'ROLE_DOCTOR' ? Validators.required: null],
-      consultationPrice: ['', this.role === 'ROLE_DOCTOR' ? Validators.required: null],
-      dateOfBirth: ['', this.role === 'ROLE_PATIENT' ? [Validators.pattern(this.regExpDate)]: null]
+      specialty: ['', this.role === 'ROLE_DOCTOR' ? Validators.required : null],
+      consultationPrice: ['', this.role === 'ROLE_DOCTOR' ? Validators.required : null],
+      dateOfBirth: ['', this.role === 'ROLE_PATIENT' ? [Validators.pattern(this.regExpDate)] : null]
     });
   }
 
@@ -119,11 +119,13 @@ export class SettingsAccountComponent implements OnInit {
   }
 
   formatDate(date: string): string {
-    return this.datePipe.transform(date, 'MM-dd-yyyy');
-  }
+    return this.datePipe.transform(date, 'yyyy-MM-dd');
+}
 
   updateUser(): void {
-    console.log('Update button clicked'); // Debug log
+    this.accountForm.get('firstname').enable();
+    this.accountForm.get('lastname').enable();
+    this.accountForm.get('email').enable();
     this.errors = [];
     const data = { id: this._cookieService.get("id"), ...this.accountForm.value };
 
@@ -159,8 +161,8 @@ export class SettingsAccountComponent implements OnInit {
             }
           }
         });
-      }  else if (this.role === 'ROLE_PATIENT') {
-        this.api.updatePatient(data.id, data).subscribe({
+      } else if (this.role === 'ROLE_PATIENT') {
+        this.auth.updatePatient(data.id, data).subscribe({
           next: () => {
             console.log('Patient data updated successfully'); // Debug log
             window.scrollTo(0, 0);
@@ -169,7 +171,15 @@ export class SettingsAccountComponent implements OnInit {
             setTimeout(() => { this.SuccessAlert.dismiss(); this.buttonClicked = true; }, 2000);
           },
           error: (e) => {
-            this.handleErrors(e);
+            console.error('Update error:', e); // More detailed error logging
+            if (e.status === 403) {
+              console.error('Forbidden: You do not have permission to perform this action.');
+            } else if (e.status === 400) {
+              this.errors = e.error.errors;
+              window.scrollTo(0, 0);
+              this.SuccessAlert.dismiss();
+              this.ErrorAlert.show();
+            }
           }
         });
       }

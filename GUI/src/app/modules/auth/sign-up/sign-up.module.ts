@@ -15,6 +15,7 @@ import { FuseCardModule } from '@fuse/components/card';
 import { FuseAlertModule } from '@fuse/components/alert';
 import { SharedModule } from 'app/shared/shared.module';
 import { AuthSignUpComponent } from 'app/modules/auth/sign-up/sign-up.component';
+import { MatStepperModule } from '@angular/material/stepper';
 
 export const routes: Route[] = [
     {
@@ -39,6 +40,7 @@ export const routes: Route[] = [
         MatIconModule,
         MatInputModule,
         MatSelectModule,
+        MatStepperModule,
         MatProgressSpinnerModule,
         FuseCardModule,
         FuseAlertModule,

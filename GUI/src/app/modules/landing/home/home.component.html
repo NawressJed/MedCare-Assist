@@ -1,31 +1,104 @@
-<div class="flex flex-col items-center justify-center w-full h-full">
-    <div class="w-full max-w-3xl">
-        <div class="max-w-none mx-auto prose prose-sm">
-            <img
-                class="w-20"
-                src="assets/images/logo/logo.svg"
-                alt="Logo image">
-            <h1>Landing Module</h1>
-            <p>
-                This can be the landing or the welcome page of your application. If you have an SSR (Server Side Rendering) setup, or if you don't need to have Search engine
-                visibility and optimizations, you can even use this page as your primary landing page.
-            </p>
-            <p>
-                This is a separate "module", it has its own directory and routing setup and also it's completely separated from the actual application. This is also a simple example of
-                a multiple applications setup that uses the same codebase. You can have different entry points and essentially have different applications within the same codebase.
-            </p>
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="relative pt-8 pb-5 px-4 sm:pt-20 sm:pb-48 sm:px-50 overflow-hidden h-[570px] header dark">
+        <!-- Background - @formatter:off -->
+        <!-- Curve -->
+        <div class="curve">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"
+                preserveAspectRatio="none">
+                <path d="M600,112.77C268.63,112.77,0,65.52,0,7.23V120H1200V7.23C1200,65.52,931.37,112.77,600,112.77Z"
+                    class="shape-fill"></path>
+            </svg>
         </div>
-        <div>
-            <a
-                class="mt-8"
-                mat-flat-button
-                [color]="'primary'"
-                [routerLink]="'/dashboards/project'">
-                <span>Launch the App</span>
-                <mat-icon
-                    class="ml-2 icon-size-5"
-                    [svgIcon]="'heroicons_solid:arrow-narrow-right'"></mat-icon>
-            </a>
+        <!-- @formatter:on -->
+        <div class="z-10 relative flex flex-row items-start justify-between">
+            <div class="relative flex flex-col items-start pt-[100px]">
+                <h2 class="text-xl font-semibold" [@slideInBottom]="state">Welcome to Your Personal Health Assistant
+                </h2>
+                <div class="mt-1 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight text-center">
+                    Your Health, Our Priority
+                </div>
+                <div class="mt-3 sm:text-2xl text-center tracking-tight text-secondary">
+                    Get Personalized Medical Advice and Care
+                </div>
+            </div>
+            <div class="flex justify-end items-center">
+                <img src="assets/images/pic2.png" class="w-[600px]">
+            </div>
         </div>
     </div>
+
+    <div class="flex flex-col items-center pt-6 pb-6 px-6 sm:pb-10 sm:px-50 bg-white">
+        <div class="text-3xl sm:text-5xl font-extrabold leading-tight mt-10 tracking-tight text-center text-primary">
+            Why book an appointment with MedCare Assist?</div>
+            <div class="mt-3 sm:text-2xl text-center tracking-tight text-secondary">
+                With MedCare Assist, book your appointment online with your doctor differently.
+            </div>
+        <!-- Cards -->
+        <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-y-8 md:gap-y-0 md:gap-x-30 w-full max-w-sm md:max-w-6xl mt-7 sm:mt-10">
+            <!-- FAQs card -->
+            <div
+                class="relative flex flex-col rounded-2xl shadow hover:shadow-lg overflow-hidden bg-card border transition-shadow ease-in-out duration-150">
+                <div class="flex flex-col flex-auto items-center p-8 text-center">
+                    <img src="assets/images/pic-doctors.png" class="w-[200px] mb-2">
+                    <div class="md:max-w-40 mt-1 text-secondary">Access your doctor quickly</div>
+                </div>
+                
+            </div>
+            <!-- FAQs card -->
+            <div
+                class="relative flex flex-col rounded-2xl shadow hover:shadow-lg overflow-hidden bg-card border transition-shadow ease-in-out duration-150">
+                <div class="flex flex-col flex-auto items-center p-8 text-center">
+                    <img src="assets/images/pic-appointment.png" class="w-[170px] mb-2">
+                    <div class="md:max-w-40 mt-1 text-secondary">Frequently asked questions and answers</div>
+                </div>
+                
+            </div>
+            <!-- FAQs card -->
+            <div
+                class="relative flex flex-col rounded-2xl shadow hover:shadow-lg overflow-hidden bg-card border transition-shadow ease-in-out duration-150">
+                <div class="flex flex-col flex-auto items-center p-8 text-center">
+                    <img src="assets/images/notif.png" class="w-[150px] mb-2">
+                    <div class="md:max-w-40 mt-1 text-secondary">Frequently asked questions and answers</div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="relative flex flex-col items-center pt-6 pb-6 px-6 sm:pb-10 sm:px-60 bg-card">
+        <div class="custom-shape-divider-bottom-1722498049">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M600,112.77C268.63,112.77,0,65.52,0,7.23V120H1200V7.23C1200,65.52,931.37,112.77,600,112.77Z" class="shape-fill"></path>
+            </svg>
+        </div>
+        <div class="text-3xl sm:text-5xl mt-6 text-primary font-extrabold leading-tight tracking-tight text-center">
+            Our Specialties
+        </div>
+        <div class="mt-3 sm:text-2xl text-center tracking-tight text-secondary">
+            Connect with Leading Experts Across Every Medical Field.
+        </div>
+    
+        <div class="w-full mx-5 sm:mt-10">
+            <owl-carousel-o [options]="carouselOptions">
+                <ng-template carouselSlide *ngFor="let item of itemsArray">
+                    <div class="relative flex flex-col rounded-full w-[170px] h-[170px] shadow-lg hover:shadow-lg overflow-hidden bg-card">
+                        <div class="flex flex-col flex-auto items-center p-8 text-center">
+                            <img src="{{ item.imageName }}" class="w-20 mb-2"/>
+                            <div class="md:max-w-40 mt-1 text-secondary font-medium">{{ item.specialtyName }}</div>
+                        </div>
+                    </div>
+                </ng-template>
+            </owl-carousel-o>
+        </div>
+        
+    </div>
+
+    <div class="bg-gray-50 w-full h-20">
+
+    </div>
+    
 </div>
+

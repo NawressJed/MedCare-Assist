@@ -7,9 +7,11 @@ import com.example.repositories.ScheduleRepository;
 import com.example.services.ScheduleService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,6 +55,14 @@ public class ScheduleController {
             log.error("ERROR getting schedule by its ID! " + e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/get-doctor-schedule/{doctorId}/date")
+    public ResponseEntity<List<ScheduleDTO>> getDoctorScheduleByDate(
+            @PathVariable UUID doctorId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        List<ScheduleDTO> schedules = service.getDoctorScheduleByDate(doctorId, date);
+        return ResponseEntity.ok(schedules);
     }
 
     @PutMapping("/update-schedule/{id}")

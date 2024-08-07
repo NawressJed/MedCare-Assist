@@ -4,13 +4,20 @@
   <div class="inline-block p-6 sm:p-10 text-left print:p-0">
 
     <!-- Top Bar -->
-    <div class="flex justify-between items-center mb-4 p-4 bg-card rounded-2xl shadow">
-      <div class="text-accent text-2xl font-bold">{{ currentDate }}</div>
-      <button class="ml-4 bg-primary-500 hover:bg-primary-900 dark" mat-flat-button (click)="downloadPDF()">
-        <mat-icon [svgIcon]="'heroicons_solid:printer'"></mat-icon>
-        <span class="ml-2 mr-1">Download</span>
-      </button>
-    </div>
+    <div class="flex items-center mb-4">
+      <div class="flex justify-between items-center p-4 bg-card rounded-2xl shadow w-full">
+        <div class="mr-4">
+          <a mat-flat-button (click)="goBack()" rel="noreferrer" class="dark bg-primary p-2 rounded-full">
+            <mat-icon class="icon-size-35" matPrefix [svgIcon]="'heroicons_solid:chevron-left'"></mat-icon>
+          </a>
+        </div>
+        <div class="text-accent text-2xl font-bold ml-2">{{ currentDate }}</div>
+        <button class="dark ml-4 bg-primary-500 hover:bg-primary-900 dark:text-white p-2 rounded-lg" mat-flat-button (click)="downloadPDF()">
+          <mat-icon [svgIcon]="'heroicons_solid:printer'"></mat-icon>
+          <span class="ml-2 mr-1">Download</span>
+        </button>
+      </div>
+    </div>    
 
     <!-- Medical File -->
     <div #content
@@ -61,7 +68,17 @@
         <div class="col-span-12 mt-1"></div>
 
         <div class="col-span-12">{{ medicalFile?.severity }}</div>
-      </div>
+
+          <!-- Description -->
+          <div class="col-span-12 text-lg font-bold mt-6">Description :</div>
+  
+          <!-- Spacer -->
+          <div class="col-span-12 mt-1"></div>
+  
+  
+          <!-- Description Value -->
+          <div class="col-span-12">{{ medicalFile?.description }}</div>
+        </div>
 
       <!-- Medications -->
       <div class="text-lg font-bold mt-6">Medications :</div>
@@ -85,18 +102,6 @@
           <!-- Divider -->
           <div class="col-span-12 my-4 border-b"></div>
         </ng-container>
-      </div>
-
-      <div class="grid grid-cols-12 gap-x-1 mt-6">
-        <!-- Description -->
-        <div class="col-span-4 text-lg font-bold">Description :</div>
-
-        <!-- Spacer -->
-        <div class="col-span-12 mt-1"></div>
-
-
-        <!-- Description Value -->
-        <div class="col-span-12">{{ medicalFile?.description }}</div>
       </div>
 
       <!-- Spacer -->

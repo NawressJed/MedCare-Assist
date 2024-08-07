@@ -22,7 +22,7 @@ export class UserService {
     return this.http.get<User>(`${this.baseUrl}/get-user/${id}`);
   }
 
-  getPatient(id: string): Observable<any> {
+  getPatient(id: string): any {
     return this.http.get(`${this.baseUrl}/get-patient/${id}`);
   }
 

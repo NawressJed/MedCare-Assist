@@ -8,6 +8,9 @@ import { FUSE_VERSION } from '@fuse/version';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
 import { TranslateService } from '@ngx-translate/core';
+import { CookieService } from 'ngx-cookie-service';
+import { User } from 'app/shared/models/users/user';
+import { UserService } from 'app/shared/services/userService/user.service';
 
 @Component({
     selector     : 'layout',
@@ -21,6 +24,7 @@ export class LayoutComponent implements OnInit, OnDestroy
     layout: Layout;
     scheme: 'dark' | 'light';
     theme: string;
+    user: User;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -33,6 +37,8 @@ export class LayoutComponent implements OnInit, OnDestroy
         private _router: Router,
         private _fuseConfigService: FuseConfigService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
+        private _cookie: CookieService,
+        private _userService: UserService,
         private translate: TranslateService
     )
     {
@@ -47,6 +53,7 @@ export class LayoutComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        this.getAuthenticatedUser(this._cookie.get("id"));
         // Set the theme and scheme based on the configuration
         combineLatest([
             this._fuseConfigService.config$,
@@ -115,6 +122,14 @@ export class LayoutComponent implements OnInit, OnDestroy
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
     }
+
+    getAuthenticatedUser(id: string): void {
+        this._userService.getUser(id).subscribe({
+          next: (result) => {
+            this.user = result;
+          }
+        });
+      }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods

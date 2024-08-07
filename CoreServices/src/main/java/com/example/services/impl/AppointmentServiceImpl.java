@@ -27,10 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -92,39 +89,34 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             Appointment appointment = mapper.toEntity(appointmentDTO);
 
-            Schedule schedule = scheduleRepository.findByDoctorIdAndDateAndStartTime(doc.getId(), appointment.getDate(), appointment.getTime())
-                    .orElse(null);
+            appointment.setDoctor(doc);
+            appointment.setPatient(patient);
+            appointment.setApprovalStatus(EApprovalStatus.APPROVED);
+            appointment.setAppointmentStatus(EAppointmentStatus.UPCOMING);
 
-            if (schedule != null && !schedule.isAvailable()) {
+            appointment = appointmentRepository.save(appointment);
+
+            Schedule conflictingSchedule = scheduleRepository.findByDoctorIdAndDateAndTime(
+                    doc.getId(), appointment.getDate(), appointment.getTime());
+
+            if (conflictingSchedule != null) {
                 throw new RuntimeException("Time slot not available");
             }
 
-            if (schedule == null) {
-                schedule = new Schedule();
-                schedule.setDoctor(doc);
-                schedule.setDate(appointment.getDate());
-                schedule.setStartTime(appointment.getTime());
-                schedule.setEndTime(appointment.getTime().plusHours(1));
-                schedule.setAvailable(false);
-            } else {
-                schedule.setAvailable(false);
-            }
+            Schedule schedule = new Schedule();
+            schedule.setDoctor(doc);
+            schedule.setDate(appointment.getDate());
+            schedule.setStartTime(appointment.getTime());
+            schedule.setEndTime(appointment.getTime().plusMinutes(30));
+            schedule.setAvailable(false);
+            schedule.setAppointment(appointment);
 
             scheduleRepository.save(schedule);
 
-
-            if (doc != null) {
-                appointment.setDoctor(doc);
-                appointment.setPatient(patient);
-                appointment.setApprovalStatus(EApprovalStatus.APPROVED);
-                appointment.setAppointmentStatus(EAppointmentStatus.UPCOMING);
-                return mapper.toDto(appointmentRepository.save(appointment));
-            }
-            logger.error("No such doctor with this ID = "+id);
-            return null;
+            return mapper.toDto(appointment);
         } catch (Exception e) {
-            logger.error("ERROR creating doctor's appointment" + e);
-            throw  new RuntimeException(e);
+            logger.error("ERROR creating doctor's appointment: " + e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -181,7 +173,18 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointment.setDoctor(doctorRepository.findDoctorById(appointment.getDoctor().getId()));
             appointment.setPatient(patientRepository.findPatientById(appointment.getPatient().getId()));
             appointment.setApprovalStatus(EApprovalStatus.APPROVED);
-            return mapper.toDto(appointmentRepository.save(appointment));
+
+            appointment = appointmentRepository.save(appointment);
+
+            Schedule schedule = scheduleRepository.findScheduleByAppointment_Id(appointment.getId());
+
+            schedule.setDate(appointment.getDate());
+            schedule.setStartTime(appointment.getTime());
+            schedule.setEndTime(appointment.getTime().plusMinutes(30));
+
+            scheduleRepository.save(schedule);
+
+            return mapper.toDto(appointment);
         } catch (Exception e){
             logger.error("Error updating appointment", e);
             return null;
@@ -194,6 +197,11 @@ public class AppointmentServiceImpl implements AppointmentService {
             Appointment appointment = appointmentRepository.findById(appointmentId)
                     .orElseThrow(() -> new NotFoundException("Appointment not found"));
             appointment.setAppointmentStatus(EAppointmentStatus.valueOf(newStatus));
+
+            if (Objects.equals(newStatus, EAppointmentStatus.CANCELLED.toString())) {
+                Schedule schedule = scheduleRepository.findScheduleByAppointment_Id(appointmentId);
+                scheduleRepository.delete(schedule);
+            }
             return mapper.toDto(appointmentRepository.save(appointment));
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
@@ -203,7 +211,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void deleteAppointment(UUID appointmentID) {
         try {
+            Schedule schedule = scheduleRepository.findScheduleByAppointment_Id(appointmentID);
             appointmentRepository.deleteById(appointmentID);
+            scheduleRepository.delete(schedule);
         }catch (Exception e) {
             logger.error("ERROR deleting appointment" + e);
         }
@@ -212,7 +222,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentDTO requestAppointment(UUID patientId, AppointmentDTO appointmentDTO) {
         try {
-            // Validate input data
             if (appointmentDTO.getDate() == null || appointmentDTO.getTime() == null || appointmentDTO.getDoctor() == null) {
                 log.error("Invalid appointment request: Missing required fields.");
                 throw new IllegalArgumentException("Missing required fields.");
@@ -221,11 +230,34 @@ public class AppointmentServiceImpl implements AppointmentService {
             Appointment appointment = mapper.toEntity(appointmentDTO);
             Patient patient = patientRepository.findPatientById(patientId);
             Doctor doctor = doctorMapper.toEntity(doctorService.getDoctor(appointment.getDoctor().getId()));
+
             appointment.setDoctor(doctor);
             appointment.setPatient(patient);
             appointment.setApprovalStatus(EApprovalStatus.PENDING);
+            appointment.setAppointmentStatus(null);
 
             appointment = appointmentRepository.save(appointment);
+
+            Schedule schedule = scheduleRepository.findByDoctorIdAndDateAndStartTime(doctor.getId(), appointment.getDate(), appointment.getTime())
+                    .orElse(null);
+
+            if (schedule != null && !schedule.isAvailable()) {
+                throw new RuntimeException("Time slot not available");
+            }
+
+            if (schedule == null) {
+                schedule = new Schedule();
+                schedule.setDoctor(doctor);
+                schedule.setAppointment(appointment);
+                schedule.setDate(appointment.getDate());
+                schedule.setStartTime(appointment.getTime());
+                schedule.setEndTime(appointment.getTime().plusMinutes(30));
+                schedule.setAvailable(false);
+            } else {
+                schedule.setAvailable(false);
+            }
+
+            scheduleRepository.save(schedule);
 
             String message = "Appointment request from " + patient.getFirstname() + " " + patient.getLastname() +
                     " for " + appointment.getDate() + " at " + appointment.getTime() + ".";
@@ -301,10 +333,14 @@ public class AppointmentServiceImpl implements AppointmentService {
             Appointment appointment = appointmentRepository.findById(appointmentId)
                     .orElseThrow(() -> new EntityNotFoundException("Appointment not found with id: " + appointmentId));
 
+            Schedule schedule = scheduleRepository.findScheduleByAppointment_Id(appointment.getId());
+
             appointment.setApprovalStatus(EApprovalStatus.REJECTED);
 
             Notification notification = notificationRepository.findNotificationByAppointment(appointment.getId());
             notificationRepository.delete(notification);
+
+            scheduleRepository.delete(schedule);
 
             appointmentRepository.save(appointment);
         }catch (Exception e) {
