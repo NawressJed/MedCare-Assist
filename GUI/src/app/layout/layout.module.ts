@@ -15,6 +15,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 import { EmptyLayoutModule } from './layouts/empty/empty.module';
 import { ClassicLayoutModule } from './layouts/vertical/classic/classic.module';
+import { ChatbotModule } from './common/chatbot/chatbot.module';
+import { ModernLayoutModule } from './layouts/horizontal/modern/modern.module';
 
 
 @NgModule({
@@ -23,8 +25,8 @@ import { ClassicLayoutModule } from './layouts/vertical/classic/classic.module';
     ],
     imports     : [
         EmptyLayoutModule,
-        EmptyLayoutModule,
         ClassicLayoutModule,
+        ModernLayoutModule,
         HttpClientModule,
         RouterModule,
         MatButtonModule,
@@ -37,12 +39,14 @@ import { ClassicLayoutModule } from './layouts/vertical/classic/classic.module';
         UserModule,
         SharedModule,
         MatSelectModule,
+        ChatbotModule,
         TranslateModule.forRoot()
     ],
     exports     : [
         LayoutComponent,
         EmptyLayoutModule,
-        ClassicLayoutModule
+        ClassicLayoutModule,
+        ModernLayoutModule
     ]
 })
 export class LayoutModule

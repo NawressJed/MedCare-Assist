@@ -1,9 +1,10 @@
 package com.example.dto;
 
+import com.example.entities.Appointment;
 import com.example.entities.Doctor;
-import com.example.enums.EDays;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,6 @@ public class ScheduleDTO {
     private UUID id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
-    private EDays day;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime startTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
@@ -27,4 +27,6 @@ public class ScheduleDTO {
     private boolean available;
     @ManyToOne
     private Doctor doctor;
+    @OneToOne
+    private Appointment appointment;
 }

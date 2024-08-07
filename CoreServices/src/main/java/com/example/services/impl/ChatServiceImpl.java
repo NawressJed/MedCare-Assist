@@ -2,6 +2,7 @@ package com.example.services.impl;
 
 import com.example.dto.ChatMessageDTO;
 import com.example.entities.ChatMessage;
+import com.example.entities.ChatRoom;
 import com.example.entities.UserEntity;
 import com.example.mapper.AutoChatMessageMapper;
 import com.example.repositories.ChatMessageRepository;
@@ -10,6 +11,7 @@ import com.example.repositories.UserRepository;
 import com.example.services.ChatRoomService;
 import com.example.services.ChatService;
 import com.example.services.NotificationService;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,8 +85,23 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void deleteChat(UUID chatId) {
+    @Transactional
+    public void deleteChat(UUID senderId, UUID recipientId) {
+        try {
+            ChatRoom chatRoom = chatRoomRepository.findBySenderIdAndRecipientId(senderId, recipientId);
+//            if (chatRoom == null) {
+//                chatRoom = chatRoomRepository.findByRecipientIdAndSenderId(senderId, recipientId);
+//            }
+            if (chatRoom == null) {
+                throw new RuntimeException("Chat room not found");
+            }
 
+            chatMessageRepository.deleteByChatRoomId(chatRoom.getId());
+            chatRoomRepository.deleteById(chatRoom.getId());
+        } catch (Exception e) {
+            log.error("ERROR deleting chat room ", e);
+            throw new RuntimeException("ERROR deleting chat room", e);
+        }
     }
 
     @Override

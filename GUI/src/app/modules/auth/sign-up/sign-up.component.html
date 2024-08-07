@@ -1,158 +1,80 @@
-<div class="flex flex-col flex-auto items-center sm:justify-center min-w-0 md:p-8">
-    <div class="flex md:w-full md:max-w-6xl sm:rounded-2xl sm:shadow overflow-hidden sm:bg-card">
-        <div
-            class="relative hidden md:flex flex-auto items-center justify-center h-full p-16 lg:px-28 overflow-hidden bg-blue-900 dark:border-r">
-            <!-- Background - @formatter:off -->
-            <!-- Rings -->
-            <svg class="absolute inset-0 pointer-events-none" viewBox="0 0 960 540" width="100%" height="100%"
-                preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-                <g class="text-blue-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
-                    <circle r="234" cx="196" cy="23"></circle>
-                    <circle r="234" cx="790" cy="491"></circle>
-                </g>
-            </svg>
-            <!-- Dots -->
-            <svg class="absolute -top-16 -right-16 text-blue-700" viewBox="0 0 220 192" width="220" height="192"
-                fill="none">
-                <defs>
-                    <pattern id="837c3e70-6c3a-44e6-8854-cc48c737b659" x="0" y="0" width="20" height="20"
-                        patternUnits="userSpaceOnUse">
-                        <rect x="0" y="0" width="4" height="4" fill="currentColor"></rect>
-                    </pattern>
-                </defs>
-                <rect width="220" height="192" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"></rect>
-            </svg>
-            <!-- @formatter:on -->
-            <!-- Content -->
-            <div class="z-10 relative w-full max-w-2xl">
-                <div class="text-7xl font-bold leading-none text-white">
-                    <div>Welcome to</div>
-                    <div>our community</div>
-                </div>
-                <div class="mt-6 text-lg tracking-tight leading-6 text-blue-400">
-                    Welcome to MedCare Assist – your health ally. Get expert consultations and chatbot diagnosis
-                    effortlessly. Start your journey to better health today!
-                </div>
-                <img src="assets/images/image.png" class="w-150 mt-10">
+<div class="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0">
+    <div
+        class="header relative hidden md:flex flex-auto items-center justify-center w-3/4 h-full p-16 lg:px-28 overflow-hidden bg-blue-900 dark:border-r">
+        <!-- Add the #particlesJs template reference variable to the div -->
+        <div id="particles-js" #particlesJs
+            style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0;"></div>
+        <!-- Background - @formatter:off -->
+        <!-- Rings -->
+
+        <!-- @formatter:on -->
+        <!-- Content -->
+        <div class="z-10 relative w-full max-w-2xl">
+            <div class="text-8xl font-bold leading-none text-white">
+                <div>Welcome to</div>
+                <div>our community</div>
+            </div>
+            <div class="mt-6 text-2xl tracking-tight leading-6 text-gray-400">
+                Welcome to MedCare Assist – your health ally. Get expert consultations and chatbot diagnosis
+                effortlessly.
+                Start your journey to better health today!
             </div>
         </div>
-        <div class="w-full sm:w-auto py-8 px-4 sm:p-12 md:p-16">
-            <div class="w-full max-w-100 sm:w-100 mx-auto sm:mx-0">
-                <!-- Logo -->
-                <div class="w-50 -mt-6">
-                    <img src="assets/images/logo/logo2.png">
-                </div>
+    </div>
+    <div
+        class="md:flex md:items-center md:justify-start w-full sm:w-auto md:h-full md:w-1/2 py-8 px-4 sm:p-12 md:p-16 sm:rounded-2xl md:rounded-none sm:shadow md:shadow-none sm:bg-card">
+        <div class="w-full mx-auto sm:mx-0">
+            <!-- Logo -->
+            <div class="w-50 -mt-6">
+                <img src="assets/images/logo/logo2.png">
+            </div>
 
-                <!-- Title -->
-                <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Sign up</div>
-                <div class="flex items-baseline mt-0.5 font-medium">
-                    <div>Already have an account?</div>
-                    <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['/sign-in']">Sign in
-                    </a>
-                </div>
+            <!-- Title -->
+            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Sign up</div>
+            <div class="flex items-baseline mt-0.5 font-medium">
+                <div>Already have an account?</div>
+                <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['/sign-in']">Sign in
+                </a>
+            </div>
 
-                <!-- Alert -->
-                <fuse-alert class="mt-8 -mb-4" *ngIf="showAlert" [appearance]="'outline'" [showIcon]="false"
-                    [type]="alert.type" [@shake]="alert.type === 'error'">
-                    {{alert.message}}
-                </fuse-alert>
-                <mat-tab-group class="w-auto max-w-100 sm:w-100 mx-auto sm:mx-0 mt-6" [animationDuration]="'0'"
-                    (selectedIndexChange)="onSelectedIndexChange($event)" (selectedTabChange)="onTabChange($event)">
+            <!-- Alert -->
+            <fuse-alert class="mt-8 -mb-4" *ngIf="showAlert" [appearance]="'outline'" [showIcon]="false"
+                [type]="alert.type" [@shake]="alert.type === 'error'">
+                {{alert.message}}
+            </fuse-alert>
 
-                    <!-- Patient -->
-                    <mat-tab label="Patient">
-                        <ng-template matTabContent>
-                            <!-- Sign Up form -->
-                            <form [formGroup]="patientSignUpForm">
-                                <div class="grid sm:grid-cols-2 gap-5 w-full">
-                                    <!-- Name field -->
-                                    <div class="sm:col-span-1">
+            <!-- Sign Up form -->
+            <mat-tab-group class="w-full mx-auto mt-6" [animationDuration]="'0'"
+                (selectedIndexChange)="onSelectedIndexChange($event)" (selectedTabChange)="onTabChange($event)">
+
+                <!-- Patient -->
+                <mat-tab label="Patient">
+                    <ng-template matTabContent>
+                        <!-- Sign Up form -->
+                        <form class="w-full" [formGroup]="patientSignUpForm">
+                            <mat-horizontal-stepper [linear]="true" #horizontalStepper>
+                                <mat-step [formGroupName]="'step1'" [stepControl]="patientSignUpForm.get('step1')"
+                                    #horizontalStepperStep1>
+                                    <ng-template matStepLabel>Basic information</ng-template>
+                                    <div class="flex">
                                         <mat-form-field class="w-full">
                                             <mat-label>Firstname</mat-label>
                                             <input id="firstname" matInput [formControlName]="'firstname'">
-                                            <mat-error *ngIf="patientSignUpForm.get('firstname').hasError('required')">
+                                            <mat-error
+                                                *ngIf="patientSignUpForm.get('step1').get('firstname').hasError('required')">
                                                 Firstname is required
                                             </mat-error>
                                         </mat-form-field>
-                                    </div>
-                                    <div class="sm:col-span-1">
-                                        <mat-form-field class="w-full">
+                                        <mat-form-field class="w-full ml-4">
                                             <mat-label>Lastname</mat-label>
                                             <input id="lastname" matInput [formControlName]="'lastname'">
-                                            <mat-error *ngIf="patientSignUpForm.get('lastname').hasError('required')">
+                                            <mat-error
+                                                *ngIf="patientSignUpForm.get('step1').get('lastname').hasError('required')">
                                                 Lastname is required
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <!-- Email field -->
-                                    <div class="sm:col-span-2 -mt-4">
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Email address</mat-label>
-                                            <input id="email" matInput [formControlName]="'email'">
-                                            <mat-error *ngIf="patientSignUpForm.get('email').hasError('required')">
-                                                Email address is required
-                                            </mat-error>
-                                            <mat-error *ngIf="patientSignUpForm.get('email').hasError('email')">
-                                                Please enter a valid email address
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <!-- Password field -->
-                                    <div class="sm:col-span-2 -mt-4">
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Password</mat-label>
-                                            <input id="password" matInput type="password" [formControlName]="'password'"
-                                                #passwordField>
-                                            <button mat-icon-button type="button"
-                                                (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'"
-                                                matSuffix>
-                                                <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'password'"
-                                                    [svgIcon]="'heroicons_solid:eye'"></mat-icon>
-                                                <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'text'"
-                                                    [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
-                                            </button>
-                                            <mat-error>
-                                                Password is required
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <!-- Phone field -->
-                                    <div class="sm:col-span-2 -mt-4">
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Phone Number</mat-label>
-                                            <input id="company-confirm" matInput [formControlName]="'phoneNumber'">
-                                        </mat-form-field>
-                                    </div>
-                                    <!-- Address field -->
-                                    <div class="sm:col-span-1 -mt-4">
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Address</mat-label>
-                                            <input id="address" matInput [formControlName]="'address'">
-                                        </mat-form-field>
-                                    </div>
-                                    <!-- Address field -->
-                                    <div class="sm:col-span-1 -mt-4">
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Zip Code</mat-label>
-                                            <input id="zipCode" matInput [formControlName]="'zipCode'">
-                                        </mat-form-field>
-                                    </div>
-                                    <!-- Gender field -->
-                                    <div class="sm:col-span-1 -mt-4">
-                                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
-                                            <mat-label>Gender</mat-label>
-                                            <mat-select [placeholder]="'Select gender'" id="gender" name="gender"
-                                                matInput [formControlName]="'gender'">
-                                                <mat-option value="MALE">MALE</mat-option>
-                                                <mat-option value="FEMALE">FEMALE</mat-option>
-                                                <mat-option value="OTHER">OTHER</mat-option>
-                                            </mat-select>
-                                            <mat-icon class="icon-size-5" matPrefix
-                                                svgIcon="mat_solid:transgender"></mat-icon>
-                                        </mat-form-field>
-                                    </div>
-                                    <!-- Birth Date field -->
-                                    <div class="sm:col-span-1 -mt-4">
+                                    <div class="flex flex-col gt-xs:flex-row">
                                         <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
                                             <mat-label>Birthdate</mat-label>
                                             <input matInput [matDatepicker]="picker2"
@@ -161,59 +83,49 @@
                                             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                                             <mat-datepicker #picker2></mat-datepicker>
                                         </mat-form-field>
+                                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
+                                            <mat-label>Gender</mat-label>
+                                            <mat-select [placeholder]="'Select gender'" id="gender" name="gender"
+                                                matInput [formControlName]="'gender'">
+                                                <mat-option value="MALE">MALE</mat-option>
+                                                <mat-option value="FEMALE">FEMALE</mat-option>
+                                                <mat-option value="OTHER">OTHER</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
                                     </div>
-                                </div>
-                                <!-- Submit button -->
-                                <button class="fuse-mat-button-large w-full mt-6 -mb-6" mat-flat-button
-                                    [color]="'primary'" [disabled]="patientSignUpForm.disabled" (click)="signUp()">
-                                    <span *ngIf="!patientSignUpForm.disabled">Create your account</span>
-                                    <mat-progress-spinner *ngIf="patientSignUpForm.disabled" [diameter]="24"
-                                        [mode]="'indeterminate'"></mat-progress-spinner>
-                                </button>
-                            </form>
-                        </ng-template>
-                    </mat-tab>
+                                    <div class="flex justify-end">
+                                        <button class="px-8" mat-flat-button [color]="'primary'"
+                                            [disabled]="horizontalStepperStep1.stepControl.pristine || horizontalStepperStep1.stepControl.invalid"
+                                            type="button" matStepperNext>
+                                            Next
+                                        </button>
+                                    </div>
+                                </mat-step>
 
-                    <!-- Doctor -->
-                    <mat-tab label="Doctor">
-                        <ng-template matTabContent>
-                            <!-- Sign Up form -->
-                            <form [formGroup]="doctorSignUpForm">
-                                <div class="grid sm:grid-cols-2 gap-5 w-full">
-                                    <!-- Name field -->
-                                    <div class="sm:col-span-1">
+                                <mat-step [formGroupName]="'step2'" [stepControl]="patientSignUpForm.get('step2')"
+                                    #horizontalStepperStep2>
+                                    <ng-template matStepLabel>Personal information</ng-template>
+                                    <div class="flex flex-col gt-xs:flex-row">
                                         <mat-form-field class="w-full">
-                                            <mat-label>Firstname</mat-label>
-                                            <input id="firstname" matInput [formControlName]="'firstname'">
-                                            <mat-error *ngIf="doctorSignUpForm.get('firstname').hasError('required')">
-                                                Firstname is required
-                                            </mat-error>
+                                            <mat-label>Phone Number</mat-label>
+                                            <input id="company-confirm" matInput [formControlName]="'phoneNumber'">
                                         </mat-form-field>
                                     </div>
-                                    <div class="sm:col-span-1">
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Lastname</mat-label>
-                                            <input id="lastname" matInput [formControlName]="'lastname'">
-                                            <mat-error *ngIf="doctorSignUpForm.get('lastname').hasError('required')">
-                                                Lastname is required
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <!-- Email field -->
-                                    <div class="sm:col-span-2 -mt-4">
+                                    <div class="flex">
                                         <mat-form-field class="w-full">
                                             <mat-label>Email address</mat-label>
                                             <input id="email" matInput [formControlName]="'email'">
-                                            <mat-error *ngIf="doctorSignUpForm.get('email').hasError('required')">
+                                            <mat-error
+                                                *ngIf="patientSignUpForm.get('step2').get('email').hasError('required')">
                                                 Email address is required
                                             </mat-error>
-                                            <mat-error *ngIf="doctorSignUpForm.get('email').hasError('email')">
+                                            <mat-error
+                                                *ngIf="patientSignUpForm.get('step2').get('email').hasError('email')">
                                                 Please enter a valid email address
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <!-- Password field -->
-                                    <div class="sm:col-span-2 -mt-4">
+                                    <div class="flex">
                                         <mat-form-field class="w-full">
                                             <mat-label>Password</mat-label>
                                             <input id="password" matInput type="password" [formControlName]="'password'"
@@ -231,37 +143,80 @@
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <!-- Phone field -->
-                                    <div class="sm:col-span-1 -mt-4">
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Phone Number</mat-label>
-                                            <input id="phoneNumber" matInput [formControlName]="'phoneNumber'">
-                                        </mat-form-field>
+                                    <div class="flex justify-end">
+                                        <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
+                                            matStepperPrevious>
+                                            Back
+                                        </button>
+                                        <button class="px-8" mat-flat-button [color]="'primary'"
+                                            [disabled]="horizontalStepperStep2.stepControl.pristine || horizontalStepperStep2.stepControl.invalid"
+                                            type="button" matStepperNext>
+                                            Next
+                                        </button>
                                     </div>
-                                    <!-- Phone field -->
-                                    <div class="sm:col-span-1 -mt-4">
+                                </mat-step>
+
+                                <mat-step [formGroupName]="'step3'" [stepControl]="patientSignUpForm.get('step3')"
+                                    #horizontalStepperStep3>
+                                    <ng-template matStepLabel>Address</ng-template>
+                                    <div class="flex">
                                         <mat-form-field class="w-full">
-                                            <mat-label>Work Phone Number</mat-label>
-                                            <input id="workPhoneNumber" matInput [formControlName]="'workPhoneNumber'">
-                                        </mat-form-field>
-                                    </div>
-                                    <!-- Address field -->
-                                    <div class="sm:col-span-1 -mt-4">
-                                        <mat-form-field class="w-full">
-                                            <mat-label>Office Address</mat-label>
+                                            <mat-label>Address</mat-label>
                                             <input id="address" matInput [formControlName]="'address'">
                                         </mat-form-field>
                                     </div>
-                                    <!-- Address field -->
-                                    <div class="sm:col-span-1 -mt-4">
+                                    <div class="flex">
                                         <mat-form-field class="w-full">
                                             <mat-label>Zip Code</mat-label>
                                             <input id="zipCode" matInput [formControlName]="'zipCode'">
                                         </mat-form-field>
                                     </div>
-                                    <!-- Gender field -->
-                                    <div class="flex sm:col-span-1 -mt-4">
-                                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
+
+                                    <div class="flex justify-end mt-8">
+                                        <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
+                                            matStepperPrevious>
+                                            Back
+                                        </button>
+                                        <button class="px-8" mat-flat-button [color]="'primary'" type="button"
+                                            matStepperNext
+                                            [disabled]="horizontalStepperStep3.stepControl.pristine || horizontalStepperStep3.stepControl.invalid"
+                                            type="submit" (click)="signUp()" [disabled]="disableButton">Sign Up</button>
+                                    </div>
+                                </mat-step>
+                            </mat-horizontal-stepper>
+                        </form>
+                    </ng-template>
+                </mat-tab>
+
+                <!-- Doctor -->
+                <mat-tab label="Doctor">
+                    <ng-template matTabContent>
+                        <!-- Sign Up form -->
+                        <form form class="w-full" [formGroup]="doctorSignUpForm">
+                            <mat-horizontal-stepper [linear]="true" #horizontalStepper>
+                                <mat-step [formGroupName]="'step1'" [stepControl]="doctorSignUpForm.get('step1')"
+                                    #horizontalStepperStep1>
+                                    <ng-template matStepLabel>Basic information</ng-template>
+                                    <div class="flex">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Firstname</mat-label>
+                                            <input id="firstname" matInput [formControlName]="'firstname'">
+                                            <mat-error
+                                                *ngIf="doctorSignUpForm.get('step1').get('firstname').hasError('required')">
+                                                Firstname is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field class="w-full ml-4">
+                                            <mat-label>Lastname</mat-label>
+                                            <input id="lastname" matInput [formControlName]="'lastname'">
+                                            <mat-error
+                                                *ngIf="doctorSignUpForm.get('step1').get('lastname').hasError('required')">
+                                                Lastname is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="flex">
+                                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
                                             <mat-label>Gender</mat-label>
                                             <mat-select [placeholder]="'Select gender'" id="gender" name="gender"
                                                 matInput [formControlName]="'gender'">
@@ -269,13 +224,8 @@
                                                 <mat-option value="FEMALE">FEMALE</mat-option>
                                                 <mat-option value="OTHER">OTHER</mat-option>
                                             </mat-select>
-                                            <mat-icon class="icon-size-5" matPrefix
-                                                svgIcon="mat_solid:transgender"></mat-icon>
                                         </mat-form-field>
-                                    </div>
-                                    <!-- Specialty field -->
-                                    <div class="flex sm:col-span-1 -mt-4">
-                                        <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto gt-xs:pr-3">
+                                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full ml-4">
                                             <mat-label>Specialty</mat-label>
                                             <mat-select required [placeholder]="'Select specialty'" id="specialty"
                                                 name="specialty" matInput [formControlName]="'specialty'">
@@ -293,27 +243,112 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
-                                    <!-- Price field -->
-                                    <div class="sm:col-span-2 -mt-4">
+                                    <div class="flex">
                                         <mat-form-field class="w-full">
                                             <mat-label>Consultation price</mat-label>
                                             <input id="consultationPrice" matInput
                                                 [formControlName]="'consultationPrice'">
                                         </mat-form-field>
                                     </div>
-                                </div>
-                                <!-- Submit button -->
-                                <button class="fuse-mat-button-large w-full mt-6 -mb-6" mat-flat-button
-                                    [color]="'primary'" [disabled]="doctorSignUpForm.disabled" (click)="signUp()">
-                                    <span *ngIf="!doctorSignUpForm.disabled">Create your account</span>
-                                    <mat-progress-spinner *ngIf="doctorSignUpForm.disabled" [diameter]="24"
-                                        [mode]="'indeterminate'"></mat-progress-spinner>
-                                </button>
-                            </form>
-                        </ng-template>
-                    </mat-tab>
-                </mat-tab-group>
-            </div>
+                                    <div class="flex justify-end">
+                                        <button class="px-8" mat-flat-button [color]="'primary'"
+                                            [disabled]="horizontalStepperStep1.stepControl.pristine || horizontalStepperStep1.stepControl.invalid"
+                                            type="button" matStepperNext>
+                                            Next
+                                        </button>
+                                    </div>
+                                </mat-step>
+
+                                <mat-step [formGroupName]="'step2'" [stepControl]="doctorSignUpForm.get('step2')"
+                                    #horizontalStepperStep2>
+                                    <ng-template matStepLabel>Personal information</ng-template>
+                                    <div class="flex">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Phone Number</mat-label>
+                                            <input id="company-confirm" matInput [formControlName]="'phoneNumber'">
+                                        </mat-form-field>
+                                        <mat-form-field class="w-full ml-4">
+                                            <mat-label>Work Phone Number</mat-label>
+                                            <input id="workPhoneNumber" matInput [formControlName]="'workPhoneNumber'">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="flex">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Email address</mat-label>
+                                            <input id="email" matInput [formControlName]="'email'">
+                                            <mat-error
+                                                *ngIf="doctorSignUpForm.get('step2').get('email').hasError('required')">
+                                                Email address is required
+                                            </mat-error>
+                                            <mat-error
+                                                *ngIf="doctorSignUpForm.get('step2').get('email').hasError('email')">
+                                                Please enter a valid email address
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="flex">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Password</mat-label>
+                                            <input id="password" matInput type="password" [formControlName]="'password'"
+                                                #passwordField>
+                                            <button mat-icon-button type="button"
+                                                (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'"
+                                                matSuffix>
+                                                <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'password'"
+                                                    [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                                                <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'text'"
+                                                    [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+                                            </button>
+                                            <mat-error>
+                                                Password is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
+                                            matStepperPrevious>
+                                            Back
+                                        </button>
+                                        <button class="px-8" mat-flat-button [color]="'primary'"
+                                            [disabled]="horizontalStepperStep2.stepControl.pristine || horizontalStepperStep2.stepControl.invalid"
+                                            type="button" matStepperNext>
+                                            Next
+                                        </button>
+                                    </div>
+                                </mat-step>
+
+                                <mat-step [formGroupName]="'step3'" [stepControl]="patientSignUpForm.get('step3')"
+                                    #horizontalStepperStep3>
+                                    <ng-template matStepLabel>Address</ng-template>
+                                    <div class="flex">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Address</mat-label>
+                                            <input id="address" matInput [formControlName]="'address'">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="flex">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Zip Code</mat-label>
+                                            <input id="zipCode" matInput [formControlName]="'zipCode'">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="flex justify-end mt-8">
+                                        <button class="px-8 mr-2" mat-flat-button [color]="'accent'" type="button"
+                                            matStepperPrevious>
+                                            Back
+                                        </button>
+                                        <button class="px-8" mat-flat-button [color]="'primary'" type="button"
+                                            matStepperNext
+                                            [disabled]="horizontalStepperStep3.stepControl.pristine || horizontalStepperStep3.stepControl.invalid"
+                                            type="submit" (click)="signUp()" [disabled]="disableButton">Sign Up</button>
+                                    </div>
+                                </mat-step>
+                            </mat-horizontal-stepper>
+                        </form>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
         </div>
     </div>
 </div>

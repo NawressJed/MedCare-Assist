@@ -1,0 +1,337 @@
+<div class="flex flex-col flex-auto w-full min-w-0">
+
+    <!-- Header -->
+    <div
+        class="sticky top-0 flex flex-0 items-center w-full h-16 sm:h-20 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent print:hidden">
+        <!-- Logo -->
+        <div class="flex items-center lg:mx-40 lg:mr-8">
+            <div class="hidden lg:flex">
+                <img class="dark:hidden w-50" src="assets/images/logo/logo2.png">
+            </div>
+            <img class="flex lg:hidden w-10" src="assets/images/logo/logo1.png">
+        </div>
+
+        <div class="flex-auto"></div> <!-- This will push the navigation links to the right -->
+        <div class="flex items-center space-x-4 lg:mr-30">
+            <a href="#home" (click)="scrollToSection($event, 'home')" class="text-accent hover:text-primary font-semibold">Home</a>
+            <a href="#about" (click)="scrollToSection($event, 'about')" class="text-accent hover:text-primary font-semibold">About</a>
+            <a href="#services" (click)="scrollToSection($event, 'services')" class="text-accent hover:text-primary font-semibold">Services</a>
+            <div class="flex-grow"></div>
+            <button mat-button type="button" [routerLink] = "['/sign-in']">
+                Sign In
+            </button>
+            |
+            <button class="ml-4" mat-flat-button type="button" [routerLink] = "['/sign-up']" [color]="'primary'">Sign Up
+            </button>
+        </div>
+    </div>
+
+    <!-- Home -->
+    <div id="home" class="relative pt-8 pb-5 px-4 sm:pt-20 sm:pb-48 sm:px-50 overflow-hidden h-[570px] header dark">
+        <!-- Background - @formatter:off -->
+        <!-- Curve -->
+
+        <!-- @formatter:on -->
+        <div class="z-10 relative flex flex-row items-start justify-between">
+            <div class="relative flex flex-col items-start pt-[100px]">
+                <h2 class="text-xl font-semibold" [@slideInBottom]="state">Welcome to Your Personal Health Assistant
+                </h2>
+                <div class="mt-1 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight text-center">
+                    Your Health, Our Priority
+                </div>
+                <div class="mt-3 sm:text-2xl text-center tracking-tight text-secondary">
+                    Get Personalized Medical Advice and Care
+                </div>
+            </div>
+            <div class="flex justify-end items-center">
+                <img src="assets/images/pic2.png" class="w-[600px]">
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col items-center pb-6 px-6 sm:px-16 bg-card">
+        <!-- Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-y-8 md:gap-x-10 w-full max-w-sm md:max-w-3xl -mt-13 sm:-mt-24">
+            <!-- FAQs card -->
+            <div class="relative flex flex-col rounded-2xl shadow-lg overflow-hidden bg-card ">
+                <div class="flex flex-col flex-auto items-center p-8 text-center">
+                    <div class="text-2xl font-semibold">Book appointment</div>
+                    <img src="assets/images/pic-appointment.png" class="w-[130px] mb-2 mt-2">
+                    <div class="md:max-w-40 mt-1 text-secondary">Easily schedule a visit with our certified doctors at
+                        your convenience.</div>
+                </div>
+            </div>
+            <!-- Guides card -->
+            <div class="relative flex flex-col rounded-2xl shadow-lg overflow-hidden bg-card ">
+                <div class="flex flex-col flex-auto items-center p-8 text-center">
+                    <div class="text-2xl font-semibold">Instant Diagnosis</div>
+                    <img src="assets/images/robot.jpg" class="w-[130px] mb-2 mt-2">
+                    <div class="md:max-w-40 mt-1 text-secondary">Chat with our AI for quick symptom analysis and
+                        preliminary advice.</div>
+                </div>
+            </div>
+            <!-- Support card -->
+            <div class="relative flex flex-col rounded-2xl shadow-lg overflow-hidden bg-card ">
+                <div class="flex flex-col flex-auto items-center p-8 text-center">
+                    <div class="text-2xl font-semibold">Find Doctors</div>
+                    <img src="assets/images/pic-doctors.png" class="w-[130px] mb-5 mt-4">
+                    <div class="md:max-w-40 mt-1 text-secondary">Search and connect with leading specialists easily.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div  id="about" class="relative z-10 pt-8 pb-20 px-4 sm:pt-8 sm:pb-60 sm:px-50 overflow-hidden h-[630px] bg-card">
+        <div class=" relative flex flex-row items-start justify-between pt-[70px]">
+            <div class="relative flex flex-col items-start">
+                <div class="flex items-center">
+                    <div class="heart-rate mr-2">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            viewBox="0 0 150 73" preserveAspectRatio="xMidYMid meet">
+                            <polyline fill="none" stroke="#2563EB" stroke-width="3" stroke-miterlimit="10"
+                                points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-semibold text-primary">About Us</h2>
+                </div>
+                <div class="mt-1 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight text-center">
+                    Welcome to MedCare Assist
+                </div>
+                <div class="mt-3 sm:text-2xl text-center tracking-tight text-secondary">
+                    Empowering Your Health Decisions with Personalized Care
+                </div>
+                <div class="mt-5 sm:text-lg tracking-tight text-medium">
+                    At MedCare Assist, we understand that managing health is a personal journey.<br />
+                    Through our innovative app, we provide personalized medical advice tailored to your unique health
+                    needs. <br />
+                    Here's what makes us different :
+                </div>
+
+                <div class="mt-2 sm:text-lg tracking-tight text-medium">
+                    <ul class="grid grid-cols-2 gap-4 text-gray-600">
+                        <li class="flex items-center">
+                            <mat-icon class="icon-size-5 text-primary mr-2 align-middle"
+                                [svgIcon]="'heroicons_solid:badge-check'"></mat-icon>
+                            <div>
+                                <span class="font-semibold text-primary align-middle">Personalized Insights</span>
+                            </div>
+                        </li>
+                        <li class="flex items-center">
+                            <mat-icon class="icon-size-5 text-primary mr-2 align-middle"
+                                [svgIcon]="'heroicons_solid:badge-check'"></mat-icon>
+                            <div>
+                                <span class="font-semibold text-primary align-middle">Trusted by Professionals</span>
+                            </div>
+                        </li>
+                        <li class="flex items-center">
+                            <mat-icon class="icon-size-5 text-primary mr-2 align-middle"
+                                [svgIcon]="'heroicons_solid:badge-check'"></mat-icon>
+                            <div>
+                                <span class="font-semibold text-primary align-middle">Your Health Companion</span>
+                            </div>
+                        </li>
+                        <li class="flex items-center">
+                            <mat-icon class="icon-size-5 text-primary mr-2 align-middle"
+                                [svgIcon]="'heroicons_solid:badge-check'"></mat-icon>
+                            <div>
+                                <span class="font-semibold text-primary align-middle">Accessible Care</span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="mt-4">
+                        Join our community of health-conscious users and start your journey towards a healthier
+                        tomorrow. <a href="#" class="underline text-primary-500 cursor-pointer">
+                            Join Us Today
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <img src="assets/images/1111.png" style="width: 400px; height: auto;">
+
+        </div>
+    </div>
+
+    <div class="relative z-10 pt-8 pb-5 px-4 sm:pt-20 sm:pb-20  sm:px-50 overflow-hidden bg-blue-800 dark">
+        <div class="flex justify-center items-center">
+            <div class="grid grid-cols-4 gap-4 w-full text-center">
+                <div>
+                    <h3 class="text-4xl font-semibold">Easy Health Access</h3>
+                    <p>Effortless access to health management tools.</p>
+                </div>
+                <div>
+                    <h3 class="text-4xl font-semibold">Privacy First</h3>
+                    <p>Your data remains secure and confidential.</p>
+                </div>
+                <div>
+                    <h3 class="text-4xl font-semibold">Universal Healthcare</h3>
+                    <p>Services accessible anywhere, anytime.</p>
+                </div>
+                <div>
+                    <h3 class="text-4xl font-semibold">Learn and Grow</h3>
+                    <p>Simple guides to better health.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="services" class="relative z-10 pt-8 pb-20 px-4 sm:pt-4 sm:pb-20 sm:px-50 overflow-hidden bg-card">
+        <div class="relative flex flex-col items-center w-full pt-[70px]">
+            <div class="flex items-center mb-5">
+                <div class="heart-rate mr-2">
+                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        viewBox="0 0 150 73" preserveAspectRatio="xMidYMid meet">
+                        <polyline fill="none" stroke="#2563EB" stroke-width="3" stroke-miterlimit="10"
+                            points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold text-primary">Our Services</h2>
+            </div>
+            <div class="mt-1 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight text-center mb-10">
+                Find Out About Our Services
+            </div>
+
+            <div class="flex justify-center items-center w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                    <div class="relative flex flex-col rounded-2xl shadow hover:shadow-lg overflow-hidden transition-shadow ease-in-out duration-150"
+                        style="background-color: rgba(187, 233, 255, 0.3);">
+                        <div class="flex flex-col flex-auto items-center p-8 text-center">
+                            <img src="assets/images/specialties/cardiologist.png" class="w-[50px] mb-2 mt-2">
+                            <div class="text-xl text-accent font-semibold">Cardiology</div>
+                            <div class="md:max-w-40 mt-1 text-secondary">Diagnosis and treatment of heart and blood
+                                vessel conditions.</div>
+                        </div>
+                    </div>
+                    <div class="relative flex flex-col rounded-2xl shadow hover:shadow-lg overflow-hidden transition-shadow ease-in-out duration-150"
+                        style="background-color: rgba(187, 233, 255, 0.3);">
+                        <div class="flex flex-col flex-auto items-center p-8 text-center">
+                            <img src="assets/images/specialties/neurologist.png" class="w-[50px] mb-4 mt-2">
+                            <div class="text-xl text-accent font-semibold">Neurology</div>
+                            <div class="md:max-w-40 mt-1 text-secondary">Specialized care for disorders of the nervous
+                                system.</div>
+                        </div>
+                    </div>
+                    <div class="relative flex flex-col rounded-2xl shadow hover:shadow-lg overflow-hidden transition-shadow ease-in-out duration-150"
+                        style="background-color: rgba(187, 233, 255, 0.3);">
+                        <div class="flex flex-col flex-auto items-center p-8 text-center">
+                            <img src="assets/images/specialties/urology.png" class="w-[50px] mb-2 mt-2">
+                            <div class="text-xl text-accent font-semibold">Urology</div>
+                            <div class="md:max-w-40 mt-1 text-secondary">Treatment of urinary tract conditions and male
+                                reproductive organs.</div>
+                        </div>
+                    </div>
+                    <div class="relative flex flex-col rounded-2xl shadow hover:shadow-lg overflow-hidden transition-shadow ease-in-out duration-150"
+                        style="background-color: rgba(187, 233, 255, 0.3);">
+                        <div class="flex flex-col flex-auto items-center p-8 text-center">
+                            <img src="assets/images/specialties/radiologist.png" class="w-[50px] mb-3 mt-2">
+                            <div class="text-xl text-accent font-semibold">Radiology</div>
+                            <div class="md:max-w-40 mt-1 text-secondary">Imaging techniques for diagnosing and treating
+                                diseases.</div>
+                        </div>
+                    </div>
+                    <div class="relative flex flex-col rounded-2xl shadow hover:shadow-lg overflow-hidden transition-shadow ease-in-out duration-150"
+                        style="background-color: rgba(187, 233, 255, 0.3);">
+                        <div class="flex flex-col flex-auto items-center p-8 text-center">
+                            <img src="assets/images/specialties/gastroenterologist.png" class="w-[50px] mb-3 mt-2">
+                            <div class="text-xl text-accent font-semibold">Gastroenterology</div>
+                            <div class="md:max-w-40 mt-1 text-secondary">Care for digestive tract disorders and
+                                conditions.</div>
+                        </div>
+                    </div>
+                    <div class="relative flex flex-col rounded-2xl shadow hover:shadow-lg overflow-hidden transition-shadow ease-in-out duration-150"
+                        style="background-color: rgba(187, 233, 255, 0.3);">
+                        <div class="flex flex-col flex-auto items-center p-8 text-center">
+                            <img src="assets/images/specialties/dentist.png" class="w-[50px] mb-4 mt-2">
+                            <div class="text-xl text-accent font-semibold">Dentistry</div>
+                            <div class="md:max-w-40 mt-1 text-secondary">Comprehensive oral health care services</div>
+                        </div>
+                    </div>
+                    <a href="#" class="hover:underline font-medium text-primary-500 cursor-pointer">
+                        See More <span class="ml-2">→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="relative z-10 pt-8 pb-20 px-4 sm:pt-8 sm:pb-20 sm:px-50 overflow-hidden"
+        style="background-color: rgba(187, 233, 255, 0.3);">
+        <div class="flex flex-col lg:flex-row items-start justify-between">
+            <!-- Left Section -->
+            <div class="flex flex-col items-start mb-8 lg:mb-0 lg:mr-16 pt-40">
+                <div class="flex items-center mb-5">
+                    <div class="heart-rate mr-2">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            viewBox="0 0 150 73" preserveAspectRatio="xMidYMid meet">
+                            <polyline fill="none" stroke="#2563EB" stroke-width="3" stroke-miterlimit="10"
+                                points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-semibold text-primary">Our Facilities</h2>
+                </div>
+                <div class="mt-1 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight text-left mb-4">
+                    Facilities That We Provide
+                </div>
+                <p class="text-secondary mb-6" style="max-width: 600px;">
+                    At MedCare Assist, we are committed to providing top-notch facilities to ensure your health and
+                    well-being. From cutting-edge technology for instant diagnosis to private and secure online
+                    sessions, our services are designed to cater to your diverse medical needs. Whether it's emergency
+                    care or specialized outdoor services, our comprehensive facilities are here to support you every
+                    step of the way.
+                </p>
+            </div>
+
+            <!-- Right Section -->
+            <div class="flex flex-col sm:flex-row gap-6">
+                <div class="grid grid-cols-1 gap-6 pt-30 pb-30">
+                    <div class="bg-primary bg-opacity-20 p-4 rounded-lg">
+                        <div class="rounded-full h-10 w-10 bg-card flex items-center justify-center">
+                            <mat-icon class="icon-size-5 text-primary" svgIcon="heroicons_solid:badge-check"></mat-icon>
+                        </div>
+                        <h3 class="text-xl font-semibold text-accent mt-2">Book Appointments</h3>
+                        <p class="text-secondary mt-2" style="max-width: 200px;">Easily schedule appointments with
+                            certified doctors.</p>
+                    </div>
+                    <div class="bg-primary bg-opacity-20 p-4 rounded-lg">
+                        <div class="rounded-full h-10 w-10 bg-card flex items-center justify-center">
+                            <mat-icon class="icon-size-5 text-primary" svgIcon="heroicons_solid:chat"></mat-icon>
+                        </div>
+                        <h3 class="text-xl font-semibold text-accent mt-2">Secure Chat</h3>
+                        <p class="text-secondary mt-2" style="max-width: 200px;">Communicate with doctors for
+                            consultations and follow-ups.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-6 pt-6">
+                    <div class="bg-primary bg-opacity-20 p-4 rounded-lg">
+                        <div class="rounded-full h-10 w-10 bg-card flex items-center justify-center">
+                            <mat-icon class="icon-size-5 text-primary" svgIcon="heroicons_solid:folder"></mat-icon>
+                        </div>
+                        <h3 class="text-xl font-semibold text-accent mt-2">Medical Records</h3>
+                        <p class="text-secondary mt-2" style="max-width: 200px;">View, download, and manage your medical
+                            records.</p>
+                    </div>
+                    <div class="bg-primary bg-opacity-20 p-4 rounded-lg">
+                        <div class="rounded-full h-10 w-10 bg-card flex items-center justify-center">
+                            <img src="assets/images/robot.png" class="w-[21px]">
+                        </div>
+                        <h3 class="text-xl font-semibold text-accent mt-2">AI Chatbot</h3>
+                        <p class="text-secondary mt-2" style="max-width: 200px;">Get instant answers and preliminary
+                            diagnoses for common conditions.</p>
+                    </div>
+                    <div class="bg-primary bg-opacity-20 p-4 rounded-lg">
+                        <div class="rounded-full h-10 w-10 bg-card flex items-center justify-center">
+                            <mat-icon class="icon-size-5 text-primary" svgIcon="heroicons_solid:calendar"></mat-icon>
+                        </div>
+                        <h3 class="text-xl font-semibold text-accent mt-2">Manage Schedule</h3>
+                        <p class="text-secondary mt-2" style="max-width: 200px;">Organize and manage your daily schedule
+                            and appointments.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

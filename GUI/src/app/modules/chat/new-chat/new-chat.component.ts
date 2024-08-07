@@ -1,8 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
-import { Router } from '@angular/router';
-import { Doctor } from 'app/shared/models/users/doctor/doctor';
-import { ChatService } from 'app/shared/services/chatService/chat.service';
 import { UserService } from 'app/shared/services/userService/user.service';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -19,14 +16,13 @@ export class NewChatComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     constructor(
-        private _chatService: ChatService,
         private _userService: UserService,
-        private _router: Router
-    ) {}
+        private _changeDetectorRef: ChangeDetectorRef
+    ) { }
 
     ngOnInit(): void {
-        // Initial fetch if necessary
         this.fetchContacts();
+
     }
 
     ngOnDestroy(): void {
@@ -43,16 +39,15 @@ export class NewChatComponent implements OnInit, OnDestroy {
                     firstname: doctor.firstname,
                     lastname: doctor.lastname
                 }));
+                this._changeDetectorRef.markForCheck();
             });
     }
 
     openConversation(contact: any): void {
-        console.log('Attempting to open conversation for:', contact);
         this.drawer.close().then(() => {
-            console.log('Drawer closed, emitting contactSelected event');
             this.contactSelected.emit(contact.id);
         });
-    }    
+    }
 
     trackByFn(index: number, item: any): any {
         return item.id || index;

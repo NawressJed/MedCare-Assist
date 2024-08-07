@@ -12,6 +12,5 @@ import java.util.UUID;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, UUID> {
     ChatRoom findChatRoomById(UUID chatRoomId);
     ChatRoom findBySenderIdAndRecipientId(UUID senderId, UUID recipientId);
-    @Query(value = "SELECT cr FROM chat_room AS cr WHERE cr.sender_id = :patientId OR ce.recipient_id = :patientId", nativeQuery = true)
-    List<ChatRoom> findChatRoomsByPatientId(UUID patientId);
+    ChatRoom findByRecipientIdAndSenderId(UUID recipientId, UUID senderId);
 }

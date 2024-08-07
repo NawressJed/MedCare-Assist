@@ -120,19 +120,6 @@ export class AppointmentListComponent implements OnInit {
     });
   }
 
-  setStatus(appointment: Appointment, status: string): void {
-    appointment.appointmentStatus = status;
-    this.appointmentService.updateStatus(appointment.id, status).subscribe({
-        next: (data) => {
-            console.log('Appointment status updated successfully');
-            this.reloadData(); // Refresh data after update
-        },
-        error: (e) => {
-            console.log('Error updating appointment status', e);
-        }
-    });
-}
-
   updateAppointment(appointment: Appointment): void {
     if (appointment && appointment.id) {
       const dialogRef = this._matDialog.open(AppointmentUpdateComponent, {

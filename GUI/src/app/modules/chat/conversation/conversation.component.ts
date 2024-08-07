@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ChatService } from 'app/shared/services/chatService/chat.service';
 import { UserService } from 'app/shared/services/userService/user.service';
 import { CookieService } from 'ngx-cookie-service';
@@ -33,6 +33,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
         private _ngZone: NgZone,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _route: ActivatedRoute,
+        private router: Router,
         private _userService: UserService,
         private _cookieService: CookieService,
         private _webSocketService: WebSocketService
@@ -179,6 +180,14 @@ export class ConversationComponent implements OnInit, OnDestroy {
         this.messageInput.nativeElement.value = '';
         this.chat.messages.push(message);
         this._changeDetectorRef.markForCheck();
+    }
+
+    deleteChat(): void {
+        this._chatService.deleteChat(this.authenticatedUser.id, this.recipient.id).subscribe(() => {
+            this.router.navigate(['/chat']);
+        }, error => {
+            console.error('Error deleting chat:', error);
+        });
     }
 
     trackByFn(index: number, item: any): any {

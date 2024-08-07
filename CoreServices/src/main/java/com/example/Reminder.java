@@ -23,16 +23,14 @@ public class Reminder {
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
     public void sendAppointmentReminders() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reminderTimeStart = now.plusMinutes(59).withSecond(0).withNano(0);
-        LocalDateTime reminderTimeEnd = now.plusHours(1).withSecond(0).withNano(0);
+        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
+        LocalDateTime reminderTime = now.plusHours(1);
 
-        log.info("Running sendAppointmentReminders at {}. Checking for appointments between {} and {}.", now, reminderTimeStart, reminderTimeEnd);
+        log.info("Running sendAppointmentReminders at {}. Checking for appointments at {}.", now, reminderTime);
 
-        List<Appointment> upcomingAppointments = appointmentRepository.findByDateAndTimeBetween(
-                reminderTimeStart.toLocalDate(),
-                reminderTimeStart.toLocalTime(),
-                reminderTimeEnd.toLocalTime());
+        List<Appointment> upcomingAppointments = appointmentRepository.findByDateAndTime(
+                reminderTime.toLocalDate(),
+                reminderTime.toLocalTime());
 
         log.info("Found {} appointments for the reminder time.", upcomingAppointments.size());
 

@@ -11,9 +11,11 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -54,9 +56,23 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Schedule> schedules = new ArrayList<>();
         try {
             schedules = repository.findScheduleByDoctor_Id(docId);
-            return mapper.toDto(schedules);
+            List<Schedule> filteredSchedules = schedules.stream()
+                    .filter(schedule -> schedule.getAppointment() == null)
+                    .collect(Collectors.toList());
+            return mapper.toDto(filteredSchedules);
         } catch (Exception e) {
             log.error("ERROR retrieving doctor's schedule " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<ScheduleDTO> getDoctorScheduleByDate(UUID docId, LocalDate date) {
+        try {
+            List<Schedule> schedules = repository.findScheduleByDoctor_IdAndDate(docId, date);
+            return mapper.toDto(schedules);
+        } catch (Exception e) {
+            log.error("ERROR retrieving doctor's schedule by date " + e.getMessage());
             throw new RuntimeException(e);
         }
     }

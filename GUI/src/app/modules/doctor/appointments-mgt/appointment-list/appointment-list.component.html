@@ -96,12 +96,12 @@
                                         <!-- Appointment Status -->
                                         <div class="hidden md:block">
                                             <div class="w-full sm:col-span-2">
-                                                <div class="flex items-center mt-1.5 px-4 leading-9 rounded-full cursor-pointer w-30 min-w-30"
+                                                <div class="flex items-center mt-1.5 px-4 leading-9 rounded-full w-30 min-w-30"
                                                     [ngClass]="{
                                                     'text-red-800 bg-red-200 dark:text-red-100 dark:bg-red-500': appointment.appointmentStatus === 'CANCELLED',
                                                     'text-green-800 bg-green-200 dark:text-green-100 dark:bg-green-500': appointment.appointmentStatus === 'DONE',
                                                     'text-blue-800 bg-blue-200 dark:text-blue-100 dark:bg-blue-500': appointment.appointmentStatus === 'UPCOMING'
-                                                }" [matMenuTriggerFor]="statusMenu">
+                                                    }">
 
                                                     <!-- Cancelled -->
                                                     <ng-container *ngIf="appointment.appointmentStatus === 'CANCELLED'">
@@ -124,46 +124,6 @@
                                                         <span class="ml-2 mr-1 text-md font-medium">Upcoming</span>
                                                     </ng-container>
                                                 </div>
-                                                <mat-menu #statusMenu="matMenu">
-                                                    <!-- Cancelled -->
-                                                    <button
-                                                        [ngClass]="{'bg-hover': appointment.appointmentStatus === 'CANCELLED'}"
-                                                        mat-menu-item (click)="setStatus(appointment, 'CANCELLED')">
-                                                        <span
-                                                            class="inline-flex items-center justify-between w-full min-w-30 leading-5">
-                                                            <span class="font-medium">Cancelled</span>
-                                                            <mat-icon
-                                                                class="mr-0 icon-size-4 text-red-600 dark:text-red-500"
-                                                                [svgIcon]="'heroicons_solid:x-circle'"></mat-icon>
-                                                        </span>
-                                                    </button>
-
-                                                    <!-- Done -->
-                                                    <button
-                                                        [ngClass]="{'bg-hover': appointment.appointmentStatus === 'DONE'}"
-                                                        mat-menu-item (click)="setStatus(appointment, 'DONE')">
-                                                        <span
-                                                            class="inline-flex items-center justify-between w-full min-w-30 leading-5">
-                                                            <span class="font-medium">Done</span>
-                                                            <mat-icon
-                                                                class="mr-0 icon-size-4 text-green-600 dark:text-green-500"
-                                                                [svgIcon]="'heroicons_solid:check'"></mat-icon>
-                                                        </span>
-                                                    </button>
-
-                                                    <!-- Upcoming -->
-                                                    <button
-                                                        [ngClass]="{'bg-hover': appointment.appointmentStatus === 'UPCOMING'}"
-                                                        mat-menu-item (click)="setStatus(appointment, 'UPCOMING')">
-                                                        <span
-                                                            class="inline-flex items-center justify-between w-full min-w-30 leading-5">
-                                                            <span class="font-medium">Upcoming</span>
-                                                            <mat-icon
-                                                                class="mr-0 icon-size-4 text-blue-600 dark:text-blue-500"
-                                                                [svgIcon]="'heroicons_solid:clock'"></mat-icon>
-                                                        </span>
-                                                    </button>
-                                                </mat-menu>
                                             </div>
                                         </div>
 

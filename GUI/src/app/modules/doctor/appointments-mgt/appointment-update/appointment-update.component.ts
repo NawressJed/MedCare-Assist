@@ -6,6 +6,8 @@ import { Appointment } from 'app/shared/models/appointment/appointment';
 import { Patient } from 'app/shared/models/users/patient/patient';
 import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
 import { UserService } from 'app/shared/services/userService/user.service';
+import { ScheduleService } from 'app/shared/services/scheduleService/schedule.service';
+import { Schedule } from 'app/shared/models/schedule/schedule';
 
 @Component({
   selector: 'app-appointment-update',
@@ -15,8 +17,8 @@ import { UserService } from 'app/shared/services/userService/user.service';
 export class AppointmentUpdateComponent implements OnInit {
 
   selectedTime: string;
-  timeOptions: string[] = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'];
-
+  timeSlots: any[] = [];
+  selectedDate: Date;
   formFieldHelpers: string[] = [''];
 
   appointment: Appointment;
@@ -26,6 +28,7 @@ export class AppointmentUpdateComponent implements OnInit {
   constructor(
     private appointmentService: AppointmentService,
     private _userService: UserService,
+    private scheduleService: ScheduleService,
     private router: Router,
     private _matDialogRef: MatDialogRef<AppointmentUpdateComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { appointment: Appointment },
@@ -36,7 +39,9 @@ export class AppointmentUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.appointment = this.data.appointment;
     this.selectedTime = this.appointment.time;
+    this.selectedDate = new Date(this.appointment.date); 
     this.fetchPatients();
+    this.fetchSchedule(this.selectedDate); 
     this.loadAppointmentData();
   }
 
@@ -47,8 +52,9 @@ export class AppointmentUpdateComponent implements OnInit {
           this.zone.run(() => {
             this.appointment = data;
             this.selectedTime = this.appointment.time;
-            this.dataLoaded = true; 
-            this.cdr.detectChanges();
+            this.selectedDate = new Date(this.appointment.date);
+            this.fetchSchedule(this.selectedDate); 
+            this.fetchPatients();
           });
         }, error => console.log(error));
     });
@@ -72,6 +78,11 @@ export class AppointmentUpdateComponent implements OnInit {
       }, error => console.log(error));
   }
 
+  setStatus(appointment: Appointment, status: string): void {
+    appointment.appointmentStatus = status;
+    this.appointmentService.updateStatus(appointment.id, status);
+}
+
   onSubmit() {
     this.updateAppointment();
   }
@@ -83,17 +94,67 @@ export class AppointmentUpdateComponent implements OnInit {
   fetchPatients() {
     this._userService.getDoctorPatientsList(this.appointment.doctor.id).subscribe((patients) => {
         this.listPatient = patients; 
+        this.cdr.detectChanges();
     });
-}
+  }
 
   onTimeSelected(time: string): void {
+    this.selectedTime = time;
     this.appointment.time = time;
   }
 
-  toggleTimePicker(): void {
-    const matSelect = document.querySelector('mat-select');
-    if (matSelect) {
-      (matSelect as HTMLElement).click();
+  onDateChange(event: any): void {
+    this.selectedDate = event.value;
+    this.fetchSchedule(this.selectedDate);
+  }
+
+  fetchSchedule(date: Date): void {
+    const doctorId = this.appointment.doctor.id;
+    if (doctorId) {
+      const formattedDate = formatDate(date, 'yyyy-MM-dd', 'en-US');
+      this.scheduleService.getDoctorScheduleByDate(doctorId, formattedDate).subscribe(schedules => {
+        this.timeSlots = this.generateTimeSlots(schedules);
+      });
+    }
+  }
+
+  generateTimeSlots(schedules: Schedule[]): any[] {
+    const startHour = 9;
+    const endHour = 18;
+    const interval = 30;
+    const timeSlots = [];
+
+    for (let hour = startHour; hour < endHour; hour++) {
+        for (let minutes = 0; minutes < 60; minutes += interval) {
+            const time = `${String(hour).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+            let isAvailable = true;
+
+            for (const schedule of schedules) {
+                const [startHour, startMinute] = schedule.startTime.split(':').map(Number);
+                const [endHour, endMinute] = schedule.endTime.split(':').map(Number);
+
+                const slotTime = hour * 60 + minutes;
+                const scheduleStartTime = startHour * 60 + startMinute;
+                const scheduleEndTime = endHour * 60 + endMinute;
+
+                if (slotTime >= scheduleStartTime && slotTime < scheduleEndTime) {
+                    isAvailable = false;
+                    break;
+                }
+            }
+
+            timeSlots.push({ time, available: isAvailable });
+        }
+    }
+
+    timeSlots.push({ time: '18:00', available: true });
+
+    return timeSlots;
+  }
+
+  selectSlot(slot: any): void {
+    if (slot.available) {
+      this.selectedTime = slot.time;
     }
   }
 }

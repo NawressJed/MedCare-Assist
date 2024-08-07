@@ -34,7 +34,7 @@
                                 <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
                                 Contact info
                             </button>
-                            <button mat-menu-item>
+                            <button (click)="deleteChat()" mat-menu-item>
                                 <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
                                 Delete chat
                             </button>
@@ -43,8 +43,8 @@
                 </div>
 
                 <!-- Conversation -->
-                <div class="flex overflow-y-auto flex-col-reverse">
-                    <div class="flex flex-col flex-auto shrink p-6 bg-card dark:bg-transparent">
+                <div class="flex overflow-y-auto flex-col-reverse h-full">
+                    <div class="flex flex-col flex-auto p-6 bg-card dark:bg-transparent">
                         <ng-container *ngFor="let message of chat.messages; let i = index; let first = first; let last = last; trackBy: trackByFn">
                             <!-- Start of the day -->
                             <ng-container *ngIf="first || (chat.messages[i - 1].timestamp | date:'d') !== (message.timestamp | date:'d')">

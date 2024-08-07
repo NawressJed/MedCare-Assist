@@ -32,4 +32,8 @@ export class ChatService {
       this.http.post(`${this.baseUrl}/message`, message).subscribe();
     }
 
+    deleteChat(senderId: string, recipientId: string): Observable<void> {
+      return this.http.delete<void>(`${this.baseUrl}/delete/${senderId}/${recipientId}`);
+  }
+
 }

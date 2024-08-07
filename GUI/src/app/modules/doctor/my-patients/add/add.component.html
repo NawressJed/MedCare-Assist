@@ -17,7 +17,20 @@
 
     <!-- Main -->
     <div class="flex-auto border-t -mt-px pt-4 sm:pt-6">
-        <div class="w-full max-w-screen-xl mx-auto">
+
+        <!-- Success Alert -->
+        <fuse-alert *ngIf="showSuccessAlert" [type]="'success'" [appearance]="'outline'" class="w-1/2 mx-auto p-4">
+            <span fuseAlertTitle>Success</span>
+            Patient added successfully!
+        </fuse-alert>
+
+        <!-- Error Alert -->
+        <fuse-alert *ngIf="showErrorAlert" [type]="'error'" [appearance]="'outline'" class="w-1/2 mx-auto p-4">
+            <span fuseAlertTitle>Error</span>
+            An error occurred while adding the patient!
+        </fuse-alert>
+
+        <div class="w-full max-w-screen-xl mx-auto mt-3">
             <!-- Tabs -->
             <mat-tab-group class="sm:px-2" [animationDuration]="'0'">
 

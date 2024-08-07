@@ -1,0 +1,103 @@
+<div class="absolute inset-0 flex flex-col min-w-0 overflow-y-auto" cdkScrollable>
+    <!-- Header -->
+    <div class="relative flex-0 py-8 px-4 sm:p-16 overflow-hidden bg-blue-900 dark">
+        <!-- Background - @formatter:off -->
+        <!-- Rings -->
+        <svg class="absolute inset-0 pointer-events-none" viewBox="0 0 960 540" width="100%" height="100%"
+            preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+            <g class="text-blue-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+                <circle r="234" cx="196" cy="23"></circle>
+                <circle r="234" cx="790" cy="491"></circle>
+            </g>
+        </svg>
+        <!-- @formatter:on -->
+        <div class="z-10 relative flex flex-col items-center">
+            <div class="flex justify-between items-center w-full">
+                <a mat-flat-button (click)="goBack()" rel="noreferrer" class="bg-blue-900">
+                    <mat-icon class="icon-size-35" matPrefix [svgIcon]="'heroicons_solid:chevron-left'"></mat-icon>
+                </a>
+                <h2 class="text-xl font-semibold">Schedule an Appointment</h2>
+                <div></div> <!-- This div ensures the space on the right is balanced -->
+            </div>
+            <div class="mt-1 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight text-center">
+                Select Your Preferred Date and Time
+            </div>
+            <div class="max-w-2xl mt-6 sm:text-2xl text-center tracking-tight text-secondary">
+                Choose a convenient time slot to book an appointment with your doctor.
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div *ngIf="doctor" class="flex flex-col justify-between bg-white shadow rounded-2xl p-6 ml-10 mr-10 mt-4">
+        <div class="flex items-center py-4">
+            <div
+                class="flex items-center justify-center w-15 h-15 rounded-full overflow-hidden bg-gray-200 text-gray-600 text-xl">
+                {{ doctor.firstname[0] }}{{ doctor.lastname[0] }}
+            </div>
+            <div class="min-w-0 ml-4 flex-auto">
+                <div class="font-bold leading-5 truncate text-lg">
+                    Dr. {{ doctor.firstname }} {{ doctor.lastname }}
+                </div>
+                <div class="flex items-center mt-1">
+                    <div>
+                        <mat-icon *ngFor="let star of [1, 2, 3, 4, 5]" class="text-orange-500 icon-size-5">
+                            {{ star <= doctor.rating ? 'star' : 'star_border' }} </mat-icon>
+                    </div>
+                    <span class="ml-2 text-sm text-secondary">({{ doctor.reviewCount }})</span>
+                </div>
+                <div class="flex items-center text-md">
+                    <span>
+                        <mat-icon class="icon-size-4" matSuffix
+                            [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                        <span class="text-md mx-2">{{ doctor.address }}</span>
+                    </span>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Date Picker and Slots -->
+    <div class="p-6 bg-white shadow rounded-lg m-10">
+        <div class="flex justify-between items-center">
+            <!-- Selected Date Display -->
+            <div class="flex flex-col">
+                <div class="text-gray-600">{{ selectedDate | date: 'EEEE' }}</div>
+                <div class="text-2xl font-bold">{{ selectedDate | date: 'dd MMMM yyyy' }}</div>
+            </div>
+
+            <!-- Datepicker -->
+            <div>
+                <mat-form-field class="flex-auto">
+                    <input matInput [matDatepicker]="picker2" required [(ngModel)]="selectedDate"
+                        [placeholder]="'Select date'" (dateChange)="onDateChange($event)">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div>
+
+
+        <!-- Schedule -->
+        <div *ngIf="selectedDate" class="mt-4">
+            <div class="grid grid-cols-5 gap-4 mt-2">
+                <button *ngFor="let slot of timeSlots" [disabled]="!slot.available"
+                    class="px-4 py-2 rounded-2xl font-medium" [class.bg-gray-200]="!slot.available"
+                    [class.bg-primary]="slot.available && selectedSlot === slot.time"
+                    [class.text-white]="slot.available && selectedSlot === slot.time"
+                    [class.text-gray-600]="!slot.available" (click)="selectSlot(slot)">
+                    {{ slot.time }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Send Request Button -->
+        <div class="mt-8 text-right">
+            <button (click)="onSubmit()" class="ml-4" mat-flat-button type="button" [color]="'primary'"
+                [disabled]="!selectedSlot">
+                Send request
+            </button>
+        </div>
+    </div>
+</div>

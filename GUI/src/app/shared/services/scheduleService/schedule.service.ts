@@ -32,4 +32,8 @@ export class ScheduleService {
     return this.http.get<Schedule>(`${this.baseUrl}/get-schedule/${scheduleId}`);
   }
 
+  getDoctorScheduleByDate(doctorId: string, date: string): Observable<Schedule[]> {
+    return this.http.get<Schedule[]>(`${this.baseUrl}/get-doctor-schedule/${doctorId}/date?date=${date}`);
+  }  
+
 }

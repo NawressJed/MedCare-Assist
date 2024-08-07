@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
@@ -7,15 +7,17 @@ import { AuthenticationService } from '../../../shared/services/authService/auth
 import { UserAuthService } from 'app/shared/services/authService/user-auth.service';
 import { User } from 'app/shared/models/users/user';
 
-
+declare var particlesJS: any;
 
 @Component({
     selector: 'auth-sign-in',
     templateUrl: './sign-in.component.html',
+    styleUrls: ['./sign-in.component.scss'],
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations
 })
-export class AuthSignInComponent implements OnInit {
+export class AuthSignInComponent implements AfterViewInit {
+    @ViewChild('particlesJs', { static: true }) particlesJs: ElementRef;
     @ViewChild('signInNgForm') signInNgForm: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
@@ -54,6 +56,18 @@ export class AuthSignInComponent implements OnInit {
         });
     }
 
+    ngAfterViewInit(): void {
+        console.log(this.particlesJs); // Check if the element is correctly captured
+        if (this.particlesJs) {
+            particlesJS.load(this.particlesJs.nativeElement.id, 'assets/particlesjs-config.json', () => {
+                console.log('callback - particles.js config loaded');
+            });
+        } else {
+            console.log('Particles element not found');
+        }
+    }
+    
+
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
@@ -86,7 +100,7 @@ export class AuthSignInComponent implements OnInit {
                 }else if(role === "ROLE_DOCTOR") {
                     this._router.navigateByUrl('/doctor/appointment/list');
                 }else {
-                    this._router.navigateByUrl('/patient/appointment/test')
+                    this._router.navigateByUrl('/patient/appointment/doctors')
                 }
             },
             (error) => {

@@ -210,8 +210,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public PatientDTO updatePatient(PatientDTO patientDTO) {
         try {
-
-            return autoPatientMapper.toDto(patientRepository.save(autoPatientMapper.toEntity(patientDTO)));
+            Patient existingPatient = patientRepository.findPatientById(patientDTO.getId());
+            existingPatient.setDateOfBirth(patientDTO.getDateOfBirth());
+            return autoPatientMapper.toDto(patientRepository.save(existingPatient));
         } catch (Exception e) {
             log.error("ERROR updating patient with ID= " + patientDTO.getId() + e);
             throw new RuntimeException(e);

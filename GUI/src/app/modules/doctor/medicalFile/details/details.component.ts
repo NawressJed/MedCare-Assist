@@ -4,6 +4,7 @@ import { MedicalFile } from 'app/shared/models/medicalFile/medical-file';
 import { MedicalFileService } from 'app/shared/services/medicalFileService/medical-file.service';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-details',
@@ -17,7 +18,8 @@ export class MedicalFileDetailsComponent implements OnInit {
 
   constructor(
     private medicalFileService: MedicalFileService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private _location: Location
   ) { }
 
   ngOnInit(): void {
@@ -76,5 +78,9 @@ export class MedicalFileDetailsComponent implements OnInit {
 
       pdf.save('medical-file.pdf'); // Generated PDF
     });
+  }
+
+  goBack(): void {
+    this._location.back();
   }
 }

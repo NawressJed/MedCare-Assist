@@ -81,9 +81,11 @@ export class CalendarComponent implements OnInit {
     this._appointmentService.getDoctorAppointmentsList(this._cookieService.get('id')).subscribe({
       next: (result) => {
         this.appointments = result;
-        for (const appointmentDate of result) {
-          const title = `Appointment at ${this.formatTime(appointmentDate.time)}`;
-          appointments.push({ title: title, date: this._datePipe.transform(appointmentDate.date, 'yyyy-MM-dd') });
+        for (const appointment of result) {
+          if (appointment.appointmentStatus === 'UPCOMING') {
+            const title = `Appointment at ${this.formatTime(appointment.time)}`;
+            appointments.push({ title: title, date: this._datePipe.transform(appointment.date, 'yyyy-MM-dd') });
+          }
         }
         const object = {
           id: 'appointments',
@@ -94,7 +96,7 @@ export class CalendarComponent implements OnInit {
         this.calendarOptions = this.customizeCalendarOptions();
       }
     });
-  }
+  }  
 
   getSchedules(): void {
     const schedules = [];

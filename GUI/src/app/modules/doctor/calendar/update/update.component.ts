@@ -45,7 +45,6 @@ export class UpdateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Create the form
     this.scheduleForm = this._formBuilder.group({
       date: [''],
       startTime: [''],
