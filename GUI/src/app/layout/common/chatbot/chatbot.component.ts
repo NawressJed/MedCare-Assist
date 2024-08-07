@@ -1,10 +1,14 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FuseConfigService } from '@fuse/services/config';
 import { AppConfig } from 'app/core/config/app.config';
 import { AnimationOptions } from 'ngx-lottie';
 import { Subject, takeUntil } from 'rxjs';
 import * as robotAnimationData from 'assets/robot.json';
 import { ChatbotService } from 'app/shared/services/chatbotService/chatbot.service';
+import { ChatService } from 'app/shared/services/chatService/chat.service';
+import { UserService } from 'app/shared/services/userService/user.service';
+import { CookieService } from 'ngx-cookie-service';
+import { ChatMessage } from 'app/shared/models/chat/chat-message';
 
 @Component({
   selector: 'chatbot',
@@ -46,12 +50,15 @@ encapsulation: ViewEncapsulation.None
 })
 export class ChatbotComponent implements OnInit, OnDestroy {
     @ViewChild('chatbotDrawer') chatbotDrawer: any;
+    @ViewChild('messageInput') messageInput: ElementRef;
     config: AppConfig;
     showChat: boolean = false;
     chat: any = {
         messages: [] // Start with an empty message array
     };
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private readonly chatbotId = '123e4567-e89b-12d3-a456-426614174000';
+    private currentUserId: string;
   
     lottieOptions: AnimationOptions = {
       animationData: robotAnimationData
@@ -59,7 +66,11 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   
     constructor(
         private _fuseConfigService: FuseConfigService,
-        private chatbotService: ChatbotService
+        private chatbotService: ChatbotService,
+        private chatService: ChatService,
+        private userService: UserService,
+        private _cookie: CookieService,
+        private changeDetectorRef: ChangeDetectorRef
     ) {
     }
   
@@ -69,6 +80,8 @@ export class ChatbotComponent implements OnInit, OnDestroy {
             .subscribe((config: AppConfig) => {
                 this.config = config;
             });
+
+            this.currentUserId = this._cookie.get("id");
     }
   
     ngOnDestroy(): void {
@@ -80,8 +93,50 @@ export class ChatbotComponent implements OnInit, OnDestroy {
         this.showChat = !this.showChat;
         this.chatbotDrawer.toggle();
     }
+
+    sendMessage(): void {
+      const messageContent = this.messageInput.nativeElement.value;
+      if (!messageContent.trim()) {
+          return;
+      }
+
+      const userMessage: ChatMessage = {
+          senderId: this.currentUserId, // Current user as sender
+          recipientId: this.chatbotId, // Chatbot as recipient
+          content: messageContent,
+          timestamp: new Date() // Correctly set the timestamp as a Date object
+      };
+
+      this.chat.messages.push({ value: messageContent, isMine: true });
+
+      // Save user message to database
+      this.chatService.sendMessage(userMessage);
+
+      // Send message to chatbot
+      this.chatbotService.sendMessage(messageContent).subscribe({
+          next: (response) => {
+              const botMessage: ChatMessage = {
+                  senderId: this.chatbotId, // Chatbot as sender
+                  recipientId: this.currentUserId, // Current user as recipient
+                  content: response.response,
+                  timestamp: new Date() // Correctly set the timestamp as a Date object
+              };
+
+              this.chat.messages.push({ value: response.response, isMine: false });
+
+              // Save bot response to database
+              this.chatService.sendMessage(botMessage);
+          },
+          error: (error) => {
+              console.error('Error sending message to chatbot:', error);
+          }
+      });
+
+      this.messageInput.nativeElement.value = '';
+      this.changeDetectorRef.markForCheck(); 
+  }
   
-    sendMessage(message: string): void {
+    /*sendMessage(message: string): void {
       if (message.trim()) {
         this.chat.messages.push({ value: message, isMine: true });
         this.chatbotService.sendMessage(message).subscribe({
@@ -93,7 +148,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
           }
         });
       }
-    }
+    }*/
   
     trackByFn(index: number, item: any): any {
         return item.id || index;

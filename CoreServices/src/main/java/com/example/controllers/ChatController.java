@@ -68,6 +68,12 @@ public class ChatController {
         }
     }
 
+    @PostMapping("/chatbot/message")
+    public ResponseEntity<ChatMessageDTO> sendChatbotMessage(@RequestBody ChatMessageDTO chatMessageDTO) {
+        ChatMessageDTO savedMessage = chatService.save(chatMessageDTO);
+        return ResponseEntity.ok(savedMessage);
+    }
+
     @DeleteMapping("/delete/{senderId}/{recipientId}")
     public ResponseEntity<Void> deleteChat(@PathVariable UUID senderId, @PathVariable UUID recipientId) {
         chatService.deleteChat(senderId, recipientId);

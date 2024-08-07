@@ -8,7 +8,7 @@ import { OwlOptions } from 'ngx-owl-carousel-o';
 
 @Component({
     selector: 'landing-home',
-    templateUrl: './home-v2.component.html',
+    templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations
