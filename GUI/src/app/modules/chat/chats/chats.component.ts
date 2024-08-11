@@ -101,22 +101,40 @@ export class ChatsComponent implements OnInit, OnDestroy {
             console.error('Authenticated user is not set');
             return;
         }
-
+    
+        const chatbotId = '123e4567-e89b-12d3-a456-426614174000'; // Replace with the actual chatbot ID
+    
         this._chatService.getChatHistory().pipe(
             takeUntil(this._unsubscribeAll),
             switchMap(chats => {
-                const chatRequests = chats.map(chat => {
+                const filteredChats = chats.filter(chat => chat.senderId !== chatbotId && chat.recipientId !== chatbotId);
+                const chatRequests = filteredChats.map(chat => {
                     const partnerId = chat.senderId === this.authenticatedUser.id ? chat.recipientId : chat.senderId;
                     return this._userService.getUser(partnerId).pipe(
-                        map(user => ({
-                            ...chat,
-                            partnerId,
-                            name: `${user.firstname} ${user.lastname}`,
-                            lastMessage: chat.content,
-                            lastMessageDate: new Date(chat.timestamp),
-                            formattedDate: this._datePipe.transform(new Date(chat.timestamp), 'dd/MM/yyyy'),
-                            unreadCount: 0 
-                        }))
+                        map(user => {
+                            if (user) {
+                                return {
+                                    ...chat,
+                                    partnerId,
+                                    name: `${user.firstname} ${user.lastname}`,
+                                    lastMessage: chat.content,
+                                    lastMessageDate: new Date(chat.timestamp),
+                                    formattedDate: this._datePipe.transform(new Date(chat.timestamp), 'dd/MM/yyyy'),
+                                    unreadCount: 0 
+                                };
+                            } else {
+                                console.warn(`User with id ${partnerId} not found`);
+                                return {
+                                    ...chat,
+                                    partnerId,
+                                    name: 'Unknown User',
+                                    lastMessage: chat.content,
+                                    lastMessageDate: new Date(chat.timestamp),
+                                    formattedDate: this._datePipe.transform(new Date(chat.timestamp), 'dd/MM/yyyy'),
+                                    unreadCount: 0 
+                                };
+                            }
+                        })
                     );
                 });
                 return forkJoin(chatRequests);
@@ -132,7 +150,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
             }
         });
     }
-
+  
     trackByFn(index: number, item: any): any {
         return item.id || index;
     }

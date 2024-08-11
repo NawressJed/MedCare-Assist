@@ -72,7 +72,7 @@ export function createTranslateLoader(http: HttpClient): any {
         CookieService,
         {
             provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true
-        }
+        },
     ]
 })
 export class AppModule {
