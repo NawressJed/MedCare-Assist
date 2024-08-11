@@ -104,6 +104,13 @@ export class NavigationMockApi {
                     icon: 'heroicons_outline:home',
                     children: [
                         {
+                            id: 'dashboard',
+                            title: 'Dashboard',
+                            type: 'basic',
+                            icon: 'heroicons_outline:chart-pie',
+                            link: '/dashboard'
+                        },
+                        {
                             id: 'appointments',
                             title: 'My Appointments',
                             type: 'basic',
