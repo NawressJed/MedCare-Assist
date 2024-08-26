@@ -20,6 +20,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(ar -> ar.requestMatchers("/user-management/**").authenticated()
+                        .requestMatchers("/update-doctor/**").hasRole("ADMIN")
+                        .requestMatchers("/update-patient/**").hasRole("ADMIN")
                         .anyRequest().permitAll())
                 .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

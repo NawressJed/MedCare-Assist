@@ -48,46 +48,55 @@ export class NavigationMockApi {
     populateNavigation(): FuseNavigationItem[] {
         this._defaultNavigation = [];
         this.role = this._authService.getRole();
-        if (this.role === 'ADMIN') {
+        if (this.role === 'ROLE_ADMIN') {
             this._defaultNavigation.push(
                 {
                     id: 'divider-1',
                     type: 'divider'
                 },
                 {
-                    id: 'profile',
-                    title: 'My Profile',
-                    type: 'basic',
-                    icon: 'heroicons_outline:user-circle',
-                    link: '/profile'
+                    id: 'dashboards',
+                    title: 'Main Menu',
+                    type: 'group',
+                    icon: 'heroicons_outline:home',
+                    children: [
+                        {
+                            id: 'dashboard',
+                            title: 'Dashboard',
+                            type: 'basic',
+                            icon: 'heroicons_outline:chart-pie',
+                            link: '/admin/dashboard'
+                        },
+                        {
+                            id: 'patients',
+                            title: 'Patients',
+                            type: 'basic',
+                            icon: 'heroicons_outline:users',
+                            link: '/admin/patient/list'
+                        },
+                        {
+                            id: 'doctors',
+                            title: 'Doctors',
+                            type: 'basic',
+                            icon: 'heroicons_outline:users',
+                            link: '/admin/doctor/list'
+                        },
+                    ]
                 },
                 {
-                    id: 'patients',
-                    title: 'Patients',
-                    type: 'basic',
-                    icon: 'heroicons_outline:users',
-                    link: '/admin/patient/list'
-                },
-                {
-                    id: 'doctors',
-                    title: 'Doctors',
-                    type: 'basic',
-                    icon: 'heroicons_outline:users',
-                    link: '/admin/doctor/list'
-                },
-                {
-                    id: 'appointments',
-                    title: 'Appointments',
-                    type: 'basic',
-                    icon: 'heroicons_outline:calendar',
-                    link: '/admin/appointment/list'
-                },
-                {
-                    id: 'settings',
-                    title: 'Settings',
-                    type: 'basic',
-                    icon: '',
-                    link: '/admin/settings'
+                    id      : 'dashboards',
+                    title   : 'Preferences',
+                    type    : 'group',
+                    icon    : 'heroicons_outline:home',
+                    children: [
+                        {
+                            id: 'profile',
+                            title: 'My Profile',
+                            type: 'basic',
+                            icon: 'heroicons_outline:user-circle',
+                            link: '/profile'
+                        },
+                    ]
                 }
             );
         }
@@ -108,7 +117,7 @@ export class NavigationMockApi {
                             title: 'Dashboard',
                             type: 'basic',
                             icon: 'heroicons_outline:chart-pie',
-                            link: '/dashboard'
+                            link: '/doctor/dashboard'
                         },
                         {
                             id: 'appointments',
@@ -175,6 +184,13 @@ export class NavigationMockApi {
                     type: 'group',
                     icon: 'heroicons_outline:home',
                     children: [
+                        {
+                            id: 'dashboard',
+                            title: 'Dashboard',
+                            type: 'basic',
+                            icon: 'heroicons_outline:chart-pie',
+                            link: '/patient/dashboard'
+                        },
                         {
                             id: 'appointments',
                             title: 'Appointments',

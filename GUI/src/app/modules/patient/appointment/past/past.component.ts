@@ -33,9 +33,13 @@ export class PastComponent implements OnInit {
 
   loadPastAppointments(): void {
     this.activities$ = this.appointmentService.getPatientAppointmentsList(this._cookie.get("id")).pipe(
-      map(appointments => appointments.filter(app => app.appointmentStatus === 'DONE'))
+      map(appointments => appointments
+        .filter(app => app.appointmentStatus === 'DONE')
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())  // Sorting here by date descending
+      )
     );
   }
+  
 
   reviewDoctor(appointment: Appointment): void {
     this._matDialog.open(ReviewComponent, {

@@ -1,17 +1,21 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { fuseAnimations } from '@fuse/animations';
-import { FuseNavigationItem, FuseNavigationService } from '@fuse/components/navigation';
+import {
+    FuseNavigationItem,
+    FuseNavigationService,
+} from '@fuse/components/navigation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { NavigationService } from 'app/core/navigation/navigation.service';
 import { Subject, takeUntil } from 'rxjs';
 import { OwlOptions } from 'ngx-owl-carousel-o';
+import { image } from 'html2canvas/dist/types/css/types/image';
 
 @Component({
     selector: 'landing-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    animations: fuseAnimations
+    animations: fuseAnimations,
 })
 export class LandingHomeComponent implements OnInit, OnDestroy {
     public state: boolean = true;
@@ -31,73 +35,100 @@ export class LandingHomeComponent implements OnInit, OnDestroy {
         autoplayHoverPause: true,
         responsive: {
             0: {
-                items: 1
+                items: 1,
             },
             400: {
-                items: 2
+                items: 2,
             },
             740: {
-                items: 3
+                items: 3,
             },
             940: {
-                items: 5
-            }
+                items: 5,
+            },
         },
-        nav: false
-    }
+        nav: false,
+    };
 
     itemsArray: any = [
         {
-            imageName: "assets/images/specialties/dentist.png",
-            specialtyName: "Dentist" 
+            imageName: 'assets/images/specialties/dentist.png',
+            specialtyName: 'Dentist',
         },
         {
-            imageName: "assets/images/specialties/urology.png",
-            specialtyName: "Urologist" 
+            imageName: 'assets/images/specialties/urology.png',
+            specialtyName: 'Urologist',
         },
         {
-            imageName: "assets/images/specialties/orthopedic_surgeon.png",
-            specialtyName: "Orthopedic Surgeon" 
+            imageName: 'assets/images/specialties/orthopedic_surgeon.png',
+            specialtyName: 'Orthopedic Surgeon',
         },
         {
-            imageName: "assets/images/specialties/radiologist.png",
-            specialtyName: "Radiologist" 
+            imageName: 'assets/images/specialties/radiologist.png',
+            specialtyName: 'Radiologist',
         },
         {
-            imageName: "assets/images/specialties/dermatology.png",
-            specialtyName: "dermatologist" 
+            imageName: 'assets/images/specialties/dermatology.png',
+            specialtyName: 'dermatologist',
         },
         {
-            imageName: "assets/images/specialties/pediatrician.png",
-            specialtyName: "Pediatrician" 
+            imageName: 'assets/images/specialties/pediatrician.png',
+            specialtyName: 'Pediatrician',
         },
         {
-            imageName: "assets/images/specialties/cardiologist.png",
-            specialtyName: "Cardiologist" 
+            imageName: 'assets/images/specialties/cardiologist.png',
+            specialtyName: 'Cardiologist',
         },
         {
-            imageName: "assets/images/specialties/family_physician.png",
-            specialtyName: "Family Physician" 
+            imageName: 'assets/images/specialties/family_physician.png',
+            specialtyName: 'Family Physician',
         },
         {
-            imageName: "assets/images/specialties/gastroenterologist.png",
-            specialtyName: "Gastroenterologist" 
+            imageName: 'assets/images/specialties/gastroenterologist.png',
+            specialtyName: 'Gastroenterologist',
         },
         {
-            imageName: "assets/images/specialties/gynecologist.png",
-            specialtyName: "Gynecologist" 
+            imageName: 'assets/images/specialties/gynecologist.png',
+            specialtyName: 'Gynecologist',
         },
         {
-            imageName: "assets/images/specialties/neurologist.png",
-            specialtyName: "Neurologist" 
+            imageName: 'assets/images/specialties/neurologist.png',
+            specialtyName: 'Neurologist',
         },
         {
-            imageName: "assets/images/specialties/ophthalmologist.png",
-            specialtyName: "Ophthalmologist" 
+            imageName: 'assets/images/specialties/ophthalmologist.png',
+            specialtyName: 'Ophthalmologist',
         },
         {
-            imageName: "assets/images/specialties/surgeon.png",
-            specialtyName: "Surgeon" 
+            imageName: 'assets/images/specialties/surgeon.png',
+            specialtyName: 'Surgeon',
+        },
+    ];
+
+    whyChooseUs = [
+        {
+            title: 'Effortless Doctor Discovery and Scheduling',
+            description:
+                'Quickly find and book appointments with top doctors tailored to your health needs.',
+                image: 'assets/images/magnifying-glass.png'
+        },
+        {
+            title: 'Integrated Health Management',
+            description:
+                'Utilize comprehensive tools for managing appointments, communications, and medical records all in one place.',
+            image: 'assets/images/dashboard.png'
+        },
+        {
+            title: 'Instant Assistance',
+            description:
+                'Our intelligent chatbot provides immediate preliminary diagnostics and guidance for home care, helping you make informed health decisions swiftly.',
+                image: 'assets/images/bubble-chat.png'
+        },
+        {
+            title: 'Trusted and Secure',
+            description:
+                'A reliable platform designed with privacy and security at its core to safeguard your medical information.',
+                image: 'assets/images/shield.png'
         },
     ];
 
@@ -109,10 +140,8 @@ export class LandingHomeComponent implements OnInit, OnDestroy {
     constructor(
         private _navigationService: NavigationService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fuseNavigationService: FuseNavigationService,
-    ) {
-    }
-
+        private _fuseNavigationService: FuseNavigationService
+    ) {}
 
     ngOnInit(): void {
         // Subscribe to navigation data
@@ -125,12 +154,10 @@ export class LandingHomeComponent implements OnInit, OnDestroy {
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({ matchingAliases }) => {
-
                 // Check if the screen is small
                 this.isScreenSmall = !matchingAliases.includes('md');
             });
     }
-
 
     ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
@@ -146,8 +173,7 @@ export class LandingHomeComponent implements OnInit, OnDestroy {
         event.preventDefault();
         const element = document.getElementById(sectionId);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      }
+    }
 }
-

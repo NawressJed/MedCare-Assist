@@ -46,7 +46,6 @@ export class PatientUpdateComponent implements OnInit {
         console.log(data);
         this.patient = new Patient();
         this.onCloseClick();
-        this.gotoList();
       }, error => console.log(error));
   }
 
@@ -56,7 +55,7 @@ export class PatientUpdateComponent implements OnInit {
   }
 
   gotoList() {
-    this.router.navigate(['patient/list']);
+    this.router.navigate(['docotr/patient/list']);
   }
 
   onCloseClick(): void {

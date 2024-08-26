@@ -58,7 +58,7 @@
                             <div>Email</div>
                             <div>Phone</div>
                             <div>Address</div>
-                            <div>Birthdate</div>
+                            <div>Date of Birth</div>
                             <div>Gender</div>
                             <div class="flex items-center action-column">Actions</div>
                         </div>
@@ -80,18 +80,25 @@
                                             </div>
                                         </div>
                                         <!-- Username -->
-                                        <div class="hidden md:block">{{ patient.firstname }} {{ patient.lastname }}
+                                        <div class="hidden md:block font-semibold">{{ patient.firstname }} {{ patient.lastname }}
                                         </div>
                                         <!-- Email -->
-                                        <div>{{ patient.email }}</div>
+                                        <div >{{ patient.email }}</div>
                                         <!-- Phone -->
-                                        <div>{{ patient.phone }}</div>
+                                        <div>{{ patient.phoneNumber }}</div>
                                         <!-- Address -->
-                                        <div>{{ patient.address }}</div>
+                                        <div >{{ patient.address }}, {{ patient.zipCode }}</div>
                                         <!-- BirthDate -->
-                                        <div>{{ convertDateFormat(patient.birthDate) }}</div>
+                                        <div>{{ convertDateFormat(patient.dateOfBirth) }}</div>
                                         <!-- Gender -->
-                                        <div>{{ patient.gender }}</div>
+                                        <div class="hidden lg:block">
+                                            <li class="relative flex py-7">
+                                                <div class="py-0.5 px-3 rounded-full text-sm font-semibold"
+                                                    [ngClass]="{'text-blue-800 bg-blue-100 dark:text-blue-50 dark:bg-blue-500': patient.gender === 'MALE', 'text-pink-800 bg-pink-100 dark:text-pink-50 dark:bg-pink-500': patient.gender === 'FEMALE'}">
+                                                    {{ patient.gender }}
+                                                </div>
+                                            </li>
+                                        </div>
                                         <!-- Details button -->
                                         <div class="flex items-center justify-center action-column">
                                             <button class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2" mat-stroked-button>

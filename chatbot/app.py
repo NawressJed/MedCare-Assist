@@ -17,7 +17,7 @@ if not api_key:
 
 genai.configure(api_key=api_key)
 
-# Create the model
+# Create the model configuration
 generation_config = {
     "temperature": 1,
     "top_p": 0.95,
@@ -26,39 +26,52 @@ generation_config = {
     "response_mime_type": "text/plain",
 }
 
+# Initialize the model
 model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
-    generation_config=generation_config,
-    # safety_settings: Adjust safety settings
-    # See https://ai.google.dev/gemini-api/docs/safety-settings
+    generation_config=generation_config
 )
+
+# Initialize the chat session with improved message style
+chat_session = model.start_chat(
+    history=[
+        {
+            "role": "user",
+            "parts": [
+                "You are MedCare Assist, a friendly and expert AI assistant..."
+            ],
+        },
+        {
+            "role": "model",
+            "parts": [
+                "Okay, I understand. I'm ready to act as MedCare Assist and interact with patients..."
+            ],
+        },
+    ]
+)
+
+def format_response(text):
+    # List of delimiters to break lines after
+    delimiters = ['?', 'How long have you had the fever?', 'Are there any other symptoms you\'re experiencing, like chills, body aches, headache, cough, or sore throat?', 'Have you taken any medications for the fever?']
+    for delimiter in delimiters:
+        text = text.replace(delimiter, delimiter + "\n\n")
+    return text
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    input_data = request.json
-    user_message = input_data.get('message', '')
+    input_message = request.json.get('message')
+    if not input_message:
+        return jsonify({'error': 'No message provided'}), 400
 
-    # Configure the chat history
-    chat_session = model.start_chat(
-        history=[
-            {
-                "role": "user",
-                "parts": [
-                    "You are MedCare Assist, an AI assistant expert in medical health. You understand symptoms and signs of various illnesses and can offer expert advice on self-diagnosis options for conditions that may be treated at home. If a condition appears serious and requires medical attention, you recommend booking an appointment with a doctor or calling emergency services. For non-medical queries, you respond with: 'I'm sorry, but your question is beyond my functionalities.' You do not use external URLs or blogs for references. Responses should format any lists with a dash and a space in front of each line.",
-                ],
-            },
-            {
-                "role": "model",
-                "parts": [
-                    "Okay, I understand. I'm ready to act as MedCare Assist and interact with patients using the guidelines you provided. I'll be friendly, informative, and always prioritize patient safety. Let's get started! \n",
-                ],
-            },
-        ]
-    )
+    # Send message to the chatbot
+    response = chat_session.send_message(input_message)
 
-    response = chat_session.send_message(user_message)
+    # Format the response for better readability
+    formatted_response = format_response(response.text)
+    formatted_response = formatted_response.replace("**", "").replace("*", "")  # Removing markdown for simplicity
 
-    return jsonify({"response": response.text})
+    # Return the formatted response text
+    return jsonify({'response': formatted_response})
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

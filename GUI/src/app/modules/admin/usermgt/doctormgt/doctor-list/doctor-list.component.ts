@@ -29,7 +29,7 @@ import { UserService } from 'app/shared/services/userService/user.service';
     }
 
     @screen lg {
-      grid-template-columns: 48px 150px 150px 150px 150px 150px 150px 500px;
+      grid-template-columns: 48px 200px 230px 180px 250px 200px 200px auto 72px;
     }
 }
 
@@ -104,18 +104,26 @@ export class DoctorListComponent implements OnInit {
   }
 
   addNewDoctor(): void {
-    this._matDialog.open(DoctorAddComponent, {
+    const dialogRef = this._matDialog.open(DoctorAddComponent, {
       autoFocus: false,
       data: {
       }
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.reloadData();
     });
   }
 
   updateDoctor(doctor: Doctor): void {
     if (doctor && doctor.id) {
-      this._matDialog.open(DoctorUpdateComponent, {
+      const dialogRef = this._matDialog.open(DoctorUpdateComponent, {
         autoFocus: false,
         data: { doctor: doctor }
+      });
+
+      dialogRef.afterClosed().subscribe(() => {
+        this.reloadData();
       });
     } else {
       console.error('Doctor ID is undefined.');

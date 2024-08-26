@@ -162,4 +162,9 @@ public class AppointmentController {
         }
     }
 
+    @GetMapping("/get-appointment/count/{id}")
+    public int getAppointmentCount(@PathVariable(value = "id") UUID doctorId) {
+        return repository.countApprovedAppointmentsByDoctorId(doctorId);
+    }
+
 }

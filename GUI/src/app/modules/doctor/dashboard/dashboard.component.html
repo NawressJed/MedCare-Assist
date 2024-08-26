@@ -1,0 +1,343 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div class="bg-card">
+        <div class="flex flex-col w-full max-w-screen-xl mx-auto px-6 sm:px-8">
+            <div
+                class="flex flex-col sm:flex-row flex-auto sm:items-center min-w-0 my-8 sm:my-12"
+            >
+                <!-- Avatar and name -->
+                <div class="flex flex-auto items-center min-w-0">
+                    <div class="flex flex-col min-w-0 ml-4">
+                        <ng-container>
+                            <div
+                                class="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate"
+                            >
+                                {{ "DASHBOARD.WELCOME" | translate }}, Dr.
+                                {{ authenticatedUser?.firstname }}!
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+            <!-- Project selector -->
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto border-t xs:mx-2 -mt-px pt-4 sm:pt-6">
+        <div class="w-full max-w-screen-xl mx-auto">
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full min-w-0"
+            >
+                <!-- Summary -->
+                <div
+                    class="flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden"
+                >
+                    <div class="flex items-start justify-between">
+                        <div
+                            class="text-lg font-medium tracking-tight leading-6 truncate"
+                        ></div>
+                    </div>
+                    <div class="flex flex-col items-center mt-2">
+                        <div
+                            class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500"
+                        >
+                            {{ totalPatients }}
+                        </div>
+                        <div
+                            class="text-lg font-medium text-blue-600 dark:text-blue-500"
+                        >
+                            Total Patients
+                        </div>
+                    </div>
+                </div>
+                <!-- Overdue -->
+                <div
+                    class="flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden"
+                >
+                    <div class="flex items-start justify-between">
+                        <div
+                            class="text-lg font-medium tracking-tight leading-6 truncate"
+                        ></div>
+                    </div>
+                    <div class="flex flex-col items-center mt-2">
+                        <div
+                            class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500"
+                        >
+                            {{ totalAppointments }}
+                        </div>
+                        <div
+                            class="text-lg font-medium text-red-600 dark:text-red-500"
+                        >
+                            Total Appointments
+                        </div>
+                    </div>
+                </div>
+                <!-- Issues -->
+                <div
+                    class="flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden"
+                >
+                    <div class="flex items-start justify-between">
+                        <div
+                            class="text-lg font-medium tracking-tight leading-6 truncate"
+                        ></div>
+                    </div>
+                    <div class="flex flex-col items-center mt-2">
+                        <div
+                            class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-amber-500"
+                        >
+                            {{ totalReviews }}
+                        </div>
+                        <div
+                            class="text-lg font-medium text-amber-600 dark:text-amber-500"
+                        >
+                            Total Reviews
+                        </div>
+                    </div>
+                </div>
+                <!-- Features -->
+                <div
+                    class="flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden"
+                >
+                    <div class="flex items-start justify-between">
+                        <div
+                            class="text-lg font-medium tracking-tight leading-6 truncate"
+                        ></div>
+                    </div>
+                    <div class="flex flex-col items-center mt-2">
+                        <div
+                            class="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500"
+                        >
+                            6
+                        </div>
+                        <div
+                            class="text-lg font-medium text-green-600 dark:text-green-500"
+                        >
+                            Total Medical Files
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gender -->
+                <div
+                    class="sm:col-span-2 md:col-span-4 lg:col-span-1 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden p-6"
+                >
+                    <div
+                        class="text-lg font-medium tracking-tight leading-6 truncate"
+                    >
+                        Gender
+                    </div>
+                    <div class="flex flex-col flex-auto mt-6 h-44">
+                        <apx-chart
+                            class="flex flex-auto items-center justify-center w-full h-full"
+                            [chart]="chartGender?.chart"
+                            [colors]="chartGender?.colors"
+                            [labels]="chartGender?.labels"
+                            [plotOptions]="chartGender?.plotOptions"
+                            [series]="chartGender?.series"
+                            [states]="chartGender?.states"
+                            [tooltip]="chartGender?.tooltip"
+                        ></apx-chart>
+                    </div>
+
+                    <div class="mt-8">
+                        <div class="-my-3 divide-y">
+                            <div class="grid grid-cols-3 py-3">
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex-0 w-2 h-2 rounded-full"
+                                        [style.backgroundColor]="
+                                            chartGender?.colors[1] || '#ccc'
+                                        "
+                                    ></div>
+                                    <div class="ml-3 truncate">Female</div>
+                                </div>
+                                <div class="font-medium text-right">
+                                    {{ genderData?.series[1] || 0 }}
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 py-3">
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex-0 w-2 h-2 rounded-full"
+                                        [style.backgroundColor]="
+                                            chartGender?.colors[0] || '#ccc'
+                                        "
+                                    ></div>
+                                    <div class="ml-3 truncate">Male</div>
+                                </div>
+                                <div class="font-medium text-right">
+                                    {{ genderData?.series[0] || 0 }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Age -->
+                <div
+                    class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden p-6"
+                >
+                    <div class="flex items-start justify-between">
+                        <div
+                            class="text-lg font-medium tracking-tight leading-6 truncate"
+                        >
+                            Age
+                        </div>
+                        <div class="ml-2">
+                            <button
+                                class="h-6 min-h-6 px-2 rounded-full bg-hover"
+                                mat-button
+                                [matMenuTriggerFor]="conversionMenu"
+                            >
+                                <span class="font-medium text-sm text-secondary"
+                                    >30 days</span
+                                >
+                            </button>
+                            <mat-menu #conversionMenu="matMenu">
+                                <button mat-menu-item>30 days</button>
+                                <button mat-menu-item>3 months</button>
+                                <button mat-menu-item>9 months</button>
+                            </mat-menu>
+                        </div>
+                    </div>
+                    <div class="flex flex-col flex-auto mt-6 h-44">
+                        <apx-chart
+                            class="flex flex-auto items-center justify-center w-full h-full"
+                            [chart]="chartAge.chart"
+                            [colors]="chartAge.colors"
+                            [labels]="chartAge.labels"
+                            [plotOptions]="chartAge.plotOptions"
+                            [series]="chartAge.series"
+                            [states]="chartAge.states"
+                            [tooltip]="chartAge.tooltip"
+                        ></apx-chart>
+                    </div>
+                    <div class="mt-8">
+                        <div class="-my-3 divide-y">
+                            <ng-container
+                                *ngFor="
+                                    let dataset of ageData.series;
+                                    let i = index
+                                "
+                            >
+                                <div class="grid grid-cols-3 py-3">
+                                    <div class="flex items-center">
+                                        <div
+                                            class="flex-0 w-2 h-2 rounded-full"
+                                            [style.backgroundColor]="
+                                                chartAge.colors[i]
+                                            "
+                                        ></div>
+                                        <div class="ml-3 truncate">
+                                            {{ ageData.labels[i] }}
+                                        </div>
+                                    </div>
+                                    <div class="font-medium text-right">
+                                        {{ dataset }}%
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointments -->
+                <div
+                    class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-8 bg-card shadow rounded-2xl overflow-hidden"
+                >
+                    <div class="flex items-center mb-8">
+                        <div class="flex flex-col">
+                            <div
+                                class="mr-4 text-xl font-semibold tracking-tight leading-7 truncate"
+                            >
+                                Appointments
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-10">
+                        <!-- Upcoming Appointments -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <div
+                                    class="flex items-center justify-center w-16 h-16 rounded bg-blue-100 text-blue-800"
+                                >
+                                    <mat-icon
+                                        class="text-current"
+                                        svgIcon="heroicons_outline:clock"
+                                    ></mat-icon>
+                                </div>
+                                <div class="flex-auto ml-4 leading-none">
+                                    <div
+                                        class="text-3xl font-bold text-blue-600"
+                                    >
+                                        1
+                                    </div>
+                                    <div
+                                        class="text-lg font-medium text-secondary mt-2"
+                                    >
+                                        Upcoming Appointments
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Completed Appointments -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <div
+                                    class="flex items-center justify-center w-16 h-16 rounded bg-green-100 text-green-800"
+                                >
+                                    <mat-icon
+                                        class="text-current"
+                                        svgIcon="heroicons_outline:check-circle"
+                                    ></mat-icon>
+                                </div>
+                                <div class="flex-auto ml-4 leading-none">
+                                    <div
+                                        class="text-3xl font-bold text-green-600"
+                                    >
+                                        3
+                                    </div>
+                                    <div
+                                        class="text-lg font-medium text-secondary mt-2"
+                                    >
+                                        Completed Appointments
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cancelled Appointments -->
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <div
+                                    class="flex items-center justify-center w-16 h-16 rounded bg-red-100 text-red-800"
+                                >
+                                    <mat-icon
+                                        class="text-current"
+                                        svgIcon="heroicons_outline:x-circle"
+                                    ></mat-icon>
+                                </div>
+                                <div class="flex-auto ml-4 leading-none">
+                                    <div
+                                        class="text-3xl font-bold text-red-600"
+                                    >
+                                        1
+                                    </div>
+                                    <div
+                                        class="text-lg font-medium text-secondary mt-2"
+                                    >
+                                        Cancelled Appointments
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

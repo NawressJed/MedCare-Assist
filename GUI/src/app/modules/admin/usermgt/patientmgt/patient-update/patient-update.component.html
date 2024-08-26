@@ -40,18 +40,11 @@
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:mail'"></mat-icon>
                             </mat-form-field>
                         </div>
+                        
                         <div class="flex sm:col-span-4">
                             <mat-form-field class="flex-auto">
-                                <input matInput [placeholder]="'Password'" required [(ngModel)]="patient.password"
-                                    id="password" name="password" />
-                                <mat-icon class="icon-size-5" matPrefix
-                                    [svgIcon]="'heroicons_solid:lock-closed'"></mat-icon>
-                            </mat-form-field>
-                        </div>
-                        <div class="flex sm:col-span-2">
-                            <mat-form-field class="flex-auto">
-                                <input matInput [placeholder]="'Phone'" required [(ngModel)]="patient.phone" id="phone"
-                                    name="phone" />
+                                <input matInput [placeholder]="'Phone Number'" required [(ngModel)]="patient.phoneNumber" id="phoneNumber"
+                                    name="phoneNumber" />
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:phone'"></mat-icon>
                             </mat-form-field>
                         </div>
@@ -59,6 +52,14 @@
                             <mat-form-field class="flex-auto">
                                 <input matInput [placeholder]="'Address'" required [(ngModel)]="patient.address"
                                     id="address" name="address" />
+                                <mat-icon class="icon-size-5" matPrefix
+                                    [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                            </mat-form-field>
+                        </div>
+                        <div class="flex sm:col-span-2">
+                            <mat-form-field class="flex-auto">
+                                <input matInput [placeholder]="'Zip Code'" required [(ngModel)]="patient.zipCode"
+                                    id="zipCode" name="zipCode" />
                                 <mat-icon class="icon-size-5" matPrefix
                                     [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
                             </mat-form-field>
@@ -76,8 +77,8 @@
                         </div>
                         <div class="flex sm:col-span-2">
                             <mat-form-field [ngClass]="formFieldHelpers" class="flex-auto">
-                                <input matInput [matDatepicker]="picker2" required [(ngModel)]="patient.birthDate"
-                                    [placeholder]="'Select birth date'" id="birthDate" name="birthDate">
+                                <input matInput [matDatepicker]="picker2" required [(ngModel)]="patient.dateOfBirth"
+                                    [placeholder]="'Select birth date'" id="dateOfBirth" name="dateOfBirth">
                                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                                 <mat-datepicker #picker2></mat-datepicker>
                             </mat-form-field>

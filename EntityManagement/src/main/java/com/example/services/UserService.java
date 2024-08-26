@@ -5,6 +5,8 @@ import com.example.dto.PatientDTO;
 import com.example.dto.UserDTO;
 import com.example.entities.Doctor;
 import com.example.entities.Patient;
+import com.example.enums.EGender;
+import com.example.enums.ESpecialty;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -26,7 +28,11 @@ public interface UserService {
     PatientDTO findPatientByEmail(String email);
     List<PatientDTO> findPatientsByEmailContaining(String email);
     PatientDTO findUserByEmail(String email);
-    PatientDTO updatePatient(PatientDTO patientDTO);
-    DoctorDTO updateDoctor(DoctorDTO doctorDTO);
+    PatientDTO updatePatient(UUID id, Patient patientDTO);
+    DoctorDTO updateDoctor(UUID id, Doctor doctor);
+    int getTotalPatients(UUID doctorId);
+    int getMalePatientsCount(UUID doctorId);
+    int getFemalePatientsCount(UUID doctorId);
     void deleteUser(UUID id);
+    List<DoctorDTO> getDoctorBySpecialty(ESpecialty specialty);
 }

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Doctor } from 'app/shared/models/users/doctor/doctor';
 import { UserService } from 'app/shared/services/userService/user.service';
+import { AuthenticationService } from 'app/shared/services/authService/authentication.service';
 
 @Component({
   selector: 'app-doctor-update',
@@ -20,6 +21,7 @@ export class DoctorUpdateComponent implements OnInit {
   doctor: Doctor;
 
   constructor(
+    private _apiService: AuthenticationService,
     private doctorService: UserService,
     private router: Router,
     private _matDialogRef: MatDialogRef<DoctorUpdateComponent>,
@@ -56,7 +58,7 @@ export class DoctorUpdateComponent implements OnInit {
   }
 
   gotoList() {
-    this.router.navigate(['doctor/list']);
+    this.router.navigate(['/admin/doctor/list']);
   }
 
   onCloseClick(): void {

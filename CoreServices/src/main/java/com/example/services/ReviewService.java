@@ -10,5 +10,6 @@ public interface ReviewService {
     List<ReviewDTO> getMyReviews(UUID doctorId);
     ReviewDTO getReview(UUID reviewId);
     Double getAverageRating(UUID doctorId);
+    int getRatingCount(UUID id);
     void deleteReview(UUID reviewId);
 }

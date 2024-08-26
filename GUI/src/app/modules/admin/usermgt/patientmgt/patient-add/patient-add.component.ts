@@ -56,7 +56,6 @@ export class PatientAddComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     this.saveUser();
-    this.gotoList();
   }
 
   onCloseClick(): void {
@@ -64,7 +63,7 @@ export class PatientAddComponent implements OnInit {
   }
 
   gotoList() {
-    this.router.navigate(['patient/list']);
+    this.router.navigate(['doctor/patient/list']);
   }
 
 }

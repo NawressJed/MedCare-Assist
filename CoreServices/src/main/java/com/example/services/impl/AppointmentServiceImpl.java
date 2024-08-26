@@ -178,11 +178,18 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             Schedule schedule = scheduleRepository.findScheduleByAppointment_Id(appointment.getId());
 
-            schedule.setDate(appointment.getDate());
-            schedule.setStartTime(appointment.getTime());
-            schedule.setEndTime(appointment.getTime().plusMinutes(30));
+            scheduleRepository.delete(schedule);
 
-            scheduleRepository.save(schedule);
+            Schedule newSchedule = new Schedule();
+
+            newSchedule.setDoctor(appointment.getDoctor());
+            newSchedule.setDate(appointment.getDate());
+            newSchedule.setStartTime(appointment.getTime());
+            newSchedule.setEndTime(appointment.getTime().plusMinutes(30));
+            newSchedule.setAvailable(false);
+            newSchedule.setAppointment(appointment);
+
+            scheduleRepository.save(newSchedule);
 
             return mapper.toDto(appointment);
         } catch (Exception e){
@@ -204,6 +211,16 @@ public class AppointmentServiceImpl implements AppointmentService {
             }
             return mapper.toDto(appointmentRepository.save(appointment));
         } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int getAppointmentCount(UUID doctorId) {
+        try {
+           return appointmentRepository.countApprovedAppointmentsByDoctorId(doctorId);
+        }catch (Exception e) {
+            logger.error("Failed counting doctor's appointments");
             throw new RuntimeException(e);
         }
     }

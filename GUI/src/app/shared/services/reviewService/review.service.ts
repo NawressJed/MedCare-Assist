@@ -28,6 +28,10 @@ export class ReviewService {
     return this.http.get<number>(`${this.baseUrl}/average-rating/${doctorId}`);
   }
 
+  getReviewCount(doctorId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get-reviews/count/${doctorId}`);
+  }
+
   deleteReview(reviewId: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/delete-review/${reviewId}`);
   }

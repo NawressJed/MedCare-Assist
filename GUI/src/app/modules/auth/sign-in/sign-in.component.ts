@@ -99,12 +99,12 @@ export class AuthSignInComponent implements AfterViewInit {
         this._authService.signIn(this.signInForm.value).subscribe(
             (response: any) => {
                 const role = response.user.role;
-                if (role === 'ADMIN') {
-                    this._router.navigateByUrl('/admin');
+                if (role === 'ROLE_ADMIN') {
+                    this._router.navigateByUrl('/admin/dashboard');
                 } else if (role === 'ROLE_DOCTOR') {
-                    this._router.navigateByUrl('/doctor/appointment/list');
+                    this._router.navigateByUrl('/doctor/dashboard');
                 } else {
-                    this._router.navigateByUrl('/patient/appointment/doctors');
+                    this._router.navigateByUrl('/patient/dashboard');
                 }
             },
             (error) => {
