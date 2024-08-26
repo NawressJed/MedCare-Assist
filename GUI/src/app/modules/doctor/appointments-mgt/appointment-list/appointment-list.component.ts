@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
-import { Observable, Subject, BehaviorSubject, takeUntil } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, takeUntil, map, tap } from 'rxjs';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { AppointmentAddComponent } from '../appointment-add/appointment-add.component';
 import { AppointmentUpdateComponent } from '../appointment-update/appointment-update.component';
@@ -82,14 +82,22 @@ export class AppointmentListComponent implements OnInit {
   }
 
   reloadData() {
-    this.appointments = this.appointmentService.getDoctorAppointmentsList(this._cookie.get('id'));
-    this.appointments.pipe(
-      takeUntil(this._unsubscribeAll)
-    ).subscribe((appointments: Appointment[]) => {
-      this.appointmentsCount = appointments.length;
-      this._changeDetectorRef.markForCheck(); 
-    });
-}
+    this.appointments = this.appointmentService.getDoctorAppointmentsList(this._cookie.get('id')).pipe(
+      takeUntil(this._unsubscribeAll),
+      map(appointments => appointments.sort((a, b) => {
+        // Combine date and time into a single Date object for 'a'
+        const dateTimeA = new Date(`${a.date}T${a.time}`);
+        // Combine date and time into a single Date object for 'b'
+        const dateTimeB = new Date(`${b.date}T${b.time}`);
+        // Compare the two Date objects
+        return dateTimeB.getTime() - dateTimeA.getTime();
+      })),
+      tap(appointments => {
+        this.appointmentsCount = appointments.length;
+        this._changeDetectorRef.markForCheck(); // Ensure UI updates with sorted list
+      })
+    );
+  }
 
   /**
    * On destroy

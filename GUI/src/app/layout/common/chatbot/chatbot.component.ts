@@ -59,7 +59,8 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     private readonly chatbotId = '123e4567-e89b-12d3-a456-426614174000';
     private currentUserId: string;
-  
+    private awaitingDoctorResponse: boolean = false;  // Flag to check if awaiting a "yes" or "no" response
+
     lottieOptions: AnimationOptions = {
       animationData: robotAnimationData
     };
@@ -71,8 +72,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
         private userService: UserService,
         private _cookie: CookieService,
         private changeDetectorRef: ChangeDetectorRef
-    ) {
-    }
+    ) {}
   
     ngOnInit(): void {
         this._fuseConfigService.config$
@@ -81,7 +81,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
                 this.config = config;
             });
 
-            this.currentUserId = this._cookie.get("id");
+        this.currentUserId = this._cookie.get("id");
     }
   
     ngOnDestroy(): void {
@@ -95,37 +95,34 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     }
 
     sendMessage(): void {
-      const messageContent = this.messageInput.nativeElement.value;
-      if (!messageContent.trim()) {
+      const messageContent = this.messageInput.nativeElement.value.trim();
+      if (!messageContent) {
           return;
       }
 
       const userMessage: ChatMessage = {
-          senderId: this.currentUserId, // Current user as sender
-          recipientId: this.chatbotId, // Chatbot as recipient
+          senderId: this.currentUserId,
+          recipientId: this.chatbotId,
           content: messageContent,
-          timestamp: new Date() // Correctly set the timestamp as a Date object
+          timestamp: new Date()
       };
 
       this.chat.messages.push({ value: messageContent, isMine: true });
-
-      // Save user message to database
       this.chatService.sendMessage(userMessage);
 
-      // Send message to chatbot
+      // Send the message to the Flask backend and handle the response
       this.chatbotService.sendMessage(messageContent).subscribe({
           next: (response) => {
               const botMessage: ChatMessage = {
-                  senderId: this.chatbotId, // Chatbot as sender
-                  recipientId: this.currentUserId, // Current user as recipient
+                  senderId: this.chatbotId,
+                  recipientId: this.currentUserId,
                   content: response.response,
-                  timestamp: new Date() // Correctly set the timestamp as a Date object
+                  timestamp: new Date()
               };
-
               this.chat.messages.push({ value: response.response, isMine: false });
-
-              // Save bot response to database
               this.chatService.sendMessage(botMessage);
+
+              this.changeDetectorRef.markForCheck();
           },
           error: (error) => {
               console.error('Error sending message to chatbot:', error);
@@ -133,25 +130,9 @@ export class ChatbotComponent implements OnInit, OnDestroy {
       });
 
       this.messageInput.nativeElement.value = '';
-      this.changeDetectorRef.markForCheck(); 
   }
-  
-    /*sendMessage(message: string): void {
-      if (message.trim()) {
-        this.chat.messages.push({ value: message, isMine: true });
-        this.chatbotService.sendMessage(message).subscribe({
-          next: (response) => {
-            this.chat.messages.push({ value: response.response, isMine: false });
-          },
-          error: (error) => {
-            console.error('Error sending message to chatbot:', error);
-          }
-        });
-      }
-    }*/
-  
+
     trackByFn(index: number, item: any): any {
         return item.id || index;
     }
-  }
-  
+}

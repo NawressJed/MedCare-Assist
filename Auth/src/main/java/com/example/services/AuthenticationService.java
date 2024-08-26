@@ -19,6 +19,7 @@ import com.example.repositories.UserRepository;
 import com.example.services.tokensServices.ConfirmationTokenService;
 import com.example.services.tokensServices.RefreshTokenService;
 import com.example.services.tokensServices.ResetPasswordTokenService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -210,8 +211,8 @@ public class AuthenticationService {
         }
     }
 
+    @Transactional
     public DoctorDTO updateDoctor(UUID id, Doctor doctor) {
-
         try {
             Doctor doctor1 = doctorRepository.findDoctorById(id);
             doctor.setPassword(doctor1.getPassword());

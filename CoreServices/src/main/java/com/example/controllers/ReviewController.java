@@ -76,4 +76,9 @@ public class ReviewController {
             throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("/get-reviews/count/{id}")
+    public int getReviewCount(@PathVariable(value = "id") UUID doctorId) {
+        return reviewService.getRatingCount(doctorId);
+    }
 }

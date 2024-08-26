@@ -41,23 +41,31 @@
                     </div>
                     <div class="flex sm:col-span-4">
                         <mat-form-field class="flex-auto">
-                            <input matInput [placeholder]="'Password'" required [(ngModel)]="doctor.password"
-                                id="password" name="password" />
+                            <input matInput [placeholder]="'Phone Number'" required [(ngModel)]="doctor.phoneNumber"
+                                id="phoneNumber" name="phoneNumber" />
                             <mat-icon class="icon-size-5" matPrefix
-                                [svgIcon]="'heroicons_solid:lock-closed'"></mat-icon>
+                                [svgIcon]="'heroicons_solid:phone'"></mat-icon>
                         </mat-form-field>
                     </div>
                     <div class="flex sm:col-span-2">
                         <mat-form-field class="flex-auto">
-                            <input matInput [placeholder]="'Phone'" required  id="phone"
-                                name="phone" />
+                            <input matInput [placeholder]="'Work Phone Number'" required [(ngModel)]="doctor.workPhoneNumber"  id="workPhoneNumber"
+                                name="workPhoneNumber" />
                             <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:phone'"></mat-icon>
                         </mat-form-field>
                     </div>
                     <div class="flex sm:col-span-2">
                         <mat-form-field class="flex-auto">
-                            <input matInput [placeholder]="'officeAddress'" required 
-                                id="officeAddress" name="officeAddress" />
+                            <input matInput [placeholder]="'address'" required [(ngModel)]="doctor.address"
+                                id="address" name="address" />
+                            <mat-icon class="icon-size-5" matPrefix
+                                [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex sm:col-span-2">
+                        <mat-form-field class="flex-auto">
+                            <input matInput [placeholder]="'zipCode'" required [(ngModel)]="doctor.zipCode"
+                                id="zipCode" name="zipCode" />
                             <mat-icon class="icon-size-5" matPrefix
                                 [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
                         </mat-form-field>

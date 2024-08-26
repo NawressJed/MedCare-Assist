@@ -20,4 +20,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findByDateAndTime(LocalDate date, LocalTime time);
     List<Appointment> findByDateAndTimeBetween(LocalDate date, LocalTime timeStart, LocalTime timeEnd);
 
+    @Query(value = "SELECT COUNT(a.id) FROM appointment AS a WHERE a.doctor_id = :doctorId AND a.approval_status = 'APPROVED'", nativeQuery = true)
+    int countApprovedAppointmentsByDoctorId(UUID doctorId);
 }

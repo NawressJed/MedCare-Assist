@@ -6,7 +6,9 @@ import com.example.dto.UserDTO;
 import com.example.entities.Doctor;
 import com.example.entities.Patient;
 import com.example.entities.UserEntity;
+import com.example.enums.EGender;
 import com.example.enums.ERole;
+import com.example.enums.ESpecialty;
 import com.example.mapper.AutoDoctorMapper;
 import com.example.mapper.AutoPatientMapper;
 import com.example.mapper.AutoUserMapper;
@@ -14,6 +16,7 @@ import com.example.repositories.DoctorRepository;
 import com.example.repositories.PatientRepository;
 import com.example.repositories.UserRepository;
 import com.example.services.UserService;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -208,35 +211,61 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PatientDTO updatePatient(PatientDTO patientDTO) {
+    @Transactional
+    public PatientDTO updatePatient(UUID id, Patient patientDTO) {
         try {
-            Patient existingPatient = patientRepository.findPatientById(patientDTO.getId());
-            existingPatient.setDateOfBirth(patientDTO.getDateOfBirth());
-            return autoPatientMapper.toDto(patientRepository.save(existingPatient));
+            Patient patient1 = patientRepository.findPatientById(id);
+            if (patient1 == null) {
+                throw new Exception("Patient not found with id: " + id);
+            }
+            patient1.setDateOfBirth(patientDTO.getDateOfBirth());
+            patient1.setEmail(patientDTO.getEmail());
+            patient1.setPhoneNumber(patientDTO.getPhoneNumber());
+            patient1.setFirstname(patientDTO.getFirstname());
+            patient1.setLastname(patientDTO.getLastname());
+            patient1.setGender(patientDTO.getGender());
+            patient1.setAddress(patientDTO.getAddress());
+            patient1.setZipCode(patientDTO.getZipCode());
+
+            return autoPatientMapper.toDto(patientRepository.save(patient1));
         } catch (Exception e) {
-            log.error("ERROR updating patient with ID= " + patientDTO.getId() + e);
-            throw new RuntimeException(e);
+            log.error("ERROR updating doc with id = " + id, e);
+            throw new RuntimeException("Update failed", e);
         }
     }
 
     @Override
-    public DoctorDTO updateDoctor(DoctorDTO doctorDTO) {
-        Doctor existingDoctor = doctorRepository.findDoctorById(doctorDTO.getId());
+    @Transactional
+    public DoctorDTO updateDoctor(UUID id, Doctor doctor) {
+        try {
+            Doctor doctor1 = doctorRepository.findDoctorById(id);
+            if (doctor1 == null) {
+                throw new Exception("Doctor not found with id: " + id);
+            }
 
-        existingDoctor.setWorkPhoneNumber(doctorDTO.getWorkPhoneNumber());
-        existingDoctor.setConsultationPrice(doctorDTO.getConsultationPrice());
-        existingDoctor.setSpecialty(doctorDTO.getSpecialty());
-        if (doctorDTO.getMyPatients() != null && !doctorDTO.getMyPatients().isEmpty()) {
-            existingDoctor.setMyPatients(doctorDTO.getMyPatients());
+            doctor1.setSpecialty(doctor.getSpecialty());
+            doctor1.setEmail(doctor.getEmail());
+            doctor1.setConsultationPrice(doctor.getConsultationPrice());
+            doctor1.setPhoneNumber(doctor.getPhoneNumber());
+            doctor1.setWorkPhoneNumber(doctor.getWorkPhoneNumber());
+            doctor1.setFirstname(doctor.getFirstname());
+            doctor1.setLastname(doctor.getLastname());
+            doctor1.setGender(doctor.getGender());
+            doctor1.setAddress(doctor.getAddress());
+            doctor1.setZipCode(doctor.getZipCode());
+
+            // Safely manage the myPatients collection
+            doctor1.getMyPatients().clear();
+            if (doctor.getMyPatients() != null) {
+                doctor1.getMyPatients().addAll(doctor.getMyPatients());
+            }
+
+            return autoDoctorMapper.toDto(doctorRepository.save(doctor1));
+        } catch (Exception e) {
+            log.error("ERROR updating doc with id = " + id, e);
+            throw new RuntimeException("Update failed", e);
         }
-
-        // Save the updated doctor entity
-        Doctor updatedDoctor = doctorRepository.save(existingDoctor);
-
-        return autoDoctorMapper.toDto(updatedDoctor);
     }
-
-
 
     @Override
     public void deleteUser(UUID id) {
@@ -247,4 +276,47 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public List<DoctorDTO> getDoctorBySpecialty(ESpecialty specialty) {
+        List<DoctorDTO> doctors = new ArrayList<>();
+        try {
+            doctors = autoDoctorMapper.toDto(doctorRepository.findBySpecialty(specialty));
+            return doctors;
+        } catch (Exception e) {
+            log.error("Can not get doctors by specialty!  " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int getTotalPatients(UUID doctorId) {
+        try {
+            return doctorRepository.countTotalPatientsByDoctorId(doctorId);
+        } catch (Exception e) {
+            log.error("ERROR counting doctor's total patients with ID = "+ doctorId + e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int getMalePatientsCount(UUID doctorId) {
+        try {
+            return patientRepository.countMalePatientsByDoctorId(doctorId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int getFemalePatientsCount(UUID doctorId) {
+        try {
+            return patientRepository.countFemalePatientsByDoctorId(doctorId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
 }

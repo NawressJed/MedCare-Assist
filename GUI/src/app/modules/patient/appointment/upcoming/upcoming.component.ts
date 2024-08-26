@@ -1,12 +1,14 @@
 import { DatePipe, DOCUMENT } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { Appointment } from 'app/shared/models/appointment/appointment';
 import { AppointmentService } from 'app/shared/services/appointmentService/appointment.service';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, map, Observable, Subject, takeUntil } from 'rxjs';
+import { UpdateComponent } from '../update/update.component';
 
 @Component({
   selector: 'app-upcoming',
@@ -57,6 +59,7 @@ export class UpcomingComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef,
     @Inject(DOCUMENT) private _document: any,
     private _router: Router,
+    private _matDialog: MatDialog,
     private datePipe: DatePipe,
     private _cookie: CookieService
 
@@ -104,18 +107,21 @@ export class UpcomingComponent implements OnInit {
     this.filter$.next('appointments');
   }
 
-  setStatus(appointment: Appointment, status: string): void {
-    appointment.appointmentStatus = status;
-    this.appointmentService.updateStatus(appointment.id, status).subscribe({
-        next: (data) => {
-            console.log('Appointment status updated successfully');
-            this.reloadData(); // Refresh data after update
-        },
-        error: (e) => {
-            console.log('Error updating appointment status', e);
-        }
-    });
-}
+ 
+  updateStatus(appointment: Appointment): void {
+    if (appointment && appointment.id) {
+      const dialogRef = this._matDialog.open(UpdateComponent, {
+        autoFocus: false,
+        data: { appointment: appointment }
+      });
+  
+      dialogRef.afterClosed().subscribe(() => {
+        this.reloadData();
+      });
+    } else {
+      console.error('Appointment ID is undefined.');
+    }
+  }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods

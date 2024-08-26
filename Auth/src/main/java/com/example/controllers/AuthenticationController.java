@@ -184,7 +184,7 @@ public class AuthenticationController {
     }
 
     @PutMapping("/account/update/doctor/{id}")
-    @PreAuthorize("hasRole('ROLE_DOCTOR')")
+    @PreAuthorize("hasRole('ROLE_DOCTOR')or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Map<String, String>> updateDoctor(@PathVariable(value = "id") UUID id,
                                                             @RequestBody Doctor doctor) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

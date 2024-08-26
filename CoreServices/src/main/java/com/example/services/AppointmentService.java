@@ -15,6 +15,7 @@ public interface AppointmentService {
     List<AppointmentDTO> findAppointmentByPatient(UUID uuid);
     AppointmentDTO updateAppointment(AppointmentDTO appointment);
     AppointmentDTO updateAppointmentStatus(UUID appointmentId, String newStatus);
+    int getAppointmentCount(UUID doctorId);
     void deleteAppointment(UUID appointmentID);
     AppointmentDTO requestAppointment(UUID patientId, AppointmentDTO appointmentDTO);
     AppointmentDTO approveAppointment(UUID appointmentId);

@@ -13,4 +13,8 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
 
     @Query(value = "SELECT AVG(r.rating) FROM review AS r WHERE r.doctor_id = :doctorId", nativeQuery = true)
     Double findAverageRatingByDoctorId(UUID doctorId);
+
+    @Query(value = "SELECT COUNT(r.id) FROM review AS r WHERE r.doctor_id = :doctorId", nativeQuery = true)
+    int countReviewsByDoctorId(UUID doctorId);
+
 }

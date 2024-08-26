@@ -1,6 +1,7 @@
 package com.example.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
@@ -16,11 +17,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "userId")
-@EqualsAndHashCode(callSuper = true, exclude = "myDoctors")
-@ToString(callSuper = true, exclude = "myDoctors")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Patient extends UserEntity {
     private Date dateOfBirth;
     @ManyToMany(mappedBy = "myPatients")
-    @JsonBackReference
     private Set<Doctor> myDoctors;
 }

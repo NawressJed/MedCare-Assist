@@ -103,6 +103,16 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public int getRatingCount(UUID id) {
+        try {
+            return repository.countReviewsByDoctorId(id);
+        }catch (Exception e){
+            log.error("Failed counting doctor's total review");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void deleteReview(UUID reviewId) {
         try {
             repository.deleteById(reviewId);

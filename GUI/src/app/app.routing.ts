@@ -79,7 +79,7 @@ export const appRoutes: Route[] = [
         children: [
             { path: 'profile', loadChildren: () => import('app/modules/profile/profile.module').then(m => m.ProfileModule) },
             { path: 'chat', loadChildren: () => import('app/modules/chat/chat.module').then(m => m.ChatModule) },
-            { path: 'dashboard', loadChildren: () => import('app/modules/dashboard/dashboard.module').then(m => m.DashboardModule) },
+            
         ]
     },
 
@@ -114,7 +114,7 @@ export const appRoutes: Route[] = [
                     { path: 'add', loadChildren: () => import('app/modules/admin/appointments-mgt/appointment-add/appointment-add.module').then(m => m.AppointmentAddModule) },
                 ]
             },
-
+            { path: 'dashboard', loadChildren: () => import('app/modules/admin/dashboard/dashboard.module').then(m => m.DashboardModule) },
         ]
     },
 
@@ -154,7 +154,8 @@ export const appRoutes: Route[] = [
             },
             {
                 path: 'reviews', loadChildren: () => import('app/modules/doctor/review/review.module').then(m => m.ReviewModule) 
-            }
+            },
+            { path: 'dashboard', loadChildren: () => import('app/modules/doctor/dashboard/dashboard.module').then(m => m.DashboardModule) },
 
         ]
     },
@@ -176,6 +177,7 @@ export const appRoutes: Route[] = [
                     { path: 'past', loadChildren: () => import('app/modules/patient/appointment/past/past.module').then(m => m.PastModule) },
                     { path: 'doctors', loadChildren: () => import('app/modules/patient/appointment/doctors/doctors.module').then(m => m.DoctorsModule) },
                     { path: 'upcoming', loadChildren: () => import('app/modules/patient/appointment/upcoming/upcoming.module').then(m => m.UpcomingModule) },
+                    { path: 'update', loadChildren: () => import('app/modules/patient/appointment/update/update.module').then(m => m.UpdateModule) },                    
                     { path: 'review', loadChildren: () => import('app/modules/patient/appointment/review/review.module').then(m => m.ReviewModule) },
                 ]
             },
@@ -183,8 +185,8 @@ export const appRoutes: Route[] = [
                 path: 'medicalfile', children: [
                     { path: 'list', loadChildren: () => import('app/modules/patient/medicalFile/list/list.module').then(m => m.ListModule)},
                 ]
-            }
-
+            },
+            { path: 'dashboard', loadChildren: () => import('app/modules/patient/dashboard/dashboard.module').then(m => m.DashboardModule) },
         ]
     }
 ];

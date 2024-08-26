@@ -28,7 +28,7 @@ public class DoctorServiceImpl implements DoctorService {
             return doctors;
         }catch (Exception e) {
             log.error("ERROR retrieving doctor with ID = "+ e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -38,7 +38,7 @@ public class DoctorServiceImpl implements DoctorService {
             return mapper.toDto(repository.findDoctorById(id));
         } catch (Exception e) {
             log.error("ERROR retrieving doctor with ID = "+ id + e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 }

@@ -1,69 +1,126 @@
 <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
-
-    <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent" (backdropClick)="onBackdropClicked()">
-  
+    <mat-drawer-container
+        class="flex-auto h-full bg-card dark:bg-transparent"
+        (backdropClick)="onBackdropClicked()"
+    >
         <!-- Drawer -->
-        <mat-drawer class="w-full md:w-160 dark:bg-gray-900" [mode]="drawerMode" [opened]="false" [position]="'end'" [disableClose]="true" #matDrawer>
+        <mat-drawer
+            class="w-full md:w-160 dark:bg-gray-900"
+            [mode]="drawerMode"
+            [opened]="false"
+            [position]="'end'"
+            [disableClose]="true"
+            #matDrawer
+        >
             <router-outlet></router-outlet>
         </mat-drawer>
-  
+
         <mat-drawer-content class="flex flex-col">
-  
             <!-- Main -->
             <div class="flex-auto">
-  
                 <!-- Header -->
-                <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b">
-  
+                <div
+                    class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b"
+                >
                     <!-- Title -->
                     <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none text-blue text-blue-600">Doctors</div>
+                        <div
+                            class="text-4xl font-extrabold tracking-tight leading-none text-blue text-blue-600"
+                        >
+                            Doctors
+                        </div>
                         <div class="ml-0.5 font-medium text-secondary">
                             <ng-container *ngIf="doctorsCount > 0">
-                                {{doctorsCount}} {{doctorsCount | i18nPlural: {'=0': 'No Doctors', '=1': 'Doctor', 'other': 'Doctors'} }}
+                                {{ doctorsCount }}
+                                {{
+                                    doctorsCount
+                                        | i18nPlural
+                                            : {
+                                                  "=0": "No Doctors",
+                                                  "=1": "Doctor",
+                                                  other: "Doctors"
+                                              }
+                                }}
                             </ng-container>
                         </div>
                     </div>
-  
+
                     <!-- Main actions -->
                     <div class="flex items-center mt-4 sm:mt-0 md:mt-4">
                         <!-- Search -->
                         <div class="flex-auto">
-                            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded w-full min-w-50">
-                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'" [placeholder]="'Search Doctors'">
+                            <mat-form-field
+                                class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded w-full min-w-50"
+                            >
+                                <mat-icon
+                                    class="icon-size-5"
+                                    matPrefix
+                                    [svgIcon]="'heroicons_solid:search'"
+                                ></mat-icon>
+                                <input
+                                    matInput
+                                    [formControl]="searchInputControl"
+                                    [autocomplete]="'off'"
+                                    [placeholder]="'Search Doctors'"
+                                />
                             </mat-form-field>
                         </div>
                         <!-- Add contact button -->
-                        <button class="ml-4" mat-flat-button [color]="'primary'" (click)="addNewDoctor()">
-                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                        <button
+                            class="ml-4"
+                            mat-flat-button
+                            [color]="'primary'"
+                            (click)="addNewDoctor()"
+                        >
+                            <mat-icon
+                                [svgIcon]="'heroicons_outline:plus'"
+                            ></mat-icon>
                             <span class="ml-2 mr-1">Add</span>
                         </button>
                     </div>
                 </div>
-  
+
                 <!-- Doctors list -->
-                <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+                <div
+                    class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto"
+                >
                     <div class="grid">
                         <!-- Header -->
-                        <div class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5">
+                        <div
+                            class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                        >
                             <div>#</div>
                             <div class="hidden md:block">Name</div>
                             <div>Email</div>
-                            <div>Phone</div>
+                            <div>Work Phone Number</div>
                             <div>Office Address</div>
                             <div>Consultation Price</div>
                             <div>Specialty</div>
-                            <div class="flex items-center action-column">Actions</div>
+                            <div class="flex items-center action-column">
+                                Actions
+                            </div>
                         </div>
                         <!-- Rows -->
-                        <ng-container *ngIf="(doctors | async) as doctors">
-                            <ng-container *ngIf="doctors.length > 0; else nodoctors">
-                                <ng-container *ngFor="let doctor of doctors; let i = index; trackBy: trackByFn">
-                                    <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b bg-card">
+                        <ng-container *ngIf="doctors | async as doctors">
+                            <ng-container
+                                *ngIf="doctors.length > 0; else nodoctors"
+                            >
+                                <ng-container
+                                    *ngFor="
+                                        let doctor of doctors;
+                                        let i = index;
+                                        trackBy: trackByFn
+                                    "
+                                >
+                                    <div
+                                        class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b bg-card"
+                                    >
                                         <!-- Image -->
                                         <div class="flex items-center">
-                                            <div class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden"><!--border-->
+                                            <div
+                                                class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden"
+                                            >
+                                                <!--border-->
                                                 <!-- <img> -->
                                                 <!--<div class="flex items-center justify-center w-full h-full text-xs font-semibold leading-none text-center uppercase" *ngIf="!product.thumbnail">
                                                     NO THUMB
@@ -71,24 +128,58 @@
                                             </div>
                                         </div>
                                         <!-- Username -->
-                                        <div class="hidden md:block font-semibold">{{ doctor.firstname }} {{ doctor.lastname }}</div>
+                                        <div
+                                            class="hidden md:block font-semibold"
+                                        >
+                                            Dr. {{ doctor.firstname }}
+                                            {{ doctor.lastname }}
+                                        </div>
                                         <!-- Email -->
                                         <div>{{ doctor.email }}</div>
                                         <!-- Phone -->
-                                        <div>{{ doctor.phone }}</div>
+                                        <div>{{ doctor.workPhoneNumber }}</div>
                                         <!-- Office Address -->
-                                        <div>{{ doctor.officeAddress }}</div>
+                                        <div>
+                                            {{ doctor.address }},
+                                            {{ doctor.zipCode }}
+                                        </div>
                                         <!-- Consultation Price -->
-                                        <div class="flex justify-center">{{ doctor.consultationPrice }}</div>
+                                        <div class="ml-8">
+                                            {{ doctor.consultationPrice }} DT
+                                        </div>
                                         <!-- Specialty -->
                                         <div>{{ doctor.specialty }}</div>
                                         <!-- Details button -->
-                                        <div class="flex items-center justify-center action-column">
-                                            <button class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2" mat-stroked-button>
-                                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil'" (click)="updateDoctor(doctor)"></mat-icon>
+                                        <div
+                                            class="flex items-center justify-center action-column"
+                                        >
+                                            <button
+                                                class="min-w-10 min-h-7 h-7 px-2 leading-6 mr-2"
+                                                mat-stroked-button
+                                            >
+                                                <mat-icon
+                                                    class="icon-size-5"
+                                                    [svgIcon]="
+                                                        'heroicons_solid:pencil'
+                                                    "
+                                                    (click)="
+                                                        updateDoctor(doctor)
+                                                    "
+                                                ></mat-icon>
                                             </button>
-                                            <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button>
-                                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:trash'" (click)="deleteDoctor(doctor)"></mat-icon>
+                                            <button
+                                                class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                                mat-stroked-button
+                                            >
+                                                <mat-icon
+                                                    class="icon-size-5"
+                                                    [svgIcon]="
+                                                        'heroicons_solid:trash'
+                                                    "
+                                                    (click)="
+                                                        deleteDoctor(doctor)
+                                                    "
+                                                ></mat-icon>
                                             </button>
                                         </div>
                                     </div>
@@ -96,13 +187,16 @@
                             </ng-container>
                         </ng-container>
                     </div>
-  
+
                     <ng-template #noDoctors>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no doctors!</div>
+                        <div
+                            class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center"
+                        >
+                            There are no doctors!
+                        </div>
                     </ng-template>
                 </div>
             </div>
         </mat-drawer-content>
     </mat-drawer-container>
-  </div>
-  
+</div>

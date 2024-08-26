@@ -29,7 +29,7 @@ import { UserService } from 'app/shared/services/userService/user.service';
       }
   
       @screen lg {
-        grid-template-columns: 48px 150px 150px 150px 150px 150px 150px 500px;
+        grid-template-columns: 48px 200px 230px 180px 250px 180px 200px auto 72px;
       }
   }
   
@@ -109,18 +109,25 @@ export class PatientListComponent implements OnInit {
   }
 
   addNewPatient(): void {
-    this._matDialog.open(PatientAddComponent, {
+    const dialog = this._matDialog.open(PatientAddComponent, {
       autoFocus: false,
       data: {
       }
+    });
+    dialog.afterClosed().subscribe(() => {
+      this.reloadData();
     });
   }
 
   updatePatient(patient: Patient): void {
     if (patient && patient.id) {
-      this._matDialog.open(PatientUpdateComponent, {
+      const dialog = this._matDialog.open(PatientUpdateComponent, {
         autoFocus: false,
         data: { patient: patient } // Pass patient object here
+      });
+
+      dialog.afterClosed().subscribe(() => {
+        this.reloadData();
       });
     } else {
       console.error('Patient ID is undefined.');

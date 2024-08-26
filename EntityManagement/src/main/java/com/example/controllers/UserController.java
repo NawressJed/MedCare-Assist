@@ -5,10 +5,13 @@ import com.example.dto.PatientDTO;
 import com.example.dto.UserDTO;
 import com.example.entities.Doctor;
 import com.example.entities.Patient;
+import com.example.enums.ESpecialty;
 import com.example.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.print.Doc;
@@ -105,20 +108,38 @@ public class UserController {
     }
 
     @PutMapping("/update-doctor/{id}")
-    public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable(value = "id")  UUID id, @RequestBody DoctorDTO doctor) {
-        DoctorDTO updatedDoctor = userService.updateDoctor(doctor);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable(value = "id")  UUID id, @RequestBody Doctor doctor) {
+        DoctorDTO updatedDoctor = userService.updateDoctor(id, doctor);
         return ResponseEntity.ok(updatedDoctor);
     }
 
 
     @PutMapping("/update-patient/{id}")
-    public PatientDTO updatePatient(@PathVariable(value = "id") UUID id, @RequestBody PatientDTO patientDTO){
-        PatientDTO patient = userService.findPatientById(id);
-        if (patient != null) {
-            return userService.updatePatient(patientDTO);
-        } else {
-            return null;
-        }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<PatientDTO> updatePatient(@PathVariable(value = "id")  UUID id, @RequestBody Patient patient) {
+        PatientDTO updatedPatient = userService.updatePatient(id, patient);
+        return ResponseEntity.ok(updatedPatient);
+    }
+
+    @GetMapping("/get-patient/total/{id}")
+    public int getTotalPatients(@PathVariable(value = "id") UUID doctorId){
+        return userService.getTotalPatients(doctorId);
+    }
+
+    @GetMapping("/get-male/total/{id}")
+    public int getMalePatientsCount(@PathVariable(value = "id") UUID doctorId){
+        return userService.getMalePatientsCount(doctorId);
+    }
+
+    @GetMapping("/get-female/total/{id}")
+    public int getFemalePatientsCount(@PathVariable(value = "id") UUID doctorId){
+        return userService.getFemalePatientsCount(doctorId);
+    }
+
+    @GetMapping("/doctors")
+    public List<DoctorDTO> getDoctorBySpecialty(@RequestParam ESpecialty specialty){
+        return userService.getDoctorBySpecialty(specialty);
     }
 
     @DeleteMapping("/delete-user/{id}")

@@ -69,6 +69,7 @@ export class AppointmentAddComponent implements OnInit {
     this.appointmentService.createDoctorAppointment(this._cookie.get("id"), this.appointment).subscribe({
       next: (data) => {
         console.log('Appointment created successfully', data);
+        this.onCloseClick();
       },
       error: (e) => {
         console.log('Error creating appointment', e);

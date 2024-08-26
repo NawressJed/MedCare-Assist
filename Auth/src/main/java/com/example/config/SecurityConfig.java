@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(ar -> ar
                         .requestMatchers("/auth/logout").authenticated()
-                        .requestMatchers("/account/update/doctor/**").hasRole("DOCTOR")
+                        .requestMatchers("/account/update/doctor/**").hasAnyRole("DOCTOR", "ADMIN")
                         .anyRequest().permitAll())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

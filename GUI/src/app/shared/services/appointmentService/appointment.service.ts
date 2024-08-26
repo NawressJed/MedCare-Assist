@@ -59,4 +59,8 @@ export class AppointmentService {
   deleteAppointment(appointment: Appointment): Observable<any> {
     return this.http.delete(`${this.baseUrl}/delete-appointment/${appointment.id}`, { responseType: 'text' });
   }
+
+  getAppointmentCount(doctorId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get-appointment/count/${doctorId}`);
+  }
 }
